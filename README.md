@@ -1,6 +1,6 @@
 # HyperMania
 Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game.
-*extremely WIP*, not really sutable for a full playthrough yet.
+***Extremely WIP***, not really sutable for a full playthrough yet.
 # Status
 ## Hyper abilities
 Sonic and Knuckles are done. Tails is mostly done; super flickies only attack a partial amount of bosses.
