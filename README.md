@@ -17,3 +17,4 @@ The cave itself is partly done but the transfer cutscene always plays and there'
 
 # Credits
 + jubbalub + Hydropper - Super Emerald sprites, emerald cave map
++ Tee Lopes - Hyper theme
