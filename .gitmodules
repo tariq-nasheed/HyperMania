@@ -1,0 +1,3 @@
+[submodule "src/GameAPI"]
+        path = src/GameAPI
+        url = https://github.com/Rubberduckycooly/GameAPI.git
