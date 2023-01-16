@@ -12,6 +12,7 @@ The cave itself is partly done but the transfer cutscene always plays and there'
 + Save game support
 + Extra GFX/SFX
 + New mechanic(s) for new special stages(?)
++ Config options (give everyone rainbow palettes, proto sparkles etc.)
 + mayyyybe an API for custom characters + enemies
 
 # Credits
