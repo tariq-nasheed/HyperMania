@@ -5,7 +5,7 @@ Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game.
 ## Hyper abilities
 Sonic and Knuckles are done. Tails is mostly done; super flickies only attack a partial amount of bosses.
 ## Emerald cave
-Persistent data hasn't been implemented yet so giant rings always send you to the HPZ emerald cave (even if you have all emeralds). 
+Persistent data hasn't been implemented yet so giant rings always send you to the HPZ emerald cave. 
 The cave itself is partly done but the transfer cutscene always plays and there's no results cutscene yet. Encore special stages are being used as a place holder until custom maps are created.
 # Planned features
 + Hyper abilities for Mighty and Ray
