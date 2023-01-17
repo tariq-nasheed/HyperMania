@@ -1,5 +1,7 @@
 #include "../GameAPI/C/GameAPI/Game.h"
 
+#include "util.h"
+
 // game classes litte/no notable modifications
 #include "Objects/Boilerplate/Animals.h"
 #include "Objects/Boilerplate/Camera.h"
@@ -46,12 +48,16 @@ void LoadHyperMusic(void) {
 	Music_SetMusicTrack("Hyper.ogg", 10, 423801);
 }
 
-void ReserveEntitySlots(void* data) {
+void StageSetup(void* data) {
 	UNUSED(data);
+	// extension variables -------------------------------------------------
+	ExtMemory_size = 0;
+	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
+		ExtMemory[i] = (extmem_t){ EXTMEM_FREE_ID, 0, NULL };
+	}
 
-	// spare slot 1 = super flicky horde
+	// spare entity slots --------------------------------------------------
 	SuperFlickySlot = 0;
-
 	for (int16 i = ENTITY_COUNT - 1; i >= 0; --i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
 		if (!entity->classID) {
@@ -60,9 +66,7 @@ void ReserveEntitySlots(void* data) {
 		if (SuperFlickySlot) break;
 	}
 
-	// TODO rename function for transparency
-
-	// ewwwwww
+	// HPZ emerald sorting -------------------------------------------------
 	if (HPZEmerald) {
 		int32 size = 0;
 		memset(SortedSuperEmeralds, 0, sizeof(Entity*) * 7);
@@ -70,14 +74,8 @@ void ReserveEntitySlots(void* data) {
 			if (emerald->type == HPZEMERALD_MASTER) continue;
 			for (int32 i = 0; i != 7; ++i) {
 				if (SortedSuperEmeralds[i] == NULL || SortedSuperEmeralds[i]->position.x > emerald->position.x) {
-					// push
-					// TODO EXTREMELY MEMORY UNSAFE MAKE SURE TO DOUBLE CHECK LATER
-					if (SortedSuperEmeralds[i] != NULL) printf("  PUSH: %p: %d > %d\n", SortedSuperEmeralds + i, SortedSuperEmeralds[i]->position.x, emerald->position.x);
-					else printf("  NEW: %p: %d\n", SortedSuperEmeralds + i, emerald->position.x);
-					printf("    size: %d    i: %d\n", size, i);
 					if (SortedSuperEmeralds[i] != NULL) {
 						memcpy(SortedSuperEmeralds + i + 1, SortedSuperEmeralds + i , (size - i) * sizeof(Entity*));
-						printf("      %d bytes moved from %p to %p\n", (size - i) * sizeof(Entity*), SortedSuperEmeralds + i, SortedSuperEmeralds + i + 1);
 					}
 					SortedSuperEmeralds[i] = (Entity*)emerald;
 					++size;
@@ -89,17 +87,22 @@ void ReserveEntitySlots(void* data) {
 	}
 }
 
-void ResetEnemyDefs(void* data) {
+void StageCleanup(void* data) {
 	UNUSED(data);
+
 	EnemyInfoSlot = 0;
 	memset(EnemyDefs, 0, sizeof(EnemyInfo) * 16);
+
+	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
+		if (ExtMemory[i].mem) free(ExtMemory[i].mem);
+	}
 }
 
 void InitModAPI(void) {
 	printf("******************** HYPERMANIA loaded ********************\n");
 	Music_SetMusicTrack = Mod.GetPublicFunction(NULL, "Music_SetMusicTrack");
-	Mod.AddModCallback(MODCB_ONSTAGELOAD, ReserveEntitySlots);
-	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, ResetEnemyDefs);
+	Mod.AddModCallback(MODCB_ONSTAGELOAD, StageSetup);
+	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 
 	// Boilerplate ------------------------------------------------------------
 	Camera_State_FollowY = Mod.GetPublicFunction(NULL, "Camera_State_FollowY");

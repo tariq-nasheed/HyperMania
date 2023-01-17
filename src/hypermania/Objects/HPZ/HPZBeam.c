@@ -1,4 +1,5 @@
 #include "HPZBeam.h"
+#include "util.h"
 //#include "Boilerplate/Zone.h"
 
 ObjectHPZBeam* HPZBeam;
@@ -25,9 +26,11 @@ void HPZBeam_Update(void) {
 
 			// FUCKING STUPID
 			for (int32 i = 0; i != 7; ++i) {
-				if (HPZEmeraldExtra[i].owner && HPZEmeraldExtra[i].owner->position.x == self->position.x) {
-					HPZEmeraldExtra[i].color = super_emerald_lookup[i] - 1;
-					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &HPZEmeraldExtra[i].animator, true, 0);
+				Entity* emerald = SortedSuperEmeralds[i];
+				if (emerald && emerald->position.x == self->position.x) {
+					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
+					ext->color = super_emerald_lookup[i] - 1;
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
 					break;
 				}
 			}

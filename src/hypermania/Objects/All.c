@@ -28,7 +28,6 @@ typedef struct {
 	int32 color; // -1 means untransformed
 	Animator animator;
 } HPZEmeraldExt;
-HPZEmeraldExt HPZEmeraldExtra[7];
 
 struct {
 	uint16 aniFrames;

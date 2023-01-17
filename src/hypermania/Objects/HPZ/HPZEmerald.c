@@ -7,14 +7,9 @@ void HPZEmerald_Update_Hook(void) {
 	Mod.Super(HPZEmerald->classID, SUPER_UPDATE, NULL);
 	RSDK_THIS(HPZEmerald);
 
-	int32 handle = -1;
-	for (int32 i = 0; i != 7; ++i) {
-		if (HPZEmeraldExtra[i].owner == (Entity*)self) {
-			handle = i;
-			break;
-		}
-	}
-	if (handle == -1 || HPZEmeraldExtra[handle].color == -1) return;
+	if (!HPZSetup) return;
+	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
+	if (!ext || ext->color == -1) return;
 
 	Hitbox hitbawks;
 	hitbawks.left = -16;
@@ -29,7 +24,7 @@ void HPZEmerald_Update_Hook(void) {
 				++counter;
 				if (counter == 0x1F) {
 					RSDK.SetScene("Special Stage", "");
-					SceneInfo->listPos += 7 + handle;
+					SceneInfo->listPos += 7 + ext->color;
 					RSDK.PlaySfx(HPZEmeraldStaticExt.sfxSpecialWarp, false, 0xFF);
 					Zone_StartFadeOut(10, 0xF0F0F0);
 					//Music_FadeOut(0.05);
@@ -40,21 +35,16 @@ void HPZEmerald_Update_Hook(void) {
 }
 
 void HPZEmerald_Draw_Hook(void) {
-	Mod.Super(HPZEmerald->classID, SUPER_DRAW, NULL);
 	RSDK_THIS(HPZEmerald);
-
-	int32 handle = -1;
-	for (int32 i = 0; i != 7; ++i) {
-		if (HPZEmeraldExtra[i].owner == (Entity*)self) {
-			handle = i;
-			break;
-		}
+	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
+	if (!ext || ext->color == -1) {
+		Mod.Super(HPZEmerald->classID, SUPER_DRAW, NULL);
+		return;
 	}
-	if (handle == -1) return;
 
 	RSDK.SetActivePalette(6, 0, ScreenInfo->size.y);
-	RSDK.DrawSprite(&HPZEmeraldExtra[handle].animator, NULL, false);
-	RSDK.ProcessAnimation(&HPZEmeraldExtra[handle].animator);
+	RSDK.DrawSprite(&ext->animator, NULL, false);
+	RSDK.ProcessAnimation(&ext->animator);
 	RSDK.SetActivePalette(0, 0, ScreenInfo->size.y);
 }
 
@@ -64,12 +54,14 @@ void HPZEmerald_Create_Hook(void* data) {
 
 	for (int32 i = 0; i != 7; ++i) {
 		if (SortedSuperEmeralds[i] == (Entity*)self) {
-			HPZEmeraldExtra[i].owner = (Entity*)self;
-			if (SceneInfo->listPos == 31) {
-				HPZEmeraldExtra[i].color = i;
-				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, i + 1, &HPZEmeraldExtra[i].animator, true, 0);
+			HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
+			if (!ext) return;
+			ext->owner = (Entity*)self;
+			if (!HPZSetup) {
+				ext->color = i;
+				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
 			} else {
-				HPZEmeraldExtra[i].color = -1;
+				ext->color = -1;
 			}
 			break;
 		}
@@ -79,7 +71,6 @@ void HPZEmerald_Create_Hook(void* data) {
 void HPZEmerald_StageLoad_Hook(void) {
 	counter = 0;
 	Mod.Super(HPZEmerald->classID, SUPER_STAGELOAD, NULL);
-	memset(HPZEmeraldExtra, 0, sizeof(HPZEmeraldExt) * 7);
 	HPZEmeraldStaticExt.sfxSpecialWarp = RSDK.GetSfx("Global/SpecialWarp.wav");
 	HPZEmeraldStaticExt.aniFrames = RSDK.LoadSpriteAnimation("HPZ/Emerald.bin", SCOPE_STAGE);
 }

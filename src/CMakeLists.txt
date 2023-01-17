@@ -11,6 +11,7 @@ set(OUTPUT_NAME "hypermania" CACHE STRING "The name of the built library")
 
 add_library(hypermania SHARED
     GameAPI/C/GameAPI/Game.c
+    ${MOD_NAME}/util.c
     ${MOD_NAME}/dllmain.c
     ${MOD_NAME}/Objects/All.c
 )
