@@ -16,6 +16,7 @@ void HPZSetup_StageLoad(void) {
 
 	Entity* player = RSDK_GET_ENTITY_GEN(0);
 	CREATE_ENTITY(HPZIntro, NULL, player->position.x, player->position.y);
+	SceneInfo->timeEnabled = false;
 }
 
 #if RETRO_INCLUDE_EDITOR

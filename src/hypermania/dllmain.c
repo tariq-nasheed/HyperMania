@@ -20,9 +20,8 @@
 #include "Objects/Boilerplate/HCZ/HCZSetup.h"
 #include "Objects/Boilerplate/MMZ/FarPlane.h"
 
-#include "Objects/Boilerplate/Global/SaveGame.h"
-
 // game classes with notable modifications
+#include "Objects/SaveGame.h"
 #include "Objects/Player.h"
 #include "Objects/ImageTrail.h"
 #include "Objects/SpecialRing.h"
@@ -49,8 +48,56 @@ void LoadHyperMusic(void) {
 	Mod.Super(Music->classID, SUPER_STAGELOAD, NULL);
 }
 
+void HM_Save_Load(int32 status) {
+	bool32 success = false;
+#if MANIA_USE_PLUS
+	if (status == STATUS_OK || status == STATUS_NOTFOUND)
+		success = true;
+	else
+		success = false;
+#else
+	if (status)
+		success = true;
+	else
+		success = false;
+#endif
+
+	if (!success) {
+		printf("hypermania save failed to load!\n");
+	}
+}
+
+void HM_Save_Save(int32 status) {
+	bool32 success = false;
+#if MANIA_USE_PLUS
+	if (status == STATUS_OK || status == STATUS_NOTFOUND)
+		success = true;
+	else
+		success = false;
+#else
+	if (status)
+		success = true;
+	else
+		success = false;
+#endif
+	if (!success) {
+		printf("hypermania save failed to save!\n");
+	}
+}
+
 void StageSetup(void* data) {
 	UNUSED(data);
+
+	// loading save file ---------------------------------------------------
+	int32 slot = globals->saveSlotID;
+	if (slot != NO_SAVE_SLOT) {
+		if (globals->gameMode == MODE_ENCORE)
+			localHM_SaveRam = &globalHM_SaveRam[slot % 3 + 8];
+		else
+			localHM_SaveRam = &globalHM_SaveRam[slot % 8];
+		API.LoadUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Load);
+	}
+
 	// extension variables -------------------------------------------------
 	ExtMemory_size = 0;
 	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
@@ -91,6 +138,17 @@ void StageSetup(void* data) {
 void StageCleanup(void* data) {
 	UNUSED(data);
 
+	// saving save file ----------------------------------------------------
+	int32 slot = globals->saveSlotID;
+	if (slot != NO_SAVE_SLOT) {
+		if (globals->gameMode == MODE_ENCORE)
+			localHM_SaveRam = &globalHM_SaveRam[slot % 3 + 8];
+		else
+			localHM_SaveRam = &globalHM_SaveRam[slot % 8];
+		API.SaveUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Save, false);
+	}
+
+	// enemy callback shit idk ---------------------------------------------
 	EnemyInfoSlot = 0;
 	memset(EnemyDefs, 0, sizeof(EnemyInfo) * 16);
 
@@ -120,7 +178,6 @@ void InitModAPI(void) {
 	Zone_GetZoneID = Mod.GetPublicFunction(NULL, "Zone_GetZoneID");
 	Zone_StartFadeIn = Mod.GetPublicFunction(NULL, "Zone_StartFadeIn");
 	Zone_StartFadeOut = Mod.GetPublicFunction(NULL, "Zone_StartFadeOut");
-	SaveGame_GetSaveRAM = Mod.GetPublicFunction(NULL, "SaveGame_GetSaveRAM");
 	MOD_REGISTER_OBJ_OVERLOAD(Music, NULL, NULL, NULL, NULL, NULL, LoadHyperMusic, NULL, NULL, NULL);
 	MOD_REGISTER_OBJECT_HOOK(Animals);
 	MOD_REGISTER_OBJECT_HOOK(Camera);

@@ -164,7 +164,7 @@ void Player_Update_Hook(void) {
 
 	// hyper transformation ------------------------------------------------
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
-	if (!ext->is_hyper && controller->keyZ.press) {
+	if (!ext->is_hyper && controller->keyZ.press && localHM_SaveRam->superEmeralds == 0b01111111) {
 		ext->blend.state = -1;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
