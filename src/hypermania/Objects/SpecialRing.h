@@ -37,6 +37,7 @@ extern void (*SpecialRing_State_Flash)(void);
 
 // Overload Functions
 void SpecialRing_Draw_Hook(void);
+bool32 SpecialRing_State_Idle(bool32);
 bool32 SpecialRing_State_Warp_Hook(bool32);
 
 #endif //! OBJ_SPECIALRING_H

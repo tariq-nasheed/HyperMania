@@ -20,6 +20,8 @@
 #include "Objects/Boilerplate/HCZ/HCZSetup.h"
 #include "Objects/Boilerplate/MMZ/FarPlane.h"
 
+#include "Objects/Boilerplate/Global/SaveGame.h"
+
 // game classes with notable modifications
 #include "Objects/Player.h"
 #include "Objects/ImageTrail.h"
@@ -45,7 +47,6 @@ int16 SuperFlickySlot;
 
 void LoadHyperMusic(void) {
 	Mod.Super(Music->classID, SUPER_STAGELOAD, NULL);
-	Music_SetMusicTrack("Hyper.ogg", 10, 423801);
 }
 
 void StageSetup(void* data) {
@@ -101,6 +102,8 @@ void StageCleanup(void* data) {
 void InitModAPI(void) {
 	printf("******************** HYPERMANIA loaded ********************\n");
 	Music_SetMusicTrack = Mod.GetPublicFunction(NULL, "Music_SetMusicTrack");
+	Music_FadeOut = Mod.GetPublicFunction(NULL, "Music_FadeOut");
+	Music_PlayJingle = Mod.GetPublicFunction(NULL, "Music_PlayJingle");
 	Mod.AddModCallback(MODCB_ONSTAGELOAD, StageSetup);
 	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 
@@ -117,6 +120,7 @@ void InitModAPI(void) {
 	Zone_GetZoneID = Mod.GetPublicFunction(NULL, "Zone_GetZoneID");
 	Zone_StartFadeIn = Mod.GetPublicFunction(NULL, "Zone_StartFadeIn");
 	Zone_StartFadeOut = Mod.GetPublicFunction(NULL, "Zone_StartFadeOut");
+	SaveGame_GetSaveRAM = Mod.GetPublicFunction(NULL, "SaveGame_GetSaveRAM");
 	MOD_REGISTER_OBJ_OVERLOAD(Music, NULL, NULL, NULL, NULL, NULL, LoadHyperMusic, NULL, NULL, NULL);
 	MOD_REGISTER_OBJECT_HOOK(Animals);
 	MOD_REGISTER_OBJECT_HOOK(Camera);
@@ -146,6 +150,7 @@ void InitModAPI(void) {
 	Player_State_KnuxGlideLeft = Mod.GetPublicFunction(NULL, "Player_State_KnuxGlideLeft");
 	Player_State_KnuxGlideRight = Mod.GetPublicFunction(NULL, "Player_State_KnuxGlideRight");
 	Player_CheckCollisionTouch = Mod.GetPublicFunction(NULL, "Player_CheckCollisionTouch");
+	Player_GiveRings = Mod.GetPublicFunction(NULL, "Player_GiveRings");
 
 	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "Player_JumpAbility_Sonic"), Player_JumpAbility_Sonic_Hook, true);
 	Mod.RegisterStateHook(Player_State_KnuxGlideLeft, Player_State_KnuxGlide_Hook, true);
@@ -153,6 +158,7 @@ void InitModAPI(void) {
 
 	SpecialRing_State_Flash = Mod.GetPublicFunction(NULL, "SpecialRing_State_Flash");
 	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "SpecialRing_State_Warp"), SpecialRing_State_Warp_Hook, false);
+	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "SpecialRing_State_Idle"), SpecialRing_State_Idle, true);
 
 	MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_Hook, NULL, NULL, Player_Draw_Hook, NULL, Player_StageLoad_Hook, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, NULL, NULL, ImageTrail_Draw_Hook, NULL, NULL, NULL, NULL, NULL);

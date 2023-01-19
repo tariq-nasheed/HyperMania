@@ -15,6 +15,8 @@
 #include "Boilerplate/HCZ/HCZSetup.c"
 #include "Boilerplate/MMZ/FarPlane.c"
 
+#include "Boilerplate/Global/SaveGame.c"
+
 #include "Player.c"
 #include "ImageTrail.c"
 #include "SpecialRing.c"

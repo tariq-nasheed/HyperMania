@@ -43,4 +43,7 @@ typedef struct {
 
 extern ObjectMusic *Music;
 
+extern void (*Music_FadeOut)(float fadeSpeed);
+extern void (*Music_PlayJingle)(uint8 trackID);
+
 #endif //! OBJ_MUSIC_H

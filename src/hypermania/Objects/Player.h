@@ -348,6 +348,7 @@ extern void (*Player_State_KnuxGlideRight)(void);
 extern void (*Player_State_KnuxWallClimb)(void);
 extern void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 extern bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
+extern void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
 
 // Overload Functions
 void Player_StageLoad_Hook(void);
