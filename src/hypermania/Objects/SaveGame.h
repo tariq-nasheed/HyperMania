@@ -42,7 +42,7 @@ typedef struct {
 	uint32 superEmeralds;
 } HM_SaveRam;
 
-extern HM_SaveRam* localHM_SaveRam;
+extern HM_SaveRam localHM_SaveRam;
 extern HM_SaveRam globalHM_SaveRam[11];
 
 extern SaveRAM* (*SaveGame_GetSaveRAM)(void);

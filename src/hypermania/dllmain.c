@@ -64,6 +64,11 @@ void HM_Save_Load(int32 status) {
 
 	if (!success) {
 		printf("hypermania save failed to load!\n");
+	} else {
+		if (globals->gameMode == MODE_ENCORE)
+			localHM_SaveRam = globalHM_SaveRam[globals->saveSlotID % 3 + 8];
+		else
+			localHM_SaveRam = globalHM_SaveRam[globals->saveSlotID % 8];
 	}
 }
 
@@ -91,10 +96,6 @@ void StageSetup(void* data) {
 	// loading save file ---------------------------------------------------
 	int32 slot = globals->saveSlotID;
 	if (slot != NO_SAVE_SLOT) {
-		if (globals->gameMode == MODE_ENCORE)
-			localHM_SaveRam = &globalHM_SaveRam[slot % 3 + 8];
-		else
-			localHM_SaveRam = &globalHM_SaveRam[slot % 8];
 		API.LoadUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Load);
 	}
 
@@ -142,9 +143,9 @@ void StageCleanup(void* data) {
 	int32 slot = globals->saveSlotID;
 	if (slot != NO_SAVE_SLOT) {
 		if (globals->gameMode == MODE_ENCORE)
-			localHM_SaveRam = &globalHM_SaveRam[slot % 3 + 8];
+			globalHM_SaveRam[slot % 3 + 8] = localHM_SaveRam;
 		else
-			localHM_SaveRam = &globalHM_SaveRam[slot % 8];
+			globalHM_SaveRam[slot % 8] = localHM_SaveRam;
 		API.SaveUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Save, false);
 	}
 

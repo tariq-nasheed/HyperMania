@@ -6,4 +6,4 @@ fi
 cd build
 cmake .. .
 make
-mv libhypermania.so ../../hypermania.so
+mv hypermania.so ../../

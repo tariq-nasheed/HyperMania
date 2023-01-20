@@ -12,9 +12,7 @@ color ColorCycle[6] = { 0xF0F000, 0xfCD8FC,  0xB4D8FC, 0x90FC90,  0xD8fC6C,  0xF
 
 // -----------------------------------------------------------------------------
 bool32 IsHPZStage() {
-	// check if applicable to enter super emerald altar
-	//printf("%i\n", SaveGame->saveRAM->chaosEmeralds);
-	return true;
+	return SaveGame_GetSaveRAM()->chaosEmeralds == 0b01111111;
 }
 
 void SpecialRing_Draw_Hook(void) {
@@ -73,9 +71,9 @@ bool32 SpecialRing_State_Idle(bool32 skippedState) {
 
 					SaveRAM *saveRAM = SaveGame_GetSaveRAM();
 #if GAME_VERSION != VER_100
-					if (saveRAM->chaosEmeralds != 0b01111111 && self->id) {
+					if ((saveRAM->chaosEmeralds != 0b01111111 || localHM_SaveRam.superEmeralds != 0b01111111) && self->id) {
 #else
-					if (saveRAM->chaosEmeralds != 0b01111111) {
+					if (saveRAM->chaosEmeralds != 0b01111111 || localHM_SaveRam.superEmeralds != 0b01111111) {
 #endif
 						player->visible        = false;
 						player->active         = ACTIVE_NEVER;
@@ -86,7 +84,7 @@ bool32 SpecialRing_State_Idle(bool32 skippedState) {
 					}
 
 					if (self->id > 0) {
-						if (saveRAM->chaosEmeralds != 0b01111111)
+						if (saveRAM->chaosEmeralds != 0b01111111 || localHM_SaveRam.superEmeralds != 0b01111111)
 							globals->specialRingID = self->id;
 						saveRAM->collectedSpecialRings |= 1 << (16 * Zone->actID - 1 + self->id);
 					}

@@ -11,7 +11,7 @@ uint32 super_emerald_lookup[7] = {
 	1, // green
 	4, // purple
 	5, // gray
-	6 // cyan
+	6  // cyan
 };
 
 void HPZBeam_Update(void) {
@@ -31,6 +31,7 @@ void HPZBeam_Update(void) {
 					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 					ext->color = super_emerald_lookup[i] - 1;
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
+					localHM_SaveRam.transferedEmeralds |= 1 << i;
 					break;
 				}
 			}
