@@ -8,7 +8,7 @@ Sonic and Knuckles are done. Tails is mostly done; super flickies only attack a 
 Persistent data hasn't been implemented yet so giant rings always send you to the HPZ emerald cave. 
 The cave itself is partly done but the transfer cutscene always plays and there's no results cutscene yet. Encore special stages are being used as a place holder until custom maps are created.
 # Building
-Compilation is pretty simple, just make sure to initialize the GameAPI submodule with `git submodule update --init` first then CMake should do the rest,  set `WINDOWS_BUILD` to true to enable cross-compiling to Windows.
+Compilation is pretty simple, just make sure to initialize the GameAPI submodule with `git submodule update --init` first then CMake should do the rest, set `WINDOWS_BUILD` to true to enable cross-compiling to Windows.
 `build.sh` is a simple shell script that automates the creation of a CMake build directory and runs make inside of it.
 # Planned features
 + Hyper abilities for Mighty and Ray

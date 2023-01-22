@@ -51,5 +51,14 @@ extern ObjectRing *Ring;
 // Imported Functions
 extern void (*Ring_State_Lost)(void);
 extern void (*Ring_Draw_Normal)(void);
+extern void (*Ring_State_Sparkle)(void);
+extern void (*Ring_Draw_Sparkle)(void);
+
+#define OBJ_RING_SETUP \
+  IMPORT_PUBLIC_FUNC(Ring_State_Lost); \
+  IMPORT_PUBLIC_FUNC(Ring_State_Lost); \
+  IMPORT_PUBLIC_FUNC(Ring_State_Sparkle); \
+  IMPORT_PUBLIC_FUNC(Ring_Draw_Sparkle); \
+  MOD_REGISTER_OBJECT_HOOK(Ring)
 
 #endif //! OBJ_RING_H

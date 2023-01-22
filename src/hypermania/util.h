@@ -5,6 +5,15 @@
 
 // =============================================================================
 
+// Helper macros ---------------------------------------------------------------
+
+// =============================================================================
+#define IMPORT_PUBLIC_FUNC(name) name = Mod.GetPublicFunction(NULL, #name)
+#define HOOK_STATE(name, priority) Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, #name), name##_HOOK, priority)
+#define HOOK_IMPORTED_STATE(name, priority) Mod.RegisterStateHook(name, name##_HOOK, priority)
+
+// =============================================================================
+
 // Extension variables for preexisting objects ---------------------------------
 
 // =============================================================================

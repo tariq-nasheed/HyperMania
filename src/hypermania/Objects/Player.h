@@ -370,6 +370,5 @@ bool32 IsVulnerableEnemy(void* e, bool32 count_bosses);
 Hitbox* GetEnemyHitbox(void* e);
 bool32 IsEnemyOnScreen(void* e);
 void HitEnemy(EntityPlayer* player, void* e);
-extern void (*Music_SetMusicTrack)(const char*, uint8, uint32);
 
 #endif //! OBJ_PLAYER_H

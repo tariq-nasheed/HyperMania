@@ -57,7 +57,7 @@ void HPZEmerald_Create_Hook(void* data) {
 			HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
 			if (!ext) return;
 			ext->owner = (Entity*)self;
-			if (!HPZSetup) {
+			if (localHM_SaveRam.transferedEmeralds & 1 << i || !HPZSetup) {
 				ext->color = i;
 				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
 			} else {

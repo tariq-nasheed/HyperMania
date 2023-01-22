@@ -35,6 +35,7 @@ void HPZBeam_Update(void) {
 					break;
 				}
 			}
+			printf("%d\n", localHM_SaveRam.transferedEmeralds);
 		}
 	} else {
 		++self->hit_timer;

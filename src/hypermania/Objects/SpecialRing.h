@@ -3,6 +3,11 @@
 
 #include "GameAPI/Game.h"
 
+// =============================================================================
+
+// Definitions -----------------------------------------------------------------
+
+// =============================================================================
 typedef struct {
 	RSDK_OBJECT
 	uint16 aniFrames;
@@ -32,12 +37,26 @@ typedef struct {
 
 extern ObjectSpecialRing* SpecialRing;
 
-// Imported Functions
-extern void (*SpecialRing_State_Flash)(void);
+// =============================================================================
 
-// Overload Functions
-void SpecialRing_Draw_Hook(void);
-bool32 SpecialRing_State_Idle(bool32);
-bool32 SpecialRing_State_Warp_Hook(bool32);
+// Functions -------------------------------------------------------------------
+
+// =============================================================================
+extern void (*SpecialRing_State_Flash)(void);
+extern void (*SpecialRing_State_Warp)(void);
+
+void SpecialRing_State_HPZ_Warp(void);
+
+bool32 SpecialRing_State_Idle_HOOK(bool32);
+bool32 SpecialRing_State_Flash_HOOK(bool32);
+
+void SpecialRing_Draw_OVERLOAD(void);
+
+#define OBJ_SPECIALRING_SETUP \
+  IMPORT_PUBLIC_FUNC(SpecialRing_State_Flash); \
+  IMPORT_PUBLIC_FUNC(SpecialRing_State_Warp); \
+  HOOK_STATE(SpecialRing_State_Idle, 1); \
+  HOOK_IMPORTED_STATE(SpecialRing_State_Flash, 1); \
+  MOD_REGISTER_OBJ_OVERLOAD(SpecialRing, NULL, NULL, NULL, SpecialRing_Draw_OVERLOAD, NULL, NULL, NULL, NULL, NULL)
 
 #endif //! OBJ_SPECIALRING_H

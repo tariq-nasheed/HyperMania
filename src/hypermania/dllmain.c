@@ -41,12 +41,7 @@
 DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
 #endif
 
-void (*Music_SetMusicTrack)(const char*, uint8, uint32); // TODO move this to Music.h/c
 int16 SuperFlickySlot;
-
-void LoadHyperMusic(void) {
-	Mod.Super(Music->classID, SUPER_STAGELOAD, NULL);
-}
 
 void HM_Save_Load(int32 status) {
 	bool32 success = false;
@@ -69,6 +64,7 @@ void HM_Save_Load(int32 status) {
 			localHM_SaveRam = globalHM_SaveRam[globals->saveSlotID % 3 + 8];
 		else
 			localHM_SaveRam = globalHM_SaveRam[globals->saveSlotID % 8];
+		printf("load finish\n");
 	}
 }
 
@@ -87,7 +83,9 @@ void HM_Save_Save(int32 status) {
 #endif
 	if (!success) {
 		printf("hypermania save failed to save!\n");
+		return;
 	}
+	printf("save finish\n");
 }
 
 void StageSetup(void* data) {
@@ -96,6 +94,7 @@ void StageSetup(void* data) {
 	// loading save file ---------------------------------------------------
 	int32 slot = globals->saveSlotID;
 	if (slot != NO_SAVE_SLOT) {
+		printf("load start\n");
 		API.LoadUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Load);
 	}
 
@@ -146,6 +145,7 @@ void StageCleanup(void* data) {
 			globalHM_SaveRam[slot % 3 + 8] = localHM_SaveRam;
 		else
 			globalHM_SaveRam[slot % 8] = localHM_SaveRam;
+		printf("save start\n");
 		API.SaveUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Save, false);
 	}
 
@@ -160,13 +160,12 @@ void StageCleanup(void* data) {
 
 void InitModAPI(void) {
 	printf("******************** HYPERMANIA loaded ********************\n");
-	Music_SetMusicTrack = Mod.GetPublicFunction(NULL, "Music_SetMusicTrack");
-	Music_FadeOut = Mod.GetPublicFunction(NULL, "Music_FadeOut");
-	Music_PlayJingle = Mod.GetPublicFunction(NULL, "Music_PlayJingle");
 	Mod.AddModCallback(MODCB_ONSTAGELOAD, StageSetup);
 	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 
 	// Boilerplate ------------------------------------------------------------
+	OBJ_MUSIC_SETUP;
+	OBJ_RING_SETUP;
 	Camera_State_FollowY = Mod.GetPublicFunction(NULL, "Camera_State_FollowY");
 	Camera_ShakeScreen = Mod.GetPublicFunction(NULL, "Camera_ShakeScreen");
 	Debris_State_Move = Mod.GetPublicFunction(NULL, "Debris_State_Move");
@@ -174,12 +173,9 @@ void InitModAPI(void) {
 	FXFade_State_FadeIn = Mod.GetPublicFunction(NULL, "FXFade_State_FadeIn");
 	ItemBox_State_Broken = Mod.GetPublicFunction(NULL, "ItemBox_State_Broken");
 	ItemBox_Break = Mod.GetPublicFunction(NULL, "ItemBox_Break");
-	Ring_State_Lost = Mod.GetPublicFunction(NULL, "Ring_State_Lost");
-	Ring_Draw_Normal = Mod.GetPublicFunction(NULL, "Ring_Draw_Normal");
 	Zone_GetZoneID = Mod.GetPublicFunction(NULL, "Zone_GetZoneID");
 	Zone_StartFadeIn = Mod.GetPublicFunction(NULL, "Zone_StartFadeIn");
 	Zone_StartFadeOut = Mod.GetPublicFunction(NULL, "Zone_StartFadeOut");
-	MOD_REGISTER_OBJ_OVERLOAD(Music, NULL, NULL, NULL, NULL, NULL, LoadHyperMusic, NULL, NULL, NULL);
 	MOD_REGISTER_OBJECT_HOOK(Animals);
 	MOD_REGISTER_OBJECT_HOOK(Camera);
 	MOD_REGISTER_OBJECT_HOOK(CollapsingPlatform);
@@ -187,7 +183,6 @@ void InitModAPI(void) {
 	MOD_REGISTER_OBJECT_HOOK(Explosion);
 	MOD_REGISTER_OBJECT_HOOK(FXFade);
 	MOD_REGISTER_OBJECT_HOOK(ItemBox);
-	MOD_REGISTER_OBJECT_HOOK(Ring);
 	MOD_REGISTER_OBJECT_HOOK(ScoreBonus);
 	MOD_REGISTER_OBJECT_HOOK(Zone);
 	HOOK_ENEMY_OBJECTS;
@@ -200,6 +195,9 @@ void InitModAPI(void) {
 	MOD_REGISTER_OBJECT_HOOK(OOZSetup);
 
 	// Mod ------------------------------------------------------------
+	OBJ_SAVE_SETUP;
+	OBJ_SPECIALRING_SETUP;
+
 	Player_GiveScore = Mod.GetPublicFunction(NULL, "Player_GiveScore");
 	Player_CheckBadnikBreak = Mod.GetPublicFunction(NULL, "Player_CheckBadnikBreak");
 	Player_GetHitbox = Mod.GetPublicFunction(NULL, "Player_GetHitbox");
@@ -209,18 +207,14 @@ void InitModAPI(void) {
 	Player_State_KnuxGlideRight = Mod.GetPublicFunction(NULL, "Player_State_KnuxGlideRight");
 	Player_CheckCollisionTouch = Mod.GetPublicFunction(NULL, "Player_CheckCollisionTouch");
 	Player_GiveRings = Mod.GetPublicFunction(NULL, "Player_GiveRings");
+	SaveGame_GetSaveRAM = Mod.GetPublicFunction(NULL, "SaveGame_GetSaveRAM");
 
 	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "Player_JumpAbility_Sonic"), Player_JumpAbility_Sonic_Hook, true);
 	Mod.RegisterStateHook(Player_State_KnuxGlideLeft, Player_State_KnuxGlide_Hook, true);
 	Mod.RegisterStateHook(Player_State_KnuxGlideRight, Player_State_KnuxGlide_Hook, true);
 
-	SpecialRing_State_Flash = Mod.GetPublicFunction(NULL, "SpecialRing_State_Flash");
-	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "SpecialRing_State_Warp"), SpecialRing_State_Warp_Hook, false);
-	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "SpecialRing_State_Idle"), SpecialRing_State_Idle, true);
-
 	MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_Hook, NULL, NULL, Player_Draw_Hook, NULL, Player_StageLoad_Hook, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, NULL, NULL, ImageTrail_Draw_Hook, NULL, NULL, NULL, NULL, NULL);
-	MOD_REGISTER_OBJ_OVERLOAD(SpecialRing, NULL, NULL, NULL, SpecialRing_Draw_Hook, NULL, NULL, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(HPZEmerald, HPZEmerald_Update_Hook, NULL, NULL, HPZEmerald_Draw_Hook, HPZEmerald_Create_Hook, HPZEmerald_StageLoad_Hook, NULL, NULL, NULL);
 
 	// New --------------------------------------------------------------------

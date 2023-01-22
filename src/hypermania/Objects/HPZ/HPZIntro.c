@@ -25,6 +25,11 @@ Vector2 emeraldFlyVector[7] = {
 void HPZIntro_Update(void) {
 	RSDK_THIS(HPZIntro);
 
+	if (localHM_SaveRam.transferedEmeralds == 0b01111111) {
+		self->timer = 544;
+		self->beams = 8;
+	}
+
 	++self->timer;
 	if (self->timer == HPZ_TRANSFER_DELAY) {
 		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
@@ -54,6 +59,7 @@ void HPZIntro_StaticUpdate(void) {}
 
 void HPZIntro_Draw(void) {
 	RSDK_THIS(HPZIntro);
+	if (self->beams == 8) return;
 	if (self->timer >= HPZ_TRANSFER_DELAY) {
 		for (int32 c = 0; c < 36; ++c) {
 			idk1[c] = RSDK.GetPaletteEntry(0, c + 128);

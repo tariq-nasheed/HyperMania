@@ -158,26 +158,28 @@ void Player_Update_Hook(void) {
 
 	if (self->superState == SUPERSTATE_NONE) {
 		ext->is_hyper = false;
-		Music_SetMusicTrack("Super.ogg", 10, 165375);
+		//Music_SetMusicTrack("Super.ogg", 10, 165375);
 		return;
 	}
 
 	// hyper transformation ------------------------------------------------
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
-	if (!ext->is_hyper && controller->keyZ.press && localHM_SaveRam.superEmeralds == 0b01111111) {
+	if (!ext->is_hyper && (controller->keyZ.press || localHM_SaveRam.superEmeralds == 0b01111111)) {
 		ext->blend.state = -1;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
 		ext->can_dash = true; // this was added solely to replicate the dashing out of transform thing from S3&K
 
-		Music_SetMusicTrack("Hyper.ogg", 10, 423801);
-		Music_PlayJingle(10); // TODO add "is super track playing?" check so it doesnt fuck with ERZ
-		RSDK.PlaySfx(Player->sfxRelease, false, 0xFF);
-		RSDK.PlaySfx(RSDK.GetSfx("Global/Twinkle.wav"), false, 0xFF); // TODO not good
-		if (FXFade) {
-			EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-			fade->speedIn = 0x100;
-			fade->speedOut = 0x10;
+		if (controller->keyZ.press) {
+			Music_SetMusicTrack("Hyper.ogg", 10, 423801);
+			Music_PlayJingle(10); // TODO add "is super track playing?" check so it doesnt fuck with ERZ
+			RSDK.PlaySfx(Player->sfxRelease, false, 0xFF);
+			RSDK.PlaySfx(RSDK.GetSfx("Global/Twinkle.wav"), false, 0xFF); // TODO not good
+			if (FXFade) {
+				EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
+				fade->speedIn = 0x100;
+				fade->speedOut = 0x10;
+			}
 		}
 	}
 	if (!ext->is_hyper) return;
