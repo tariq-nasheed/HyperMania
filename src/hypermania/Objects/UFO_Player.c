@@ -41,12 +41,21 @@ bool32 UFO_Player_State_UFOCaught_Released_HOOK(bool32 skippedState) {
 			Music_FadeOut(0.025);
 			PauseMenu->disableEvents = true;
 
+			// blegh
+			int32 id = 0;
+			switch(globals->playerID) {
+				case ID_TAILS: id = 1; break;
+				case ID_KNUCKLES: id = 2; break;
+				case ID_MIGHTY: id = 3; break;
+				case ID_RAY: id = 4; break;
+			}
+
 			printf("\n================================================================================\n");
 			if (HM_global.currentSave->superEmeralds == 0b01111111) {
-				printf("%s GOT ALL EMERALDS\n", names[GET_CHARACTER_ID(1)-1]);
-				printf("NOW %s CAN BE HYPER %s\n", names[GET_CHARACTER_ID(1)-1], names[GET_CHARACTER_ID(1)-1]);
+				printf("%s GOT ALL EMERALDS\n", names[id]);
+				printf("NOW %s CAN BE HYPER %s\n", names[id], names[id]);
 			} else {
-				printf("%s GOT A SUPER EMERALD\n", names[GET_CHARACTER_ID(1)-1]);
+				printf("%s GOT A SUPER EMERALD\n", names[id]);
 			}
 			printf("================================================================================\n\n");
 		} else {
