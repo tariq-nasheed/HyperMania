@@ -30,12 +30,11 @@ void HPZBeam_Update(void) {
 				if (emerald && emerald->position.x == self->position.x) {
 					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 					ext->color = super_emerald_lookup[i] - 1;
-					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
-					localHM_SaveRam.transferedEmeralds |= 1 << i;
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
+					HM_global.currentSave->transferedEmeralds |= 1 << i;
 					break;
 				}
 			}
-			printf("%d\n", localHM_SaveRam.transferedEmeralds);
 		}
 	} else {
 		++self->hit_timer;

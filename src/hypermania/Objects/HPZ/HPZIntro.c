@@ -25,7 +25,7 @@ Vector2 emeraldFlyVector[7] = {
 void HPZIntro_Update(void) {
 	RSDK_THIS(HPZIntro);
 
-	if (localHM_SaveRam.transferedEmeralds == 0b01111111) {
+	if (HM_global.currentSave->transferedEmeralds == 0b01111111) {
 		self->timer = 544;
 		self->beams = 8;
 	}

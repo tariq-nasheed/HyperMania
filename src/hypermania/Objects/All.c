@@ -1,3 +1,5 @@
+#include "util.h"
+#include "Boilerplate/SaveGame.c"
 #include "Boilerplate/Animals.c"
 #include "Boilerplate/Camera.c"
 #include "Boilerplate/CollapsingPlatform.c"
@@ -9,16 +11,18 @@
 #include "Boilerplate/ItemBox.c"
 #include "Boilerplate/Zone.c"
 #include "Boilerplate/Music.c"
+#include "Boilerplate/UFO/UFO_Setup.c"
+#include "Boilerplate/Global/PauseMenu.c"
 
 #include "Boilerplate/CPZ/CPZSetup.c"
 #include "Boilerplate/OOZ/OOZSetup.c"
 #include "Boilerplate/HCZ/HCZSetup.c"
 #include "Boilerplate/MMZ/FarPlane.c"
 
-#include "SaveGame.c"
 #include "Player.c"
 #include "ImageTrail.c"
 #include "SpecialRing.c"
+#include "UFO_Player.c"
 
 #include "SuperFlicky.c"
 #include "HyperStars.c"

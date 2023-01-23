@@ -3,6 +3,7 @@
 #include "util.h"
 
 // game classes litte/no notable modifications
+#include "Objects/Boilerplate/SaveGame.h"
 #include "Objects/Boilerplate/Animals.h"
 #include "Objects/Boilerplate/Camera.h"
 #include "Objects/Boilerplate/CollapsingPlatform.h"
@@ -14,6 +15,8 @@
 #include "Objects/Boilerplate/ScoreBonus.h"
 #include "Objects/Boilerplate/Zone.h"
 #include "Boilerplate/Music.h"
+#include "Boilerplate/UFO/UFO_Setup.h"
+#include "Boilerplate/Global/PauseMenu.h"
 
 #include "Objects/Boilerplate/CPZ/CPZSetup.h"
 #include "Objects/Boilerplate/OOZ/OOZSetup.h"
@@ -21,10 +24,11 @@
 #include "Objects/Boilerplate/MMZ/FarPlane.h"
 
 // game classes with notable modifications
-#include "Objects/SaveGame.h"
 #include "Objects/Player.h"
 #include "Objects/ImageTrail.h"
 #include "Objects/SpecialRing.h"
+#include "Objects/UFO_Player.h"
+#include "Objects/HPZ/HPZEmerald.h"
 
 // new classes
 #include "Objects/SuperFlicky.h"
@@ -32,7 +36,6 @@
 #include "Objects/HPZ/HPZSetup.h"
 #include "Objects/HPZ/HPZIntro.h"
 #include "Objects/HPZ/HPZBeam.h"
-#include "Objects/HPZ/HPZEmerald.h"
 
 // enemy checking file
 #include "Objects/Enemy.h"
@@ -43,66 +46,25 @@ DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
 
 int16 SuperFlickySlot;
 
-void HM_Save_Load(int32 status) {
-	bool32 success = false;
-#if MANIA_USE_PLUS
-	if (status == STATUS_OK || status == STATUS_NOTFOUND)
-		success = true;
-	else
-		success = false;
-#else
-	if (status)
-		success = true;
-	else
-		success = false;
-#endif
-
-	if (!success) {
-		printf("hypermania save failed to load!\n");
-	} else {
-		if (globals->gameMode == MODE_ENCORE)
-			localHM_SaveRam = globalHM_SaveRam[globals->saveSlotID % 3 + 8];
-		else
-			localHM_SaveRam = globalHM_SaveRam[globals->saveSlotID % 8];
-		printf("load finish\n");
-	}
-}
-
-void HM_Save_Save(int32 status) {
-	bool32 success = false;
-#if MANIA_USE_PLUS
-	if (status == STATUS_OK || status == STATUS_NOTFOUND)
-		success = true;
-	else
-		success = false;
-#else
-	if (status)
-		success = true;
-	else
-		success = false;
-#endif
-	if (!success) {
-		printf("hypermania save failed to save!\n");
-		return;
-	}
-	printf("save finish\n");
-}
 
 void StageSetup(void* data) {
 	UNUSED(data);
 
 	// loading save file ---------------------------------------------------
-	int32 slot = globals->saveSlotID;
-	if (slot != NO_SAVE_SLOT) {
-		printf("load start\n");
-		API.LoadUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Load);
+	if (globals->saveSlotID == NO_SAVE_SLOT) {
+		HM_global.currentSave = &HM_global.noSaveSlot;
+	} else {
+		if (!HM_global.currentSave || HM_global.currentSave == &HM_global.noSaveSlot) HM_Save_LoadFile();
+		HM_global.currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, globals->gameMode == MODE_ENCORE);
 	}
 
 	// extension variables -------------------------------------------------
 	ExtMemory_size = 0;
 	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
-		ExtMemory[i] = (extmem_t){ EXTMEM_FREE_ID, 0, NULL };
+		ExtMemory[i] = (extmem_t){ EXTMEM_FREE_ID, 0 };
 	}
+	memset(ExtMemoryIndex, EXTMEM_FREE_ID, sizeof(ExtMemoryIndex));
+	memset(ExtMemoryRevIndex, EXTMEM_FREE_ID, sizeof(ExtMemoryRevIndex));
 
 	// spare entity slots --------------------------------------------------
 	SuperFlickySlot = 0;
@@ -138,21 +100,19 @@ void StageSetup(void* data) {
 void StageCleanup(void* data) {
 	UNUSED(data);
 
-	// saving save file ----------------------------------------------------
-	int32 slot = globals->saveSlotID;
-	if (slot != NO_SAVE_SLOT) {
-		if (globals->gameMode == MODE_ENCORE)
-			globalHM_SaveRam[slot % 3 + 8] = localHM_SaveRam;
-		else
-			globalHM_SaveRam[slot % 8] = localHM_SaveRam;
-		printf("save start\n");
-		API.SaveUserFile("HyperManiaSaveData.bin", &globalHM_SaveRam, sizeof(globalHM_SaveRam), HM_Save_Save, false);
+	if (!UFO_Setup) HPZ_SuperSpecialStage = false;
+	if (HPZSetup) {
+		HPZ_SuperSpecialStage = true;
 	}
+
+	// saving save file ----------------------------------------------------
+	if (HM_global.currentSave && HM_global.currentSave != &HM_global.noSaveSlot) HM_Save_SaveFile();
 
 	// enemy callback shit idk ---------------------------------------------
 	EnemyInfoSlot = 0;
 	memset(EnemyDefs, 0, sizeof(EnemyInfo) * 16);
 
+	// ext vars ------------------------------------------------------------
 	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
 		if (ExtMemory[i].mem) free(ExtMemory[i].mem);
 	}
@@ -166,6 +126,8 @@ void InitModAPI(void) {
 	// Boilerplate ------------------------------------------------------------
 	OBJ_MUSIC_SETUP;
 	OBJ_RING_SETUP;
+	OBJ_UFO_SETUP_SETUP;
+	OBJ_PAUSEMENU_SETUP;
 	Camera_State_FollowY = Mod.GetPublicFunction(NULL, "Camera_State_FollowY");
 	Camera_ShakeScreen = Mod.GetPublicFunction(NULL, "Camera_ShakeScreen");
 	Debris_State_Move = Mod.GetPublicFunction(NULL, "Debris_State_Move");
@@ -197,6 +159,7 @@ void InitModAPI(void) {
 	// Mod ------------------------------------------------------------
 	OBJ_SAVE_SETUP;
 	OBJ_SPECIALRING_SETUP;
+	OBJ_UFO_PLAYER_SETUP;
 
 	Player_GiveScore = Mod.GetPublicFunction(NULL, "Player_GiveScore");
 	Player_CheckBadnikBreak = Mod.GetPublicFunction(NULL, "Player_CheckBadnikBreak");

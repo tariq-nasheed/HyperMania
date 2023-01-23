@@ -9,7 +9,7 @@ void HPZEmerald_Update_Hook(void) {
 
 	if (!HPZSetup) return;
 	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	if (!ext || ext->color == -1) return;
+	if (!ext || ext->color == -1 || HM_global.currentSave->superEmeralds & 1 << ext->color) return;
 
 	Hitbox hitbawks;
 	hitbawks.left = -16;
@@ -17,7 +17,7 @@ void HPZEmerald_Update_Hook(void) {
 	hitbawks.right = 16;
 	hitbawks.bottom = -16;
 	foreach_active(Player, player) {
-		if (player->onGround == 1) {
+		if (!player->sidekick && player->onGround == 1) {
 			if (Player_CheckCollisionTouch(player, self, &hitbawks) == C_TOP) {
 				player->controlLock = 1;
 				if (counter == 0) player->groundVel = 0;
@@ -57,9 +57,12 @@ void HPZEmerald_Create_Hook(void* data) {
 			HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
 			if (!ext) return;
 			ext->owner = (Entity*)self;
-			if (localHM_SaveRam.transferedEmeralds & 1 << i || !HPZSetup) {
+			if (HM_global.currentSave->superEmeralds & 1 << i) {
 				ext->color = i;
 				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
+			} else if (HM_global.currentSave->transferedEmeralds & 1 << i) {
+				ext->color = i;
+				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
 			} else {
 				ext->color = -1;
 			}

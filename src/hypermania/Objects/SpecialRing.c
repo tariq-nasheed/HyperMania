@@ -49,9 +49,9 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 					self->state         = SpecialRing_State_Flash;
 					SaveRAM *saveRAM = SaveGame_GetSaveRAM();
 #if GAME_VERSION != VER_100
-					if ((saveRAM->chaosEmeralds != 0b01111111 || localHM_SaveRam.superEmeralds != 0b01111111) && self->id) {
+					if ((saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
 #else
-					if (saveRAM->chaosEmeralds != 0b01111111 || localHM_SaveRam.superEmeralds != 0b01111111) {
+					if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) {
 #endif
 						player->visible        = false;
 						player->active         = ACTIVE_NEVER;
@@ -61,7 +61,7 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 						Player_GiveRings(player, 50, true);
 					}
 					if (self->id > 0) {
-						if (saveRAM->chaosEmeralds != 0b01111111 || localHM_SaveRam.superEmeralds != 0b01111111)
+						if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111)
 							globals->specialRingID = self->id;
 						saveRAM->collectedSpecialRings |= 1 << (16 * Zone->actID - 1 + self->id);
 					}
@@ -106,9 +106,9 @@ bool32 SpecialRing_State_Flash_HOOK(bool32 skippedState) {
 
 #if GAME_VERSION != VER_100
 	SaveRAM *saveRAM = SaveGame_GetSaveRAM();
-	if ((saveRAM->chaosEmeralds == 0b01111111 && localHM_SaveRam.superEmeralds == 0b01111111) || !self->id) {
+	if ((saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) || !self->id) {
 #else
-	if (saveRAM->chaosEmeralds == 0b01111111 && localHM_SaveRam.superEmeralds == 0b01111111) {
+	if (saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) {
 #endif
 		destroyEntity(self);
 	} else if (self->warpAnimator.frameID == self->warpAnimator.frameCount - 1) {
@@ -121,7 +121,7 @@ bool32 SpecialRing_State_Flash_HOOK(bool32 skippedState) {
 	return true;
 }
 
-void SpecialRing_Draw_OVERLOAD(void) {
+void SpecialRing_Draw_OVERLOAD() {
 	RSDK_THIS(SpecialRing);
 
 	if (self->state == SpecialRing_State_Flash) {
@@ -159,6 +159,6 @@ void SpecialRing_State_HPZ_Warp() {
 		//if (globals->gameMode == MODE_ENCORE) SceneInfo->listPos += 7;
 #endif
 		Zone_StartFadeOut(10, 0xF0F0F0);
-		//Music_Stop();
+		Music_FadeOut(1.0);
 	}
 }

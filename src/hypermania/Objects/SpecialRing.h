@@ -42,15 +42,15 @@ extern ObjectSpecialRing* SpecialRing;
 // Functions -------------------------------------------------------------------
 
 // =============================================================================
-extern void (*SpecialRing_State_Flash)(void);
-extern void (*SpecialRing_State_Warp)(void);
+extern void (*SpecialRing_State_Flash)();
+extern void (*SpecialRing_State_Warp)();
 
-void SpecialRing_State_HPZ_Warp(void);
+void SpecialRing_State_HPZ_Warp();
 
 bool32 SpecialRing_State_Idle_HOOK(bool32);
 bool32 SpecialRing_State_Flash_HOOK(bool32);
 
-void SpecialRing_Draw_OVERLOAD(void);
+void SpecialRing_Draw_OVERLOAD();
 
 #define OBJ_SPECIALRING_SETUP \
   IMPORT_PUBLIC_FUNC(SpecialRing_State_Flash); \
