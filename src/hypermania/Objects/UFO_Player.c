@@ -34,8 +34,8 @@ bool32 UFO_Player_State_UFOCaught_Released_HOOK(bool32 skippedState) {
 				player->interaction = false;
 			}
 
-			setup->visible            = true;
-			setup->state              = UFO_Setup_State_FinishFadeout;
+			setup->visible = true;
+			setup->state   = UFO_Setup_State_FinishFadeout;
 
 			RSDK.PlaySfx(UFO_Setup->sfxSSExit, false, 0xFF);
 			Music_FadeOut(0.025);
@@ -52,7 +52,7 @@ bool32 UFO_Player_State_UFOCaught_Released_HOOK(bool32 skippedState) {
 
 			printf("\n================================================================================\n");
 			if (HM_global.currentSave->superEmeralds == 0b01111111) {
-				printf("%s GOT ALL EMERALDS\n", names[id]);
+				printf("%s GOT ALL SUPER EMERALDS\n", names[id]);
 				printf("NOW %s CAN BE HYPER %s\n", names[id], names[id]);
 			} else {
 				printf("%s GOT A SUPER EMERALD\n", names[id]);

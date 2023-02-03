@@ -8,7 +8,7 @@ void (*SpecialRing_State_Flash)(void);
 void (*SpecialRing_State_Warp)(void);
 
 // -----------------------------------------------------------------------------
-color ColorCycle[6] = { 0xF0F000, 0xfCD8FC,  0xB4D8FC, 0x90FC90,  0xD8fC6C,  0xFCD86C };
+static color ColorCycle[6] = { 0xF0F000, 0xfCD8FC,  0xB4D8FC, 0x90FC90,  0xD8fC6C,  0xFCD86C };
 
 
 // -----------------------------------------------------------------------------

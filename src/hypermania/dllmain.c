@@ -158,25 +158,10 @@ void InitModAPI(void) {
 
 	// Mod ------------------------------------------------------------
 	OBJ_SAVE_SETUP;
+	OBJ_PLAYER_SETUP;
 	OBJ_SPECIALRING_SETUP;
 	OBJ_UFO_PLAYER_SETUP;
 
-	Player_GiveScore = Mod.GetPublicFunction(NULL, "Player_GiveScore");
-	Player_CheckBadnikBreak = Mod.GetPublicFunction(NULL, "Player_CheckBadnikBreak");
-	Player_GetHitbox = Mod.GetPublicFunction(NULL, "Player_GetHitbox");
-	Player_State_Air = Mod.GetPublicFunction(NULL, "Player_State_Air");
-	Player_State_KnuxWallClimb = Mod.GetPublicFunction(NULL, "Player_State_KnuxWallClimb");
-	Player_State_KnuxGlideLeft = Mod.GetPublicFunction(NULL, "Player_State_KnuxGlideLeft");
-	Player_State_KnuxGlideRight = Mod.GetPublicFunction(NULL, "Player_State_KnuxGlideRight");
-	Player_CheckCollisionTouch = Mod.GetPublicFunction(NULL, "Player_CheckCollisionTouch");
-	Player_GiveRings = Mod.GetPublicFunction(NULL, "Player_GiveRings");
-	SaveGame_GetSaveRAM = Mod.GetPublicFunction(NULL, "SaveGame_GetSaveRAM");
-
-	Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, "Player_JumpAbility_Sonic"), Player_JumpAbility_Sonic_Hook, true);
-	Mod.RegisterStateHook(Player_State_KnuxGlideLeft, Player_State_KnuxGlide_Hook, true);
-	Mod.RegisterStateHook(Player_State_KnuxGlideRight, Player_State_KnuxGlide_Hook, true);
-
-	MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_Hook, NULL, NULL, Player_Draw_Hook, NULL, Player_StageLoad_Hook, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, NULL, NULL, ImageTrail_Draw_Hook, NULL, NULL, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(HPZEmerald, HPZEmerald_Update_Hook, NULL, NULL, HPZEmerald_Draw_Hook, HPZEmerald_Create_Hook, HPZEmerald_StageLoad_Hook, NULL, NULL, NULL);
 

@@ -13,6 +13,14 @@ endif()
 
 set(CMAKE_C_FLAGS "-O2")
 set(CMAKE_CXX_FLAGS "-O2")
+if(RELEASE)
+	message(STATUS "Stripping symbols and debug info")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -s")
+else()
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+endif()
 set(MOD_NAME hypermania CACHE STRING "Used as root directory for mod source + logic file name")
 
 add_library(hypermania SHARED

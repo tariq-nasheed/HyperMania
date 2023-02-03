@@ -1,17 +1,19 @@
 #ifndef OBJ_PLAYER_H
 #define OBJ_PLAYER_H
-#define TRACK_HYPER 15
 
 #include "GameAPI/Game.h"
 
-extern unsigned char HyperStatus[4];
+// =============================================================================
 
+// Definitions -----------------------------------------------------------------
+
+// =============================================================================
 typedef enum {
-    SUPERSTATE_NONE,
-    SUPERSTATE_FADEIN,
-    SUPERSTATE_SUPER,
-    SUPERSTATE_FADEOUT,
-    SUPERSTATE_DONE,
+	SUPERSTATE_NONE,
+	SUPERSTATE_FADEIN,
+	SUPERSTATE_SUPER,
+	SUPERSTATE_FADEOUT,
+	SUPERSTATE_DONE,
 } SuperStates;
 
 // Object Class
@@ -223,149 +225,176 @@ typedef struct {
 
 // Entity Class
 typedef struct {
-    RSDK_ENTITY
-    StateMachine(state);
-    StateMachine(nextAirState);
-    StateMachine(nextGroundState);
-    void *camera;
-    Animator animator;
-    Animator tailAnimator;
-    int32 maxWalkSpeed;
-    int32 maxJogSpeed;
-    int32 maxRunSpeed;
-    int32 unused; //the only used variable in the player struct, I cant find a ref to it anywhere so...
-    int32 tailRotation;
-    int32 tailDirection;
-    uint16 aniFrames;
-    uint16 tailFrames;
-    uint16 animationReserve; // what anim to return to after SpringTwirl/SpringDiagonal has finished and the player is falling downwards
-    uint16 playerID;
-    Hitbox *outerbox;
-    Hitbox *innerbox;
-    int32 characterID;
-    int32 rings;
-    int32 ringExtraLife;
-    int32 shield;
-    int32 lives;
-    int32 score;
-    int32 score1UP;
-    bool32 hyperRing;
-    int32 timer;
-    int32 outtaHereTimer;
-    int32 abilityTimer;
-    int32 spindashCharge;
-    int32 abilityValue;
-    int32 drownTimer;
-    int32 invincibleTimer;
-    int32 speedShoesTimer;
-    int32 blinkTimer;
-    int32 scrollDelay;
-    int32 skidding;
-    int32 pushing;
-    int32 underwater;      // 0 = not in water, 1 = in palette water, else water entityID
-    bool32 groundedStore;  // prev frame's onGround value
-    bool32 invertGravity; 
-    bool32 isChibi;       
-    bool32 isTransforming;
-    int32 superState;
-    int32 superRingLossTimer;
-    int32 superBlendAmount;
-    int32 superBlendState;
-    bool32 sidekick;
-    int32 scoreBonus;
-    int32 jumpOffset;
-    int32 collisionFlagH;
-    int32 collisionFlagV;
-    int32 topSpeed;
-    int32 acceleration;
-    int32 deceleration;
-    int32 airAcceleration;
-    int32 airDeceleration;
-    int32 skidSpeed;
-    int32 rollingFriction;
-    int32 rollingDeceleration;
-    int32 gravityStrength;
-    int32 abilitySpeed;
-    int32 jumpStrength;
-    int32 jumpCap;
-    int32 flailing;
-    int32 sensorX[5];
-    int32 sensorY;
-    Vector2 moveLayerPosition;
-    StateMachine(stateInputReplay);
-    StateMachine(stateInput);
-    int32 controllerID;
-    int32 controlLock;
-    bool32 up;
-    bool32 down;
-    bool32 left;
-    bool32 right;
-    bool32 jumpPress;
-    bool32 jumpHold;
-    bool32 applyJumpCap;
-    int32 jumpAbilityState;
-    StateMachine(stateAbility);
-    StateMachine(statePeelout);
-    int32 flyCarryTimer;
-    Vector2 flyCarrySidekickPos;
-    Vector2 flyCarryLeaderPos;
-    uint8 deathType;
-    bool32 forceJumpIn;
+	RSDK_ENTITY
+	StateMachine(state);
+	StateMachine(nextAirState);
+	StateMachine(nextGroundState);
+	void *camera;
+	Animator animator;
+	Animator tailAnimator;
+	int32 maxWalkSpeed;
+	int32 maxJogSpeed;
+	int32 maxRunSpeed;
+	int32 unused; //the only used variable in the player struct, I cant find a ref to it anywhere so...
+	int32 tailRotation;
+	int32 tailDirection;
+	uint16 aniFrames;
+	uint16 tailFrames;
+	uint16 animationReserve; // what anim to return to after SpringTwirl/SpringDiagonal has finished and the player is falling downwards
+	uint16 playerID;
+	Hitbox *outerbox;
+	Hitbox *innerbox;
+	int32 characterID;
+	int32 rings;
+	int32 ringExtraLife;
+	int32 shield;
+	int32 lives;
+	int32 score;
+	int32 score1UP;
+	bool32 hyperRing;
+	int32 timer;
+	int32 outtaHereTimer;
+	int32 abilityTimer;
+	int32 spindashCharge;
+	int32 abilityValue;
+	int32 drownTimer;
+	int32 invincibleTimer;
+	int32 speedShoesTimer;
+	int32 blinkTimer;
+	int32 scrollDelay;
+	int32 skidding;
+	int32 pushing;
+	int32 underwater;      // 0 = not in water, 1 = in palette water, else water entityID
+	bool32 groundedStore;  // prev frame's onGround value
+	bool32 invertGravity;
+	bool32 isChibi;
+	bool32 isTransforming;
+	int32 superState;
+	int32 superRingLossTimer;
+	int32 superBlendAmount;
+	int32 superBlendState;
+	bool32 sidekick;
+	int32 scoreBonus;
+	int32 jumpOffset;
+	int32 collisionFlagH;
+	int32 collisionFlagV;
+	int32 topSpeed;
+	int32 acceleration;
+	int32 deceleration;
+	int32 airAcceleration;
+	int32 airDeceleration;
+	int32 skidSpeed;
+	int32 rollingFriction;
+	int32 rollingDeceleration;
+	int32 gravityStrength;
+	int32 abilitySpeed;
+	int32 jumpStrength;
+	int32 jumpCap;
+	int32 flailing;
+	int32 sensorX[5];
+	int32 sensorY;
+	Vector2 moveLayerPosition;
+	StateMachine(stateInputReplay);
+	StateMachine(stateInput);
+	int32 controllerID;
+	int32 controlLock;
+	bool32 up;
+	bool32 down;
+	bool32 left;
+	bool32 right;
+	bool32 jumpPress;
+	bool32 jumpHold;
+	bool32 applyJumpCap;
+	int32 jumpAbilityState;
+	StateMachine(stateAbility);
+	StateMachine(statePeelout);
+	int32 flyCarryTimer;
+	Vector2 flyCarrySidekickPos;
+	Vector2 flyCarryLeaderPos;
+	uint8 deathType;
+	bool32 forceJumpIn;
 #if MANIA_USE_PLUS
-    bool32 isGhost;
+	bool32 isGhost;
 #endif
-    int32 abilityValues[8];
-    void* abilityPtrs[8];
+	int32 abilityValues[8];
+	void* abilityPtrs[8];
 #if MANIA_USE_PLUS
-    int32 uncurlTimer;
+	int32 uncurlTimer;
 #endif
 } EntityPlayer;
 
-// Mod Types
-typedef uint16 bool16;
+extern ObjectPlayer* Player;
+
+// =============================================================================
+
+// Mod Definitions -------------------------------------------------------------
+
+// =============================================================================
+#define TRACK_HYPER 15
+
+typedef enum {
+	HYPERBLEND_FADEIN = -1,
+	HYPERBLEND_FADEOUT
+} HyperBlendStates;
+
+typedef struct {
+	int32 startIndex,
+	      endIndex;
+	int32 rows;
+	color* colors[3];
+} hyperpal_t;
+
+typedef struct {
+	int32 sfxEarthquake;
+	int32 sfxEarthquake2;
+} PlayerStaticExt_t;
+
 typedef struct {
 	int32 prev_ID, prev_xvel;
 	struct { int16 state; int16 amount; } blend;
-	bool16 can_dash;
-	bool16 is_hyper;
-} hyper_t;
-typedef struct {
-	int32 startIndex, endIndex, rows;
-	color normal_colors[3][6];
-	color* hyper_colors[3]; // these are pointers instead of direct values because of hyper sonic's big ass palette
-} paletteInfo;
+	bool32 can_dash;
+	bool32 is_hyper;
+} PlayerExt;
 
-// Object Struct
-extern ObjectPlayer* Player;
+extern PlayerStaticExt_t PlayerStaticExt;
 
-// Imported Functions
-extern bool32 (*Player_CheckBadnikBreak)(EntityPlayer*, void*, bool32);
-extern bool32 (*Player_CheckItemBreak)(EntityPlayer *player, void *e, bool32 hitIfNotAttacking);
-extern Hitbox* (*Player_GetHitbox)(EntityPlayer* player);
-extern void (*Player_State_Air)(void);
-extern void (*Player_State_KnuxGlideLeft)(void);
-extern void (*Player_State_KnuxGlideRight)(void);
-extern void (*Player_State_KnuxWallClimb)(void);
+// =============================================================================
+
+// Functions -------------------------------------------------------------------
+
+// =============================================================================
 extern void (*Player_GiveScore)(EntityPlayer *player, int32 score);
-extern bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
 extern void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
+extern bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
+extern void (*Player_State_Air)();
+extern void (*Player_State_KnuxGlideLeft)();
+extern void (*Player_State_KnuxGlideRight)();
+extern void (*Player_State_KnuxWallClimb)();
 
-// Overload Functions
-void Player_StageLoad_Hook(void);
-void Player_Draw_Hook(void);
-void Player_Update_Hook(void);
+bool32 Player_JumpAbility_Sonic_HOOK(bool32);
 
-// State Hook Functions
-bool32 Player_JumpAbility_Sonic_Hook(bool32 skippedState);
-bool32 Player_State_KnuxGlide_Hook(bool32 skippedState);
+void Player_StageLoad_OVERLOAD();
+void Player_Draw_OVERLOAD();
+void Player_Create_OVERLOAD(void* data);
+void Player_Update_OVERLOAD();
 
-// Extra Entity Functions
-void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const paletteInfo* info);
+#define OBJ_PLAYER_SETUP \
+  IMPORT_PUBLIC_FUNC(Player_GiveScore); \
+  IMPORT_PUBLIC_FUNC(Player_GiveRings); \
+  IMPORT_PUBLIC_FUNC(Player_CheckCollisionTouch); \
+  IMPORT_PUBLIC_FUNC(Player_State_Air); \
+  IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideLeft); \
+  IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideRight); \
+  IMPORT_PUBLIC_FUNC(Player_State_KnuxWallClimb); \
+  HOOK_STATE(Player_JumpAbility_Sonic, 1); \
+  MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_OVERLOAD, NULL, NULL, Player_Draw_OVERLOAD, Player_Create_OVERLOAD, Player_StageLoad_OVERLOAD, NULL, NULL, NULL)
+
+void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t* info);
 bool32 Player_IsHyper(EntityPlayer* player);
 void Player_ClearEnemiesOnScreen(EntityPlayer* player);
 void Player_HyperSonicDash();
 
-// shhhhhhhhhhhhh
+// shhhhhhhhhhhhh --------------------------------------------------------------
 bool32 IsVulnerableEnemy(void* e, bool32 count_bosses);
 Hitbox* GetEnemyHitbox(void* e);
 bool32 IsEnemyOnScreen(void* e);

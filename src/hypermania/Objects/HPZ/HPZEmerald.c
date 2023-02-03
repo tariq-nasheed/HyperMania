@@ -49,7 +49,7 @@ void HPZEmerald_Draw_Hook(void) {
 }
 
 void HPZEmerald_Create_Hook(void* data) {
-	Mod.Super(HPZEmerald->classID, SUPER_CREATE, NULL);
+	Mod.Super(HPZEmerald->classID, SUPER_CREATE, data);
 	RSDK_THIS(HPZEmerald);
 
 	for (int32 i = 0; i != 7; ++i) {

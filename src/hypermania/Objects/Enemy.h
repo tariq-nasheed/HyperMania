@@ -71,8 +71,8 @@ typedef struct {
 
 typedef struct {
 	uint16 classID;
-	bool16 animal;
-	bool16 boss;
+	bool32 animal;
+	bool32 boss;
 	struct { void* func; Hitbox* hitbox; } states[8];
 	bool32 (*check_func)(Entity*);
 	Hitbox* (*hitbox_func)(Entity*);
