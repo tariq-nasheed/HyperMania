@@ -17,19 +17,17 @@ void HyperStars_Update(void) {
 		if (self->instanceTimer[i] < 0) {
 			++self->instanceTimer[i];
 			if (self->instanceTimer[i] != 0) continue;
+			RSDK.ProcessAnimation(&self->instanceAnimator[i]);
 		}
 
-		--self->instanceTimer[i];
-		if (self->instanceTimer[i] < 0) {
-			self->instanceTimer[i] = 1;
+		++self->instanceTimer[i];
+		RSDK.ProcessAnimation(&self->instanceAnimator[i]);
+		if (self->instanceAnimator[i].frameID >= 3) {
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &self->instanceAnimator[i], true, 0);
+			self->instanceVel[i].x = 0;
+			self->instanceVel[i].y = 0;
 			RSDK.ProcessAnimation(&self->instanceAnimator[i]);
-			RSDK.ProcessAnimation(&self->instanceAnimator[i]);
-			if (self->instanceAnimator[i].frameID >= 3) {
-				RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &self->instanceAnimator[i], true, 0);
-				self->instanceVel[i].x = 0;
-				self->instanceVel[i].y = 0;
-				RSDK.ProcessAnimation(&self->instanceAnimator[i]);
-			}
+			self->instanceTimer[i] = 0;
 		}
 		self->instanceVel[i].x += RSDK.Sin256(self->instanceOsc[i]) << 11;
 		self->instanceVel[i].y += RSDK.Cos256(self->instanceOsc[i]) << 11;
@@ -48,7 +46,7 @@ void HyperStars_Draw(void) {
 
 	for (int32 i = 0; i != HYPERSTARS_COUNT; ++i) {
 		if (self->instanceTimer[i] < 0) continue;
-		//self->alpha = 0x100 - (self->instanceAnimator[i].frameID + (self->instanceTimer[i] ? 0 : 1)) * 24;
+		self->alpha = 0x100 - self->instanceTimer[i] * 12;
 		RSDK.DrawSprite(&self->instanceAnimator[i], &self->instancePos[i], false);
 	}
 }
