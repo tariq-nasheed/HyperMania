@@ -17,6 +17,13 @@ void HPZSetup_StageLoad(void) {
 	Entity* player = RSDK_GET_ENTITY_GEN(0);
 	CREATE_ENTITY(HPZIntro, NULL, player->position.x, player->position.y);
 	SceneInfo->timeEnabled = false;
+
+#if MANIA_USE_PLUS
+	if (globals->gameMode == MODE_ENCORE) {
+		RSDK.LoadPalette(0, "EncoreLRZ3.act", 0b0000000011111111);
+		RSDK.CopyPalette(0, 240, 1, 240, 16);
+	}
+#endif
 }
 
 #if RETRO_INCLUDE_EDITOR

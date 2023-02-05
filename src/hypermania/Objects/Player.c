@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Debris.h"
 #include "FXFade.h"
+#include "Ring.h"
 #include "ItemBox.h"
 #include "ImageTrail.h"
 #include "SuperFlicky.h"
@@ -20,6 +21,7 @@ void (*Player_State_Air)(void);
 void (*Player_State_KnuxGlideLeft)(void);
 void (*Player_State_KnuxGlideRight)(void);
 void (*Player_State_KnuxWallClimb)(void);
+void (*Player_Input_P2_AI)();
 void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
 bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
@@ -45,12 +47,12 @@ color PlayerPaletteWhite[3][6] = {
 };
 
 hyperpal_t PlayerPaletteDefs[] = {
-	{ 64,  69,  6, { hyperPalette_Sonic, hyperPalette_Sonic, hyperPalette_Sonic } },
-	{ 70,  75,  1, { NULL, NULL, NULL } },
-	{ 80,  85,  1, { NULL, NULL, NULL } },
+	{ 64,  69,  6, { hyperPalette_Sonic, hyperPalette_Sonic, hyperPalette_Sonic, NULL, NULL, NULL } },
+	{ 70,  75,  1, { NULL, NULL, NULL, NULL, NULL, NULL } },
+	{ 80,  85,  1, { NULL, NULL, NULL, NULL, NULL, NULL } },
 #if MANIA_USE_PLUS
-	{ 96,  102, 1, { NULL, NULL, NULL } },
-	{ 113, 119, 1, { NULL, NULL, NULL } },
+	{ 96,  102, 1, { NULL, NULL, NULL, NULL, NULL, NULL } },
+	{ 113, 119, 1, { NULL, NULL, NULL, NULL, NULL, NULL } },
 #endif
 };
 
@@ -59,20 +61,48 @@ hyperpal_t PlayerPaletteDefs[] = {
 void Player_StageLoad_OVERLOAD() {
 	Mod.Super(Player->classID, SUPER_STAGELOAD, NULL);
 
+	// hyperpal_t.colors layout
+	// ===== used for palette animation while hyper =====
+	//  0 -- pointer to normal hyper palette
+	//  1 -- pointer to HCZ hyper palette
+	//  2 -- pointer to CPZ hyper palette
+	// ===== used for detransformation palette animation =====
+	//  3 -- pointer to normal default palette
+	//  4 -- pointer to HCZ normal palette
+	//  5 -- pointer to CPZ normal palette
+
+	PlayerPaletteDefs[0].colors[3] = &Player->superPalette_Sonic[0];
+	PlayerPaletteDefs[0].colors[4] = &Player->superPalette_Sonic_HCZ[0];
+	PlayerPaletteDefs[0].colors[5] = &Player->superPalette_Sonic_CPZ[0];
+
 	// every non-sonic character resuses the brighter oscillation of their super palette
 	PlayerPaletteDefs[1].colors[0] = &Player->superPalette_Tails[6];
 	PlayerPaletteDefs[1].colors[1] = &Player->superPalette_Tails_HCZ[6];
 	PlayerPaletteDefs[1].colors[2] = &Player->superPalette_Tails_CPZ[6];
+	PlayerPaletteDefs[1].colors[3] = &Player->superPalette_Tails[0];
+	PlayerPaletteDefs[1].colors[4] = &Player->superPalette_Tails_HCZ[0];
+	PlayerPaletteDefs[1].colors[5] = &Player->superPalette_Tails_CPZ[0];
+
 	PlayerPaletteDefs[2].colors[0] = &Player->superPalette_Knux[6];
 	PlayerPaletteDefs[2].colors[1] = &Player->superPalette_Knux_HCZ[6];
 	PlayerPaletteDefs[2].colors[2] = &Player->superPalette_Knux_CPZ[6];
+	PlayerPaletteDefs[2].colors[3] = &Player->superPalette_Knux[0];
+	PlayerPaletteDefs[2].colors[4] = &Player->superPalette_Knux_HCZ[0];
+	PlayerPaletteDefs[2].colors[5] = &Player->superPalette_Knux_CPZ[0];
 #if MANIA_USE_PLUS
 	PlayerPaletteDefs[3].colors[0] = &Player->superPalette_Mighty[6];
 	PlayerPaletteDefs[3].colors[1] = &Player->superPalette_Mighty_HCZ[6];
 	PlayerPaletteDefs[3].colors[2] = &Player->superPalette_Mighty_CPZ[6];
+	PlayerPaletteDefs[3].colors[3] = &Player->superPalette_Mighty[0];
+	PlayerPaletteDefs[3].colors[4] = &Player->superPalette_Mighty_HCZ[0];
+	PlayerPaletteDefs[3].colors[5] = &Player->superPalette_Mighty_CPZ[0];
+
 	PlayerPaletteDefs[4].colors[0] = &Player->superPalette_Ray[6];
 	PlayerPaletteDefs[4].colors[1] = &Player->superPalette_Ray_HCZ[6];
 	PlayerPaletteDefs[4].colors[2] = &Player->superPalette_Ray_CPZ[6];
+	PlayerPaletteDefs[4].colors[3] = &Player->superPalette_Ray[6];
+	PlayerPaletteDefs[4].colors[4] = &Player->superPalette_Ray_HCZ[6];
+	PlayerPaletteDefs[4].colors[5] = &Player->superPalette_Ray_CPZ[6];
 #endif
 
 	PlayerStaticExt.sfxEarthquake = RSDK.GetSfx("Stage/Impact5.wav");
@@ -157,16 +187,8 @@ void Player_Update_OVERLOAD() {
 #endif
 
 	// palette shifting ----------------------------------------------------
-	int32 index = -1;
-	switch (self->characterID) {
-		case ID_SONIC:    index = 0; break;
-		case ID_TAILS:    index = 1; break;
-		case ID_KNUCKLES: index = 2; break;
-#if MANIA_USE_PLUS
-		case ID_MIGHTY:   index = 3; break;
-		case ID_RAY:      index = 4; break;
-#endif
-	}
+	int32 index = Player_GetIndexFromID(self->characterID);
+
 	if (index != -1) {
 		const hyperpal_t* info = &PlayerPaletteDefs[index];
 
@@ -232,8 +254,15 @@ void Player_Update_OVERLOAD() {
 				}
 			}
 		}
-
 	}
+}
+
+bool32 Player_State_Ground_HOOK(bool32 skippedState) {
+	RSDK_THIS(Player);
+	if (!Player_IsHyper(self)) return false;
+	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+	if (self->characterID == ID_MIGHTY) ext->can_dash = true;
+	return false;
 }
 
 bool32 Player_JumpAbility_Sonic_HOOK(bool32 skippedState) {
@@ -245,6 +274,67 @@ bool32 Player_JumpAbility_Sonic_HOOK(bool32 skippedState) {
 		Player_HyperSonicDash();
 	}
 	ext->can_dash = false;
+	return false;
+}
+
+bool32 Player_JumpAbility_Mighty_HOOK(bool32 skippedState) {
+	if (skippedState) return true;
+	RSDK_THIS(Player);
+	if (!Player_IsHyper(self)) return false;
+	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+	if (!ext->can_dash) return false;
+
+	if (!self->invertGravity
+	&& self->jumpPress && self->jumpAbilityState == 0
+	&& (self->stateInput != Player_Input_P2_AI || (self->up && globals->gameMode != MODE_ENCORE))) {
+		self->velocity.y *= 2;
+		RSDK.StopSfx(Player->sfxRelease);
+		RSDK.PlaySfx(Player->sfxPeelRelease, false, 0xFF);
+	}
+	return false;
+}
+
+bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
+	if (skippedState) return true;
+	RSDK_THIS(Player);
+	if (!Player_IsHyper(self)) return false;
+	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+
+	if (self->jumpAbilityState == 3) {
+		if (ext->can_dash) {
+			ext->can_dash = false;
+			Camera_ShakeScreen(RSDK.GetEntitySlot(self), 4, 12);
+			RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
+			int32 dropForce = self->gravityStrength + (self->underwater == 1 ? 0x10000 : 0x20000);
+			int32 groundVel = self->groundVel - (self->groundVel >> 2);
+
+			/*self->velocity.x = ((groundVel * RSDK.Cos256(self->angle) + dropForce * RSDK.Sin256(self->angle)) >> 8);// * 3.5;
+			self->velocity.y = ((groundVel * RSDK.Sin256(self->angle) - dropForce * RSDK.Cos256(self->angle)) >> 8);// * 3.5;*/
+			self->velocity.x *= 3;
+			self->velocity.y *= 3;
+			foreach_all(Ring, ring) {
+				if (((ring->position.y + TO_FIXED(8) > self->position.y - TO_FIXED(512) && ring->position.x > self->position.x - TO_FIXED(256) && ring->position.x < self->position.x + TO_FIXED(256))
+				    || RSDK.CheckObjectCollisionTouchCircle(self, TO_FIXED(256), ring, TO_FIXED(16)))
+				&& !ring->storedPlayer && ring->state != Ring_State_Sparkle && ring->state != Ring_State_Lost) {
+					ring->state = Ring_State_Lost;
+					ring->timer = 0x3F + 1;
+					ring->velocity.x = RSDK.Rand(-0x20000, 0x20000);// + CLAMP(self->position.x - ring->position.x, -0x20000, 0x20000);
+					ring->velocity.y = RSDK.Rand(-0x5000, 0x50000);
+					ring->animator.speed = 0x200;
+					ring->active = ACTIVE_NORMAL;
+				}
+			}
+			Player_ClearEnemiesOnScreen(self);
+			EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
+			fade->timer = 0x180;
+			fade->speedOut = 0x18;
+			fade->state = FXFade_State_FadeIn;
+		} else {
+			self->velocity.x *= 2;
+			self->velocity.y *= 2;
+		}
+		self->jumpAbilityState = 1;
+	}
 	return false;
 }
 
@@ -270,12 +360,10 @@ void Player_HyperSonicDash() {
 		camera->state     = Camera_State_FollowY;
 	}
 
-	if (FXFade) {
-		EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-		fade->timer = 0x200;
-		fade->speedOut = 0x30;
-		fade->state = FXFade_State_FadeIn;
-	}
+	EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
+	fade->timer = 0x200;
+	fade->speedOut = 0x30;
+	fade->state = FXFade_State_FadeIn;
 
 	const int32 vel = 0x2C000;
 	for (int32 i = 0; i != 4; ++i) {
@@ -301,30 +389,21 @@ void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t*
 	if (ext->blend.state == HYPERBLEND_FADEIN) {
 		for (int32 i = 0; i < 6; ++i) {
 			RSDK.SetPaletteEntry(7, i + info->startIndex, PlayerPaletteWhite[paletteSlot][i]);
-			//RSDK.SetPaletteEntry(6, i + info->startIndex, info->normal_colors[paletteSlot][i]);
 		}
 		RSDK.SetLimitedFade(bankID, 6, 7, ext->blend.amount, info->startIndex, info->endIndex);
 	} else {
-		if (self->superState == SUPERSTATE_SUPER) {
-			for (int32 i = 0; i < 6; ++i) {
-				if (ext->blend.state & 1) {
-					// color -> white
-					RSDK.SetPaletteEntry(6, i + info->startIndex, palette[i + (ext->blend.state >> 1) * 6]);
-					RSDK.SetPaletteEntry(7, i + info->startIndex, PlayerPaletteWhite[paletteSlot][i]);
-				} else {
-					// white -> color
-					RSDK.SetPaletteEntry(6, i + info->startIndex, PlayerPaletteWhite[paletteSlot][i]);
-					RSDK.SetPaletteEntry(7, i + info->startIndex, palette[i + (ext->blend.state >> 1) * 6]);
-				}
-			}
+		for (int32 i = 0; i < 6; ++i) {
+			RSDK.SetPaletteEntry(6, i + info->startIndex, palette[i + (ext->blend.state >> 1) * 6]);
+			RSDK.SetPaletteEntry(7, i + info->startIndex, PlayerPaletteWhite[paletteSlot][i]);
 		}
+		// 6->7 if on odd blend.state, otherwise 7->6
+		RSDK.SetLimitedFade(bankID, 7 - (ext->blend.state & 1), 6 + (ext->blend.state & 1), ext->blend.amount, info->startIndex, info->endIndex);
 
-		RSDK.SetLimitedFade(bankID, 6, 7, ext->blend.amount, info->startIndex, info->endIndex);
 		if (self->superState != SUPERSTATE_SUPER) {
-			/*for (int32 i = 0; i < 6; ++i) {
-				RSDK.SetPaletteEntry(6, i + info->startIndex, info->normal_colors[paletteSlot][i]);
-			}*/
-			RSDK.SetLimitedFade(bankID, 6, bankID, self->superBlendAmount, info->startIndex, info->endIndex);
+			for (int32 i = 0; i < 6; ++i) {
+				RSDK.SetPaletteEntry(7, i + info->startIndex, palette[i + 3 + (ext->blend.state >> 1) * 6]);
+			}
+			RSDK.SetLimitedFade(bankID, 7, bankID, self->superBlendAmount, info->startIndex, info->endIndex);
 		}
 	}
 	/*printf("self->superState: %d\n", self->superState);
@@ -334,6 +413,20 @@ void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t*
 
 bool32 Player_IsHyper(EntityPlayer* player) {
 	return (player->superState == SUPERSTATE_SUPER && ((PlayerExt*)GetExtMem(RSDK.GetEntitySlot(player)))->is_hyper);
+}
+
+int32 Player_GetIndexFromID(int32 ID) {
+	int32 index = -1;
+	switch (ID) {
+		case ID_SONIC:    index = 0; break;
+		case ID_TAILS:    index = 1; break;
+		case ID_KNUCKLES: index = 2; break;
+#if MANIA_USE_PLUS
+		case ID_MIGHTY:   index = 3; break;
+		case ID_RAY:      index = 4; break;
+#endif
+	}
+	return index;
 }
 
 void Player_ClearEnemiesOnScreen(EntityPlayer* player) {

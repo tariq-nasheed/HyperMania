@@ -334,14 +334,13 @@ extern ObjectPlayer* Player;
 
 typedef enum {
 	HYPERBLEND_FADEIN = -1,
-	HYPERBLEND_FADEOUT
+	HYPERBLEND_FADEOUT // unused for now
 } HyperBlendStates;
 
 typedef struct {
-	int32 startIndex,
-	      endIndex;
+	int32 startIndex, endIndex;
 	int32 rows;
-	color* colors[3];
+	color* colors[6];
 } hyperpal_t;
 
 typedef struct {
@@ -370,8 +369,13 @@ extern void (*Player_State_Air)();
 extern void (*Player_State_KnuxGlideLeft)();
 extern void (*Player_State_KnuxGlideRight)();
 extern void (*Player_State_KnuxWallClimb)();
+extern void (*Player_Input_P2_AI)();
+extern void (*Player_JumpAbility_Mighty)();
 
+bool32 Player_State_Ground_HOOK(bool32);
 bool32 Player_JumpAbility_Sonic_HOOK(bool32);
+bool32 Player_JumpAbility_Mighty_HOOK(bool32);
+bool32 Player_State_MightyHammerDrop_HOOK(bool32);
 
 void Player_StageLoad_OVERLOAD();
 void Player_Draw_OVERLOAD();
@@ -386,13 +390,18 @@ void Player_Update_OVERLOAD();
   IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideLeft); \
   IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideRight); \
   IMPORT_PUBLIC_FUNC(Player_State_KnuxWallClimb); \
+  IMPORT_PUBLIC_FUNC(Player_Input_P2_AI); \
+  HOOK_STATE(Player_State_Ground, 1); \
   HOOK_STATE(Player_JumpAbility_Sonic, 1); \
+  HOOK_STATE(Player_JumpAbility_Mighty, 0); \
+  HOOK_STATE(Player_State_MightyHammerDrop, 0); \
   MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_OVERLOAD, NULL, NULL, Player_Draw_OVERLOAD, Player_Create_OVERLOAD, Player_StageLoad_OVERLOAD, NULL, NULL, NULL)
 
 void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t* info);
 bool32 Player_IsHyper(EntityPlayer* player);
 void Player_ClearEnemiesOnScreen(EntityPlayer* player);
 void Player_HyperSonicDash();
+int32 Player_GetIndexFromID(int32 ID);
 
 // shhhhhhhhhhhhh --------------------------------------------------------------
 bool32 IsVulnerableEnemy(void* e, bool32 count_bosses);

@@ -24,7 +24,10 @@ void HPZEmerald_Update_Hook(void) {
 				++counter;
 				if (counter == 0x1F) {
 					RSDK.SetScene("Special Stage", "");
-					SceneInfo->listPos += 7 + ext->color;
+					SceneInfo->listPos += ext->color;
+#if MANIA_USE_PLUS
+					SceneInfo->listPos += 7;
+#endif
 					RSDK.PlaySfx(HPZEmeraldStaticExt.sfxSpecialWarp, false, 0xFF);
 					Zone_StartFadeOut(10, 0xF0F0F0);
 					Music_FadeOut(0.05);
