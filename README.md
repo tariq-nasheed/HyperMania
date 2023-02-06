@@ -1,4 +1,5 @@
 <h1 style="text-align: center;">HyperMania</h1>
+
 ![Alt text](screenshots/1.png?raw=true "screenshot")
 
 ![Alt text](screenshots/2.png?raw=true "screenshot")
