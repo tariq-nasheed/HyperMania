@@ -2,12 +2,14 @@
 
 ObjectUFO_Player *UFO_Player;
 
-const char* names[5] = {
+const char* names[] = {
 	"SONIC",
 	"TAILS",
 	"KNUCKLES",
+#if MANIA_USE_PLUS
 	"MIGHTY",
 	"RAY"
+#endif
 };
 
 bool32 UFO_Player_State_UFOCaught_Released_HOOK(bool32 skippedState) {
@@ -46,8 +48,10 @@ bool32 UFO_Player_State_UFOCaught_Released_HOOK(bool32 skippedState) {
 			switch(globals->playerID) {
 				case ID_TAILS: id = 1; break;
 				case ID_KNUCKLES: id = 2; break;
+#if MANIA_USE_PLUS
 				case ID_MIGHTY: id = 3; break;
 				case ID_RAY: id = 4; break;
+#endif
 			}
 
 			printf("\n================================================================================\n");

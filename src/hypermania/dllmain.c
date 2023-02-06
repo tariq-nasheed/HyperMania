@@ -22,6 +22,7 @@
 #include "Objects/Boilerplate/OOZ/OOZSetup.h"
 #include "Objects/Boilerplate/HCZ/HCZSetup.h"
 #include "Objects/Boilerplate/MMZ/FarPlane.h"
+#include "Objects/Boilerplate/ERZ/ERZStart.h"
 
 // game classes with notable modifications
 #include "Objects/Player.h"
@@ -155,6 +156,7 @@ void InitModAPI(void) {
 	MOD_REGISTER_OBJECT_HOOK(CPZSetup);
 	MOD_REGISTER_OBJECT_HOOK(HCZSetup);
 	MOD_REGISTER_OBJECT_HOOK(OOZSetup);
+	MOD_REGISTER_OBJECT_HOOK(ERZStart);
 
 	// Mod ------------------------------------------------------------
 	OBJ_SAVE_SETUP;

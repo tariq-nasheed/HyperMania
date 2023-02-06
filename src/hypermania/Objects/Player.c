@@ -13,6 +13,7 @@
 #include "OOZ/OOZSetup.h"
 #include "HCZ/HCZSetup.h"
 #include "MMZ/FarPlane.h"
+#include "ERZ/ERZStart.h"
 
 
 // -----------------------------------------------------------------------------
@@ -30,7 +31,7 @@ bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* enti
 // -----------------------------------------------------------------------------
 PlayerStaticExt_t PlayerStaticExt;
 
-// C doesn't let you initialize arrays inside of anonymous structs so i have to do this stupid shit isntead of putting in in PlayerStaticExt
+// C doesn't let you initialize arrays inside of anonymous structs so i have to do this instead of putting it in PlayerStaticExt
 static color hyperPalette_Sonic[36] = {
 	0xF0C001, 0xF0D028, 0xF0E040, 0xF0E860, 0xF0E898, 0xF0E8D0,  // yellow (TODO make seperate from mania super sonic yellow)
 	0xCC7A8C, 0xE6A0A5, 0xEEB9B6, 0xECCCC9, 0xECD8D3, 0xEFE8E3,  // pink
@@ -145,7 +146,6 @@ void Player_Update_OVERLOAD() {
 
 	if (self->superState == SUPERSTATE_NONE) {
 		ext->is_hyper = false;
-		//Music_SetMusicTrack("Super.ogg", 10, 165375);
 		return;
 	}
 
@@ -158,8 +158,6 @@ void Player_Update_OVERLOAD() {
 		ext->can_dash = true; // this was added solely to replicate the dashing out of transform thing from S3&K
 
 		if (controller->keyZ.press) {
-			Music_SetMusicTrack("Hyper.ogg", 10, 423801);
-			Music_PlayJingle(10); // TODO add "is super track playing?" check so it doesnt fuck with ERZ
 			RSDK.PlaySfx(Player->sfxRelease, false, 0xFF);
 			RSDK.PlaySfx(RSDK.GetSfx("Global/Twinkle.wav"), false, 0xFF); // TODO not good
 			if (FXFade) {
@@ -254,6 +252,17 @@ void Player_Update_OVERLOAD() {
 				}
 			}
 		}
+	}
+
+	// music handling ------------------------------------------------------
+	if (!ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
+		Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
+#if MANIA_USE_PLUS
+		Music_JingleFadeOut(TRACK_SUPER, false);
+		Music_PlayJingle(TRACK_SUPER);
+#else
+		Music_TransitionTrack(TRACK_HYPER, 1.0);
+#endif
 	}
 }
 
@@ -401,14 +410,11 @@ void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t*
 
 		if (self->superState != SUPERSTATE_SUPER) {
 			for (int32 i = 0; i < 6; ++i) {
-				RSDK.SetPaletteEntry(7, i + info->startIndex, palette[i + 3 + (ext->blend.state >> 1) * 6]);
+				RSDK.SetPaletteEntry(6, i + info->startIndex, info->colors[3 + paletteSlot][i]);
 			}
-			RSDK.SetLimitedFade(bankID, 7, bankID, self->superBlendAmount, info->startIndex, info->endIndex);
+			RSDK.SetLimitedFade(bankID, 6, bankID, self->superBlendAmount, info->startIndex, info->endIndex);
 		}
 	}
-	/*printf("self->superState: %d\n", self->superState);
-	printf("self->superBlendState: %d\n", self->superBlendState);
-	printf("ext->blend.state: %d\n", ext->blend.state);*/
 }
 
 bool32 Player_IsHyper(EntityPlayer* player) {

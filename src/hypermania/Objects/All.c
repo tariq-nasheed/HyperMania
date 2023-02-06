@@ -18,6 +18,7 @@
 #include "Boilerplate/OOZ/OOZSetup.c"
 #include "Boilerplate/HCZ/HCZSetup.c"
 #include "Boilerplate/MMZ/FarPlane.c"
+#include "Boilerplate/ERZ/ERZStart.c"
 
 #include "Player.c"
 #include "ImageTrail.c"
