@@ -152,6 +152,7 @@ void Player_Update_OVERLOAD() {
 	// hyper transformation ------------------------------------------------
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
 	if (!ext->is_hyper && (controller->keyZ.press || HM_global.currentSave->superEmeralds == 0b01111111)) {
+		if (!ERZStart) Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
 		ext->blend.state = HYPERBLEND_FADEIN;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
@@ -256,7 +257,6 @@ void Player_Update_OVERLOAD() {
 
 	// music handling ------------------------------------------------------
 	if (!ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
-		Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
 #if MANIA_USE_PLUS
 		Music_JingleFadeOut(TRACK_SUPER, false);
 		Music_PlayJingle(TRACK_SUPER);
