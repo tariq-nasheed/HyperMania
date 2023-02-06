@@ -38,7 +38,7 @@ target_include_directories(hypermania PRIVATE
 )
 
 set_target_properties(hypermania PROPERTIES OUTPUT_NAME ${MOD_NAME})
-set_target_properties(hypermania PROPERTIES PREFIX "")
+set_target_properties(hypermania PROPERTIES PREFIX "lib")
 
 if(WINDOWS_BUILD)
 	set_target_properties(hypermania PROPERTIES SUFFIX ".dll")
