@@ -9,8 +9,13 @@ extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, 
 // Helper macros ---------------------------------------------------------------
 
 // =============================================================================
-#define IMPORT_PUBLIC_FUNC(name) name = Mod.GetPublicFunction(NULL, #name)
-#define HOOK_STATE(name, priority) Mod.RegisterStateHook(Mod.GetPublicFunction(NULL, #name), name##_HOOK, priority)
+#define IMPORT_PUBLIC_FUNC(name) \
+  name = Mod.GetPublicFunction(NULL, #name); \
+  if (name == NULL) printf("ERROR: "#name" is not a public function\n")
+#define HOOK_STATE(name, priority) \
+  void (*name##_fn) = Mod.GetPublicFunction(NULL, #name); \
+  if (name##_fn == NULL) printf("ERROR: "#name" is not a public function\n"); \
+  else Mod.RegisterStateHook(name##_fn, name##_HOOK, priority)
 #define HOOK_IMPORTED_STATE(name, priority) Mod.RegisterStateHook(name, name##_HOOK, priority)
 
 // =============================================================================

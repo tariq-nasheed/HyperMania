@@ -11,7 +11,6 @@
 #include "Boilerplate/ItemBox.c"
 #include "Boilerplate/Zone.c"
 #include "Boilerplate/Music.c"
-#include "Boilerplate/UFO/UFO_Setup.c"
 #include "Boilerplate/Global/PauseMenu.c"
 
 #include "Boilerplate/CPZ/CPZSetup.c"
@@ -19,15 +18,7 @@
 #include "Boilerplate/HCZ/HCZSetup.c"
 #include "Boilerplate/MMZ/FarPlane.c"
 #include "Boilerplate/ERZ/ERZStart.c"
-
-#include "Player.c"
-#include "ImageTrail.c"
-#include "SpecialRing.c"
-#include "UFO_Player.c"
-#include "HUD.c"
-
-#include "SuperFlicky.c"
-#include "HyperStars.c"
+#include "Boilerplate/BSS/BSS_Setup.c"
 
 // im sorry jesus
 typedef struct {
@@ -35,6 +26,18 @@ typedef struct {
 	int32 color; // -1 means untransformed
 	Animator animator;
 } HPZEmeraldExt;
+
+
+#include "Player.c"
+#include "ImageTrail.c"
+#include "SpecialRing.c"
+#include "UFO_Setup.c"
+#include "UFO_Player.c"
+#include "SpecialClear.c"
+#include "HUD.c"
+
+#include "SuperFlicky.c"
+#include "HyperStars.c"
 
 struct {
 	uint16 aniFrames;

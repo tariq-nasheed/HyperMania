@@ -155,7 +155,6 @@ void Player_Update_OVERLOAD() {
 	}
 
 	if (prev_state != self->state) {
-		printf("state change\n");
 		ext->prev_state = prev_state;
 	}
 

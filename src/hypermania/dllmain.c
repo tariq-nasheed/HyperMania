@@ -15,7 +15,6 @@
 #include "Objects/Boilerplate/ScoreBonus.h"
 #include "Objects/Boilerplate/Zone.h"
 #include "Boilerplate/Music.h"
-#include "Boilerplate/UFO/UFO_Setup.h"
 #include "Boilerplate/Global/PauseMenu.h"
 
 #include "Objects/Boilerplate/CPZ/CPZSetup.h"
@@ -23,12 +22,15 @@
 #include "Objects/Boilerplate/HCZ/HCZSetup.h"
 #include "Objects/Boilerplate/MMZ/FarPlane.h"
 #include "Objects/Boilerplate/ERZ/ERZStart.h"
+#include "Objects/Boilerplate/BSS/BSS_Setup.h"
 
 // game classes with notable modifications
 #include "Objects/Player.h"
 #include "Objects/ImageTrail.h"
 #include "Objects/SpecialRing.h"
+#include "Objects/UFO_Setup.h"
 #include "Objects/UFO_Player.h"
+#include "Objects/SpecialClear.h"
 #include "Objects/HUD.h"
 #include "Objects/HPZ/HPZEmerald.h"
 
@@ -158,12 +160,14 @@ void InitModAPI(void) {
 	MOD_REGISTER_OBJECT_HOOK(HCZSetup);
 	MOD_REGISTER_OBJECT_HOOK(OOZSetup);
 	MOD_REGISTER_OBJECT_HOOK(ERZStart);
+	MOD_REGISTER_OBJECT_HOOK(BSS_Setup);
 
 	// Mod ------------------------------------------------------------
 	OBJ_SAVE_SETUP;
 	OBJ_PLAYER_SETUP;
 	OBJ_SPECIALRING_SETUP;
 	OBJ_UFO_PLAYER_SETUP;
+	OBJ_SPECIALCLEAR_SETUP;
 	OBJ_HUD_SETUP;
 
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, NULL, NULL, ImageTrail_Draw_Hook, NULL, NULL, NULL, NULL, NULL);

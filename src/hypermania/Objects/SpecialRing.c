@@ -1,4 +1,5 @@
 #include "SpecialRing.h"
+#include "HPZ/HPZSetup.h"
 #include "Zone.h"
 
 
@@ -8,12 +9,22 @@ void (*SpecialRing_State_Flash)(void);
 void (*SpecialRing_State_Warp)(void);
 
 // -----------------------------------------------------------------------------
+static int32 superSpecialRingID = 0;
 static color ColorCycle[6] = { 0xF0F000, 0xfCD8FC,  0xB4D8FC, 0x90FC90,  0xD8fC6C,  0xFCD86C };
 
 
 // -----------------------------------------------------------------------------
 bool32 IsHPZStage() {
 	return SaveGame_GetSaveRAM()->chaosEmeralds == 0b01111111;
+}
+
+void SpecialRing_StageLoad_OVERLOAD() {
+	Mod.Super(SpecialRing->classID, SUPER_STAGELOAD, NULL);
+	// SpecialRing_StageLoad gets called in HPZ map -> globals->specialRingID gets set to 0 -> have to do this to fix it
+	if (superSpecialRingID) {
+		globals->specialRingID = superSpecialRingID;
+		if (!HPZSetup) superSpecialRingID = 0;
+	}
 }
 
 bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
@@ -61,8 +72,10 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 						Player_GiveRings(player, 50, true);
 					}
 					if (self->id > 0) {
-						if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111)
+						if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) {
 							globals->specialRingID = self->id;
+							if (HM_global.currentSave->superEmeralds != 0b01111111) superSpecialRingID = self->id;
+						}
 						saveRAM->collectedSpecialRings |= 1 << (16 * Zone->actID - 1 + self->id);
 					}
 
@@ -154,9 +167,7 @@ void SpecialRing_State_HPZ_Warp() {
 		SaveRAM *saveRAM       = SaveGame_GetSaveRAM();
 		saveRAM->storedStageID = SceneInfo->listPos;
 		RSDK.SetScene("HyperMania", "Hidden Palace");
-		//SceneInfo->listPos += saveRAM->nextSpecialStage;
 #if MANIA_USE_PLUS
-		//if (globals->gameMode == MODE_ENCORE) SceneInfo->listPos += 7;
 #endif
 		Zone_StartFadeOut(10, 0xF0F0F0);
 		Music_FadeOut(1.0);
