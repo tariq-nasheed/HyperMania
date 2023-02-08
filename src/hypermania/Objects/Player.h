@@ -350,6 +350,7 @@ typedef struct {
 
 typedef struct {
 	int32 prev_ID, prev_xvel;
+	void* prev_state;
 	struct { int16 state; int16 amount; } blend;
 	bool32 can_dash;
 	bool32 is_hyper;
@@ -372,6 +373,7 @@ extern void (*Player_State_KnuxWallClimb)();
 extern void (*Player_Input_P2_AI)();
 extern void (*Player_JumpAbility_Mighty)();
 
+bool32 Player_State_Transform_HOOK(bool32);
 bool32 Player_State_Ground_HOOK(bool32);
 bool32 Player_JumpAbility_Sonic_HOOK(bool32);
 bool32 Player_JumpAbility_Mighty_HOOK(bool32);
@@ -392,6 +394,7 @@ void Player_Update_OVERLOAD();
   IMPORT_PUBLIC_FUNC(Player_State_KnuxWallClimb); \
   IMPORT_PUBLIC_FUNC(Player_Input_P2_AI); \
   HOOK_STATE(Player_State_Ground, 1); \
+  HOOK_STATE(Player_State_Transform, 1); \
   HOOK_STATE(Player_JumpAbility_Sonic, 1); \
   HOOK_STATE(Player_JumpAbility_Mighty, 0); \
   HOOK_STATE(Player_State_MightyHammerDrop, 0); \

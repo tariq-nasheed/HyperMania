@@ -142,7 +142,22 @@ void Player_Update_OVERLOAD() {
 	ext->prev_ID = self->characterID;
 	ext->prev_xvel = self->velocity.x;
 	void* prev_state = self->state;
+
+	// HACKY BADMIND SOLUTION
+	int32 cemeralds = -1;
+	if (!ERZStart && HM_global.currentSave->transferedEmeralds && HM_global.currentSave->superEmeralds != 0b01111111) {
+		cemeralds = SaveGame_GetSaveRAM()->chaosEmeralds;
+		SaveGame_GetSaveRAM()->chaosEmeralds = 0;
+	}
 	Mod.Super(Player->classID, SUPER_UPDATE, NULL);
+	if (cemeralds != -1) {
+		SaveGame_GetSaveRAM()->chaosEmeralds = cemeralds;
+	}
+
+	if (prev_state != self->state) {
+		printf("state change\n");
+		ext->prev_state = prev_state;
+	}
 
 	if (self->superState == SUPERSTATE_NONE) {
 		ext->is_hyper = false;
@@ -265,6 +280,23 @@ void Player_Update_OVERLOAD() {
 #endif
 	}
 }
+
+bool32 Player_State_Transform_HOOK(bool32 skippedState) {
+	/*RSDK_THIS(Player);
+	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+
+	if (!ERZStart && HM_global.currentSave->transferedEmeralds && HM_global.currentSave->superEmeralds != 0b01111111) {
+		printf("collect all super emeralds >:(\n");
+		self->state = ext->prev_state;
+#if GAME_VERSION != VER_100
+		self->isTransforming = false;
+#endif
+		self->interaction = true;
+		return true;
+	}*/
+	return false;
+}
+
 
 bool32 Player_State_Ground_HOOK(bool32 skippedState) {
 	RSDK_THIS(Player);

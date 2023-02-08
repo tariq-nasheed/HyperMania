@@ -24,6 +24,7 @@
 #include "ImageTrail.c"
 #include "SpecialRing.c"
 #include "UFO_Player.c"
+#include "HUD.c"
 
 #include "SuperFlicky.c"
 #include "HyperStars.c"
