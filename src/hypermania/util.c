@@ -19,6 +19,12 @@ static void HM_Save_SaveCB(int32 status) {
 		return;
 	}
 	printf("save finish\n");
+	printf("emeralds transfered? ");
+	if (HM_global.currentSave->transferedEmeralds) {
+		printf("yes\n");
+	} else {
+		printf("no\n");
+	}
 	printf("current super emerald mask: ");
 	for (int32 i = 0; i != 7; ++i) {
 		printf("%d", (HM_global.currentSave->superEmeralds & 1 << i) ? 1 : 0);
@@ -37,6 +43,12 @@ static void HM_Save_LoadCB(int32 status) {
 		return;
 	}
 	printf("load finish\n");
+	printf("emeralds transfered? ");
+	if (HM_global.currentSave->transferedEmeralds) {
+		printf("yes\n");
+	} else {
+		printf("no\n");
+	}
 	printf("current super emerald mask: ");
 	for (int32 i = 0; i != 7; ++i) {
 		printf("%d", (HM_global.currentSave->superEmeralds & 1 << i) ? 1 : 0);

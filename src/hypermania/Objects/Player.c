@@ -27,6 +27,15 @@ void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
 bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
 
+// -----------------------------------------------------------------------------
+static bool32 (*formerCanSuperCB)(bool32);
+static bool32 disableSuperPostTransfer(bool32 isHUD) {
+	if (formerCanSuperCB && formerCanSuperCB(isHUD) == false) return false;
+	if (!ERZStart && HM_global.currentSave->transferedEmeralds && HM_global.currentSave->superEmeralds != 0b01111111) {
+		return false;
+	}
+	return true;
+}
 
 // -----------------------------------------------------------------------------
 PlayerStaticExt_t PlayerStaticExt;
@@ -143,15 +152,11 @@ void Player_Update_OVERLOAD() {
 	ext->prev_xvel = self->velocity.x;
 	void* prev_state = self->state;
 
-	// HACKY BADMIND SOLUTION
-	int32 cemeralds = -1;
-	if (!ERZStart && HM_global.currentSave->transferedEmeralds && HM_global.currentSave->superEmeralds != 0b01111111) {
-		cemeralds = SaveGame_GetSaveRAM()->chaosEmeralds;
-		SaveGame_GetSaveRAM()->chaosEmeralds = 0;
-	}
+	formerCanSuperCB = Player->canSuperCB;
+	Player->canSuperCB = disableSuperPostTransfer;
 	Mod.Super(Player->classID, SUPER_UPDATE, NULL);
-	if (cemeralds != -1) {
-		SaveGame_GetSaveRAM()->chaosEmeralds = cemeralds;
+	if (Player->canSuperCB == disableSuperPostTransfer) {
+		Player->canSuperCB = formerCanSuperCB;
 	}
 
 	if (prev_state != self->state) {
