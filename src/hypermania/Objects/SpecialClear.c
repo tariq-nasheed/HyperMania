@@ -3,12 +3,141 @@
 
 // -----------------------------------------------------------------------------
 ObjectSpecialClear *SpecialClear;
+SpecialClearStaticExt_t SpecialClearStaticExt;
+
 void (*SpecialClear_State_EnterText)();
 void (*SpecialClear_State_ExitFinishMessage)();
 void (*SpecialClear_State_ExitResults)();
 void (*SpecialClear_DrawNumbers)(Vector2 *pos, int32 value);
 
 // -----------------------------------------------------------------------------
+void SpecialClear_StageLoad_OVERLOAD() {
+	Mod.Super(SpecialClear->classID, SUPER_STAGELOAD, NULL);
+	SpecialClearStaticExt.SEAniFrames = RSDK.LoadSpriteAnimation("Special/ResultsSE.bin", SCOPE_STAGE);
+	RSDK.SetSpriteAnimation(SpecialClearStaticExt.SEAniFrames, 0, &SpecialClearStaticExt.SEAnimator, true, 0);
+}
+
+void SpecialClear_Create_OVERLOAD(void* data) {
+	// original SpecialClear_Create reads from UFO_Setup without NULL checking it so i have to do this :(
+	RSDK_THIS(SpecialClear);
+
+	if (!SceneInfo->inEditor) {
+		self->active    = ACTIVE_NORMAL;
+		self->visible   = true;
+		self->drawGroup = 14;
+		self->timer     = 512;
+		self->fillColor = 0xF0F0F0;
+		self->showFade  = true;
+		self->state     = SpecialClear_State_SetupDelay;
+
+		if (RSDK.CheckSceneFolder("SpecialBS")) {
+			self->isBSS     = true;
+			self->ringBonus = 100 * BSS_Setup->rings;
+			if (!BSS_Setup->ringCount)
+				self->perfectBonus = 50000;
+
+			self->messageType = SC_MSG_SPECIALCLEAR;
+		} else {
+			if (UFO_Setup) RSDK.CopyPalette(7, 0, 0, 0, 128);
+
+			self->isBSS     = false;
+			if (UFO_Setup) {
+				self->ringBonus = 100 * UFO_Setup->rings;
+				self->machBonus = 1000 * (UFO_Setup->machLevel + 10 * UFO_Setup->scoreBonus);
+			} else {
+				self->ringBonus = 100 * UFO_HPZbuffer.rings;
+				self->machBonus = 1000 * (UFO_HPZbuffer.machLevel + 10 * UFO_HPZbuffer.scoreBonus);
+			}
+
+			if (globals->gameMode < MODE_TIMEATTACK && self->machBonus + self->ringBonus >= 10000)
+				self->hasContinues = true;
+
+			SaveRAM *saveRAM = SaveGame_GetSaveRAM();
+			self->score      = saveRAM->score;
+			self->score1UP   = saveRAM->score1UP;
+			self->lives      = saveRAM->lives;
+			if ((UFO_Setup && saveRAM->chaosEmeralds == 0b01111111) || (!UFO_Setup && HM_global.currentSave->superEmeralds == 0b01111111)) {
+				self->messageType = SC_MSG_ALLEMERALDS;
+			} else {
+				if (UFO_Setup) {
+					self->messageType = !UFO_Setup->timedOut ? SC_MSG_GOTEMERALD : SC_MSG_SPECIALCLEAR;
+				} else {
+					self->messageType = !UFO_HPZbuffer.timedOut ? SC_MSG_GOTEMERALD : SC_MSG_SPECIALCLEAR;
+				}
+			}
+		}
+
+		self->messagePos1.x = 0x1400000;
+		self->messagePos1.y = 0x580000;
+
+		self->messagePos2.x = -0x1400000;
+		self->messagePos2.y = 0x700000;
+
+		self->scoreBonusPos.x = 0x1E80000;
+		self->scoreBonusPos.y = 0x8C0000;
+
+		self->ringBonusPos.x = 0x3080000;
+		self->ringBonusPos.y = 0xAC0000;
+
+		self->machBonusPos.x = 0x4280000;
+		self->machBonusPos.y = 0xBC0000;
+
+		self->perfectBonusPos.x = 0x4280000;
+		self->perfectBonusPos.y = 0xBC0000;
+		self->continuePos.x     = 0x5480000;
+		self->continuePos.y     = 0xCC0000;
+
+		if (UFO_Setup) RSDK.CopyPalette(1, 0, 0, 128, 48);
+
+		for (int32 i = 0; i < 7; ++i) {
+			self->emeraldPositions[i] = 0x1100000 + (i * 0x200000);
+			self->emeraldSpeeds[i]    = -0xA0000 + (i * -0xA000);
+		}
+
+		RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_BONUS, &self->bonusAnimator, true, 0);
+		RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_NUMBERS, &self->numbersAnimator, true, 0);
+		RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_EMERALDS, &self->emeraldsAnimator, true, 0);
+		switch (GET_CHARACTER_ID(1)) {
+			default:
+			case ID_SONIC: RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_SONIC, &self->playerNameAnimator, true, 0);
+#if MANIA_USE_PLUS
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_SONIC);
+#else
+				RSDK.SetSpriteAnimation(SpecialClear->continueFrames, 0, &self->continueAnimator, true, SC_ANI_TAILS);
+#endif
+				break;
+
+			case ID_TAILS: RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_TAILS, &self->playerNameAnimator, true, 0);
+#if MANIA_USE_PLUS
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_TAILS);
+#else
+				RSDK.SetSpriteAnimation(SpecialClear->continueFrames, 0, &self->continueAnimator, true, SC_ANI_TAILS);
+#endif
+				break;
+
+			case ID_KNUCKLES: RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_KNUX, &self->playerNameAnimator, true, 0);
+#if MANIA_USE_PLUS
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_KNUX);
+#else
+				RSDK.SetSpriteAnimation(SpecialClear->continueFrames, 0, &self->continueAnimator, true, SC_ANI_TAILS);
+#endif
+				break;
+
+#if MANIA_USE_PLUS
+			case ID_MIGHTY:
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_MIGHTY, &self->playerNameAnimator, true, 0);
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, 3);
+				break;
+
+			case ID_RAY:
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_RAY, &self->playerNameAnimator, true, 0);
+				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_RAY);
+				break;
+#endif
+		}
+	}
+}
+
 void SpecialClear_Update_OVERLOAD() {
 	Mod.Super(SpecialClear->classID, SUPER_UPDATE, NULL);
 	RSDK_THIS(SpecialClear);
@@ -91,8 +220,13 @@ void SpecialClear_Draw_OVERLOAD() {
 			drawPos.x = self->messagePos2.x;
 			drawPos.y = self->messagePos2.y;
 			drawPos.x += centerX;
-			self->playerNameAnimator.frameID = 3;
-			RSDK.DrawSprite(&self->playerNameAnimator, &drawPos, true);
+			if (UFO_Setup) {
+				self->playerNameAnimator.frameID = 3;
+				RSDK.DrawSprite(&self->playerNameAnimator, &drawPos, true);
+			} else {
+				SpecialClearStaticExt.SEAnimator.frameID = 0;
+				RSDK.DrawSprite(&SpecialClearStaticExt.SEAnimator, &drawPos, true);
+			}
 			break;
 
 		case SC_MSG_ALLEMERALDS:
@@ -105,8 +239,13 @@ void SpecialClear_Draw_OVERLOAD() {
 			drawPos.x = self->messagePos2.x;
 			drawPos.y = self->messagePos2.y;
 			drawPos.x += centerX;
-			self->playerNameAnimator.frameID = 6;
-			RSDK.DrawSprite(&self->playerNameAnimator, &drawPos, true);
+			if (UFO_Setup) {
+				self->playerNameAnimator.frameID = 6;
+				RSDK.DrawSprite(&self->playerNameAnimator, &drawPos, true);
+			} else {
+				SpecialClearStaticExt.SEAnimator.frameID = 1;
+				RSDK.DrawSprite(&SpecialClearStaticExt.SEAnimator, &drawPos, true);
+			}
 			break;
 
 		case SC_MSG_SUPER:
@@ -220,127 +359,6 @@ void SpecialClear_Draw_OVERLOAD() {
 
 	if (self->showFade)
 		RSDK.FillScreen(self->fillColor, self->timer, self->timer - 128, self->timer - 256);
-}
-
-void SpecialClear_Create_OVERLOAD(void* data) {
-	// original SpecialClear_Create reads from UFO_Setup without NULL checking it so i have to do this :(
-	RSDK_THIS(SpecialClear);
-
-	if (!SceneInfo->inEditor) {
-		self->active    = ACTIVE_NORMAL;
-		self->visible   = true;
-		self->drawGroup = 14;
-		self->timer     = 512;
-		self->fillColor = 0xF0F0F0;
-		self->showFade  = true;
-		self->state     = SpecialClear_State_SetupDelay;
-
-		if (RSDK.CheckSceneFolder("SpecialBS")) {
-			self->isBSS     = true;
-			self->ringBonus = 100 * BSS_Setup->rings;
-			if (!BSS_Setup->ringCount)
-				self->perfectBonus = 50000;
-
-			self->messageType = SC_MSG_SPECIALCLEAR;
-		} else {
-			if (UFO_Setup) RSDK.CopyPalette(7, 0, 0, 0, 128);
-
-			self->isBSS     = false;
-			if (UFO_Setup) {
-				self->ringBonus = 100 * UFO_Setup->rings;
-				self->machBonus = 1000 * (UFO_Setup->machLevel + 10 * UFO_Setup->scoreBonus);
-			} else {
-				self->ringBonus = 100;
-				self->machBonus = 1000;
-			}
-
-			if (globals->gameMode < MODE_TIMEATTACK && self->machBonus + self->ringBonus >= 10000)
-				self->hasContinues = true;
-
-			SaveRAM *saveRAM = SaveGame_GetSaveRAM();
-			self->score      = saveRAM->score;
-			self->score1UP   = saveRAM->score1UP;
-			self->lives      = saveRAM->lives;
-			if ((UFO_Setup && saveRAM->chaosEmeralds == 0b01111111) || (!UFO_Setup && HM_global.currentSave->superEmeralds == 0b01111111)) {
-				self->messageType = SC_MSG_ALLEMERALDS;
-			} else {
-				if (UFO_Setup) {
-					self->messageType = !UFO_Setup->timedOut ? SC_MSG_GOTEMERALD : SC_MSG_SPECIALCLEAR;
-				} else {
-					self->messageType = SC_MSG_GOTEMERALD;
-				}
-			}
-		}
-
-		self->messagePos1.x = 0x1400000;
-		self->messagePos1.y = 0x580000;
-
-		self->messagePos2.x = -0x1400000;
-		self->messagePos2.y = 0x700000;
-
-		self->scoreBonusPos.x = 0x1E80000;
-		self->scoreBonusPos.y = 0x8C0000;
-
-		self->ringBonusPos.x = 0x3080000;
-		self->ringBonusPos.y = 0xAC0000;
-
-		self->machBonusPos.x = 0x4280000;
-		self->machBonusPos.y = 0xBC0000;
-
-		self->perfectBonusPos.x = 0x4280000;
-		self->perfectBonusPos.y = 0xBC0000;
-		self->continuePos.x     = 0x5480000;
-		self->continuePos.y     = 0xCC0000;
-
-		if (UFO_Setup) RSDK.CopyPalette(1, 0, 0, 128, 48);
-
-		for (int32 i = 0; i < 7; ++i) {
-			self->emeraldPositions[i] = 0x1100000 + (i * 0x200000);
-			self->emeraldSpeeds[i]    = -0xA0000 + (i * -0xA000);
-		}
-
-		RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_BONUS, &self->bonusAnimator, true, 0);
-		RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_NUMBERS, &self->numbersAnimator, true, 0);
-		RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_EMERALDS, &self->emeraldsAnimator, true, 0);
-		switch (GET_CHARACTER_ID(1)) {
-			default:
-			case ID_SONIC: RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_SONIC, &self->playerNameAnimator, true, 0);
-#if MANIA_USE_PLUS
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_SONIC);
-#else
-				RSDK.SetSpriteAnimation(SpecialClear->continueFrames, 0, &self->continueAnimator, true, SC_ANI_TAILS);
-#endif
-				break;
-
-			case ID_TAILS: RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_TAILS, &self->playerNameAnimator, true, 0);
-#if MANIA_USE_PLUS
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_TAILS);
-#else
-				RSDK.SetSpriteAnimation(SpecialClear->continueFrames, 0, &self->continueAnimator, true, SC_ANI_TAILS);
-#endif
-				break;
-
-			case ID_KNUCKLES: RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_KNUX, &self->playerNameAnimator, true, 0);
-#if MANIA_USE_PLUS
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_KNUX);
-#else
-				RSDK.SetSpriteAnimation(SpecialClear->continueFrames, 0, &self->continueAnimator, true, SC_ANI_TAILS);
-#endif
-				break;
-
-#if MANIA_USE_PLUS
-			case ID_MIGHTY:
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_MIGHTY, &self->playerNameAnimator, true, 0);
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, 3);
-				break;
-
-			case ID_RAY:
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_RAY, &self->playerNameAnimator, true, 0);
-				RSDK.SetSpriteAnimation(SpecialClear->aniFrames, SC_ANI_CONTINUE, &self->continueAnimator, true, SC_ANI_RAY);
-				break;
-#endif
-		}
-    }
 }
 
 void SpecialClear_State_SetupDelay() {

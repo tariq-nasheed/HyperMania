@@ -38,6 +38,10 @@ typedef struct {
 extern ObjectUFO_Setup *UFO_Setup;
 
 typedef struct {
+	int32 timedOut;
+	int32 machLevel;
+	int32 scoreBonus;
+	int32 rings;
 	int32 specialStageID;
 } UFO_HPZbuffer_t;
 extern UFO_HPZbuffer_t UFO_HPZbuffer;

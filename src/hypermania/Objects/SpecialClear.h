@@ -88,6 +88,14 @@ typedef struct {
 
 extern ObjectSpecialClear *SpecialClear;
 
+typedef struct {
+	int32 SEAniFrames;
+	Animator SEAnimator;
+} SpecialClearStaticExt_t;
+
+extern SpecialClearStaticExt_t SpecialClearStaticExt;
+
+
 // =============================================================================
 
 // Functions -------------------------------------------------------------------
@@ -101,6 +109,7 @@ extern void (*SpecialClear_DrawNumbers)(Vector2 *pos, int32 value);
 void SpecialClear_Update_OVERLOAD();
 void SpecialClear_Draw_OVERLOAD();
 void SpecialClear_Create_OVERLOAD(void* data);
+void SpecialClear_StageLoad_OVERLOAD();
 
 void SpecialClear_State_SetupDelay();
 
@@ -109,6 +118,6 @@ void SpecialClear_State_SetupDelay();
   IMPORT_PUBLIC_FUNC(SpecialClear_State_ExitFinishMessage); \
   IMPORT_PUBLIC_FUNC(SpecialClear_State_ExitResults); \
   IMPORT_PUBLIC_FUNC(SpecialClear_DrawNumbers); \
-  MOD_REGISTER_OBJ_OVERLOAD(SpecialClear, SpecialClear_Update_OVERLOAD, NULL, NULL, SpecialClear_Draw_OVERLOAD, SpecialClear_Create_OVERLOAD, NULL, NULL, NULL, NULL)
+  MOD_REGISTER_OBJ_OVERLOAD(SpecialClear, SpecialClear_Update_OVERLOAD, NULL, NULL, SpecialClear_Draw_OVERLOAD, SpecialClear_Create_OVERLOAD, SpecialClear_StageLoad_OVERLOAD, NULL, NULL, NULL)
 
 #endif //! OBJ_SPECIALCLEAR_H

@@ -17,6 +17,10 @@ bool32 UFO_Setup_State_FinishFadeout_HOOK(bool32 skippedState) {
 		HPZ_results = true;
 		RSDK.SetScene("HyperMania", "Hidden Palace");
 		RSDK.LoadScene();
+		UFO_HPZbuffer.timedOut = UFO_Setup->timedOut;
+		UFO_HPZbuffer.machLevel = UFO_Setup->machLevel;
+		UFO_HPZbuffer.scoreBonus = UFO_Setup->scoreBonus;
+		UFO_HPZbuffer.rings = UFO_Setup->rings;
 		UFO_HPZbuffer.specialStageID = UFO_Setup->specialStageID;
 		self->visible = false;
 		self->state   = StateMachine_None;
