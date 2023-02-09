@@ -13,7 +13,7 @@ Press **Z** (default binding is E key) while super or collect all Super Emeralds
 - Hyper abilities - Sonic, Knuckles, and Mighty are feature complete while Tails' flickies can only attack bosses up to Flying Battery,
 Ray does not have an ability yet.
 - Hidden Palace Zone - Can be accessed when touching a Super Ring with all Chaos Emeralds collected, features transfer animation and ability to collect Super Emeralds.
-Encore special stages are being used as placeholders until new maps are created. Results screen is currently unimplemented (reuses Chaos Emerald screen).
+Encore special stages are being used as placeholders until new maps are created.
 
 # How to build
 
