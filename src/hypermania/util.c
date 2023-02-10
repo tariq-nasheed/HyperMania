@@ -19,6 +19,8 @@ static void HM_Save_SaveCB(int32 status) {
 		return;
 	}
 	printf("save finish\n");
+
+	if (!HM_global.currentSave) return;
 	printf("emeralds transfered? ");
 	if (HM_global.currentSave->transferedEmeralds) {
 		printf("yes\n");
@@ -43,6 +45,8 @@ static void HM_Save_LoadCB(int32 status) {
 		return;
 	}
 	printf("load finish\n");
+
+	if (!HM_global.currentSave) return;
 	printf("emeralds transfered? ");
 	if (HM_global.currentSave->transferedEmeralds) {
 		printf("yes\n");
@@ -64,13 +68,11 @@ HM_SaveRAM* HM_Save_GetDataPtr(int32 slot, bool32 encore) {
 }
 
 void HM_Save_SaveFile() {
-	if (globals->saveSlotID == NO_SAVE_SLOT) return;
 	printf("save start\n");
 	API.SaveUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_SaveCB, false);
 }
 
 void HM_Save_LoadFile() {
-	if (globals->saveSlotID == NO_SAVE_SLOT) return;
 	printf("load start\n");
 	API.LoadUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_LoadCB);
 }

@@ -141,7 +141,7 @@ void Player_Create_OVERLOAD(void* data) {
 	Mod.Super(Player->classID, SUPER_CREATE, data);
 	RSDK_THIS(Player);
 
-	PlayerExt* ext = (PlayerExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(PlayerExt));
+	AllocExtMem(RSDK.GetEntitySlot(self), sizeof(PlayerExt));
 }
 
 void Player_Update_OVERLOAD() {

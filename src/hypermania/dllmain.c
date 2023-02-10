@@ -32,6 +32,7 @@
 #include "Objects/UFO_Player.h"
 #include "Objects/SpecialClear.h"
 #include "Objects/HUD.h"
+#include "Objects/UISaveSlot.h"
 #include "Objects/HPZ/HPZEmerald.h"
 
 // new classes
@@ -50,7 +51,7 @@ DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
 
 int16 SuperFlickySlot;
 
-
+bool32 loaded_already = false;
 void StageSetup(void* data) {
 	UNUSED(data);
 
@@ -58,8 +59,12 @@ void StageSetup(void* data) {
 	if (globals->saveSlotID == NO_SAVE_SLOT) {
 		HM_global.currentSave = &HM_global.noSaveSlot;
 	} else {
-		if (!HM_global.currentSave || HM_global.currentSave == &HM_global.noSaveSlot) HM_Save_LoadFile();
 		HM_global.currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, globals->gameMode == MODE_ENCORE);
+	}
+	// mnmggggggggggggmmmmmmmm
+	if (!loaded_already) {
+		HM_Save_LoadFile();
+		loaded_already = true;
 	}
 
 	// extension variables -------------------------------------------------
@@ -110,7 +115,7 @@ void StageCleanup(void* data) {
 	}
 
 	// saving save file ----------------------------------------------------
-	if (HM_global.currentSave && HM_global.currentSave != &HM_global.noSaveSlot) HM_Save_SaveFile();
+	if (globals->saveSlotID != NO_SAVE_SLOT && HM_global.currentSave && HM_global.currentSave != &HM_global.noSaveSlot) HM_Save_SaveFile();
 
 	// enemy callback shit idk ---------------------------------------------
 	EnemyInfoSlot = 0;
@@ -168,7 +173,9 @@ void InitModAPI(void) {
 	OBJ_SPECIALRING_SETUP;
 	OBJ_UFO_PLAYER_SETUP;
 	OBJ_SPECIALCLEAR_SETUP;
+	OBJ_UISAVESLOT_SETUP;
 	OBJ_HUD_SETUP;
+
 
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, NULL, NULL, ImageTrail_Draw_Hook, NULL, NULL, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(HPZEmerald, HPZEmerald_Update_Hook, NULL, NULL, HPZEmerald_Draw_Hook, HPZEmerald_Create_Hook, HPZEmerald_StageLoad_Hook, NULL, NULL, NULL);

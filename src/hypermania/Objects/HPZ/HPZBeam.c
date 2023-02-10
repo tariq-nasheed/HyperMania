@@ -4,16 +4,6 @@
 
 ObjectHPZBeam* HPZBeam;
 
-uint32 super_emerald_lookup[7] = {
-	7, // red
-	3, // blue
-	2, // yellow
-	1, // green
-	4, // purple
-	5, // gray
-	6  // cyan
-};
-
 void HPZBeam_Update(void) {
 	RSDK_THIS(HPZBeam);
 

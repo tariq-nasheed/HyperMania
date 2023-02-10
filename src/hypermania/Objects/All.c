@@ -27,6 +27,16 @@ typedef struct {
 	Animator animator;
 } HPZEmeraldExt;
 
+uint32 super_emerald_lookup[7] = {
+	7, // red
+	3, // blue
+	2, // yellow
+	1, // green
+	4, // purple
+	5, // gray
+	6  // cyan
+};
+
 
 #include "Player.c"
 #include "ImageTrail.c"
@@ -35,6 +45,7 @@ typedef struct {
 #include "UFO_Player.c"
 #include "SpecialClear.c"
 #include "HUD.c"
+#include "UISaveSlot.c"
 
 #include "SuperFlicky.c"
 #include "HyperStars.c"
