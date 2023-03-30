@@ -25,7 +25,7 @@ mkdir build
 cd build
 cmake .. .
 make
-mv libhypermania.so ../../
+mv hypermania.so ../../
 ```
 or you can use `./build.sh` to automate this process if you don't mind running CMake every time you compile
 
@@ -33,7 +33,7 @@ or you can use `./build.sh` to automate this process if you don't mind running C
 - Make sure to have the "Desktop Development with C++" workload installed so you have access to CMake
 - When Visual Studio prompts you to enable CMake Integration, pick "Enable and set source directory" and select `src/CMakeLists.txt`
 - Build the project
-- move `libhypermania.dll` from `src\out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is)
+- move `hypermania.dll` from `src\out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is)
 
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary
