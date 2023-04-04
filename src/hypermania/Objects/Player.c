@@ -1,3 +1,5 @@
+#include "ModConfig.h"
+
 #include "Player.h"
 #include "Camera.h"
 #include "Debris.h"
@@ -210,28 +212,34 @@ void Player_Update_OVERLOAD() {
 	if (index != -1) {
 		const hyperpal_t* info = &PlayerPaletteDefs[index];
 
-		if (ext->blend.amount >= 0x100) {
-			if (self->superState == SUPERSTATE_SUPER || self->superBlendState != 1) {
-				ext->blend.amount = 0;
-				ext->blend.state = (ext->blend.state + 1) % (info->rows * 2);
+		if (ModConfig.hyperStyle != 1 || info->rows != 1) {
+			if (ext->blend.amount >= 0x100) {
+				if (self->superState == SUPERSTATE_SUPER || self->superBlendState != 1) {
+					ext->blend.amount = 0;
+					if (ModConfig.hyperStyle != 2) {
+						ext->blend.state = (ext->blend.state + 1) % (info->rows * 2);
+					} else {
+						ext->blend.state = (ext->blend.state + 1) % (6 * 2);
+					}
+				}
+			} else {
+				ext->blend.amount += (ext->blend.state < 0) ? 8
+					                                    : 16 + 24 * (ext->blend.state & 1);
 			}
-		} else {
-			ext->blend.amount += (ext->blend.state < 0) ? 8
-			                                            : 16 + 24 * (ext->blend.state & 1);
-		}
 
-		// paletteSlot and bankID are usually the same value but theyre seperate arguments just in case
-		if (HCZSetup) {
-			Player_BlendHyperPalette(1, 1, info);
-		} else if (CPZSetup) {
-			Player_BlendHyperPalette(2, 2, info);
-		}
-		Player_BlendHyperPalette(0, 0, info);
-		if (FarPlane) {
-			RSDK.CopyPalette(0, info->startIndex, 3, info->startIndex, 6);
-		} else if (OOZSetup) {
-			RSDK.CopyPalette(0, info->startIndex, 1, info->startIndex, 6);
-			RSDK.CopyPalette(0, info->startIndex, 2, info->startIndex, 6);
+			// paletteSlot and bankID are usually the same value but theyre seperate arguments just in case
+			if (HCZSetup) {
+				Player_BlendHyperPalette(1, 1, info);
+			} else if (CPZSetup) {
+				Player_BlendHyperPalette(2, 2, info);
+			}
+			Player_BlendHyperPalette(0, 0, info);
+			if (FarPlane) {
+				RSDK.CopyPalette(0, info->startIndex, 3, info->startIndex, 6);
+			} else if (OOZSetup) {
+				RSDK.CopyPalette(0, info->startIndex, 1, info->startIndex, 6);
+				RSDK.CopyPalette(0, info->startIndex, 2, info->startIndex, 6);
+			}
 		}
 	}
 
@@ -245,7 +253,13 @@ void Player_Update_OVERLOAD() {
 		}
 
 		Entity* entity = RSDK_GET_ENTITY_GEN(self->playerID + Player->playerCount);
-		if (entity->classID != HyperStars->classID) RSDK.ResetEntity(entity, HyperStars->classID, self);
+		if (entity->classID != HyperStars->classID) {
+			if (index != -1 && ModConfig.hyperStyle == 1 && PlayerPaletteDefs[index].rows == 1) {
+				destroyEntity(entity);
+			} else {
+				RSDK.ResetEntity(entity, HyperStars->classID, self);
+			}
+		}
 		if (self->characterID == ID_TAILS) {
 			entity = RSDK_GET_ENTITY_GEN(SuperFlickySlot);
 			if (entity->classID != SuperFlicky->classID) RSDK.ResetEntity(entity, SuperFlicky->classID, self);
@@ -374,6 +388,7 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 			fade->timer = 0x180;
 			fade->speedOut = 0x18;
 			fade->state = FXFade_State_FadeIn;
+		
 		} else {
 			self->velocity.x *= 2;
 			self->velocity.y *= 2;
@@ -385,17 +400,19 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 
 void Player_HyperSonicDash() {
 	RSDK_THIS(Player);
-	Player_ClearEnemiesOnScreen(self);
 
 	if (globals->medalMods & MEDAL_NODROPDASH) self->jumpAbilityState = 0;
-	else self->jumpAbilityState = 22; // naughty naughty
+	else if (!ModConfig.originsHyperDash) self->jumpAbilityState = 22; // naughty naughty
 	if (!(self->up || self->down || self->left || self->right)) {
+		if (ModConfig.originsHyperDash) return;
 		self->velocity.x = 0x80000 * (self->direction ? -1 : 1);
 		self->velocity.y = 0;
 	} else {
 		self->velocity.x = 0x80000 * (self->right - self->left);
 		self->velocity.y = 0x80000 * (self->down - self->up);
+		if (ModConfig.originsHyperDash)  self->jumpAbilityState = 0;
 	}
+	Player_ClearEnemiesOnScreen(self);
 
 	RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
 	RSDK.SetChannelAttributes(RSDK.PlaySfx(ItemBox->sfxHyperRing, false, 0xFF), 0.4, 0.0, 1.0);
@@ -406,9 +423,15 @@ void Player_HyperSonicDash() {
 	}
 
 	EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-	fade->timer = 0x200;
-	fade->speedOut = 0x30;
-	fade->state = FXFade_State_FadeIn;
+	if (!ModConfig.originsHyperDash) {
+		fade->timer = 0x200;
+		fade->speedOut = 0x30;
+		fade->state = FXFade_State_FadeIn;
+	} else {
+		fade->speedIn = 0x200;
+		fade->speedOut = 0x30;
+		fade->state = FXFade_State_FadeOut;
+	}
 
 	const int32 vel = 0x2C000;
 	for (int32 i = 0; i != 4; ++i) {
@@ -429,7 +452,8 @@ void Player_HyperSonicDash() {
 void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t* info) {
 	RSDK_THIS(Player);
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	const color* palette = info->colors[paletteSlot];
+	color* palette = info->colors[paletteSlot];
+	if (ModConfig.hyperStyle == 2 && info->rows == 1) palette = PlayerPaletteDefs[0].colors[paletteSlot]; // TODO make sure to recode this to account for underwater palettes later
 
 	if (ext->blend.state == HYPERBLEND_FADEIN) {
 		for (int32 i = 0; i < 6; ++i) {

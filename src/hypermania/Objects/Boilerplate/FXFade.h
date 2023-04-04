@@ -31,5 +31,6 @@ extern ObjectFXFade* FXFade;
 
 // Imported Functions
 extern void (*FXFade_State_FadeIn)(void);
+extern void (*FXFade_State_FadeOut)(void);
 
 #endif //! OBJ_FXFADE_H

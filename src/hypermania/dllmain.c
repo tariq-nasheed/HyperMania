@@ -1,6 +1,7 @@
 #include "../GameAPI/C/GameAPI/Game.h"
 
 #include "util.h"
+#include "ModConfig.h"
 
 // game classes litte/no notable modifications
 #include "Objects/Boilerplate/SaveGame.h"
@@ -50,6 +51,7 @@ DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
 #endif
 
 int16 SuperFlickySlot;
+ModConfig_t ModConfig;
 
 bool32 loaded_already = false;
 void StageSetup(void* data) {
@@ -132,7 +134,14 @@ void InitModAPI(void) {
 	Mod.AddModCallback(MODCB_ONSTAGELOAD, StageSetup);
 	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 
-	// Boilerplate ------------------------------------------------------------
+	// Config --------------------------------------------------------------
+	ModConfig.originsHyperDash = Mod.GetSettingsBool("", "Config:originsHyperDash", false);
+	ModConfig.hyperStyle = Mod.GetSettingsInteger("", "Config:hyperStyle", 0);
+	Mod.SetSettingsBool("Config:originsHyperDash", ModConfig.originsHyperDash);
+	Mod.SetSettingsInteger("Config:hyperStyle", ModConfig.hyperStyle);
+	Mod.SaveSettings();
+
+	// Boilerplate ---------------------------------------------------------
 	OBJ_MUSIC_SETUP;
 	OBJ_RING_SETUP;
 	OBJ_UFO_SETUP_SETUP;
@@ -142,6 +151,7 @@ void InitModAPI(void) {
 	Debris_State_Move = Mod.GetPublicFunction(NULL, "Debris_State_Move");
 	Debris_State_FallAndFlicker = Mod.GetPublicFunction(NULL, "Debris_State_FallAndFlicker");
 	FXFade_State_FadeIn = Mod.GetPublicFunction(NULL, "FXFade_State_FadeIn");
+	FXFade_State_FadeOut = Mod.GetPublicFunction(NULL, "FXFade_State_FadeOut");
 	ItemBox_State_Broken = Mod.GetPublicFunction(NULL, "ItemBox_State_Broken");
 	ItemBox_Break = Mod.GetPublicFunction(NULL, "ItemBox_Break");
 	Zone_GetZoneID = Mod.GetPublicFunction(NULL, "Zone_GetZoneID");
