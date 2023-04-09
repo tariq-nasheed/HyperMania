@@ -44,18 +44,18 @@ PlayerStaticExt_t PlayerStaticExt;
 
 // C doesn't let you initialize arrays inside of anonymous structs so i have to do this instead of putting it in PlayerStaticExt
 static color hyperPalette_Sonic[36] = {
-	0xF0C001, 0xF0D028, 0xF0E040, 0xF0E860, 0xF0E898, 0xF0E8D0,  // yellow (TODO make seperate from mania super sonic yellow)
-	0xCC7A8C, 0xE6A0A5, 0xEEB9B6, 0xECCCC9, 0xECD8D3, 0xEFE8E3,  // pink
-	0x8A6E90, 0xBE9BC0, 0xD6B4D8, 0xE7C4E6, 0xEED6EB, 0xF9ECF5,  // purple
-	0x6877E0, 0x82A1EF, 0x9EC2F9, 0xB4D8FC, 0xC5E3F8, 0xD8F3F3,  // blue
-	0x00B354, 0x3CCF5E, 0x64E373, 0x96EF96, 0xBCF3BD, 0xEBF5EA,  // green
-	0xAF9600, 0xC7C20E, 0xC4D734, 0xC7E463, 0xD3F296, 0xF7F3F7   // lime yellow
+	0xF0BD12, 0xEFD445, 0xF5EA5A, 0xF4F09E, 0xF5F5B9, 0xECECD9,  // yellow
+	0xF58DA2, 0xF3ADB0, 0xF3C7C4, 0xF3D6D2, 0xF3E6E2, 0xF3F5F5,  // pink
+	0xB873CC, 0xC79DCE, 0xD5BDD5, 0xE2CADE, 0xE7E1E5, 0xF2F0F1,  // purple
+	0x8393F6, 0x8FAEF6, 0xAFCBF6, 0xC1D8F6, 0xD2E4F6, 0xF3F5F6,  // blue
+	0x00D15A, 0x17E066, 0x6FE295, 0xA3E2A8, 0xD3E5CF, 0xE7E7E7,  // green
+	0xCCC11C, 0xD9D551, 0xDEE384, 0xDDE3A4, 0xDDEABA, 0xE4EAD3   // lime yellow
 };
 
 color PlayerPaletteWhite[3][6] = {
-	{ 0xB7CECE, 0xDFF3F3, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF },
-	{ 0xB7CECE, 0xDFF3F3, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF },
-	{ 0xB7CECE, 0xDFF3F3, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF }
+	{ 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF },
+	{ 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF },
+	{ 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF, 0xFFFFFF }
 };
 
 hyperpal_t PlayerPaletteDefs[] = {
@@ -123,7 +123,7 @@ void Player_StageLoad_OVERLOAD() {
 
 void Player_Draw_OVERLOAD() {
 	Mod.Super(Player->classID, SUPER_DRAW, NULL);
-	RSDK_THIS(Player);
+	/*RSDK_THIS(Player);
 
 	if (Player_IsHyper(self)) {
 		int32 old_alpha = self->alpha;
@@ -136,7 +136,7 @@ void Player_Draw_OVERLOAD() {
 		RSDK.DrawSprite(&self->animator, NULL, false);
 		self->alpha = old_alpha;
 		self->inkEffect = old_ink;
-	}
+	}*/
 }
 
 void Player_Create_OVERLOAD(void* data) {
@@ -247,6 +247,31 @@ void Player_Update_OVERLOAD() {
 	if (self->superState == SUPERSTATE_SUPER) {
 		self->drownTimer = 0;
 
+		// sparkles :)
+		// not done yet :(
+		/*if (!(Zone->timer & 7)) {
+			int32 sin = RSDK.Sin256(Zone->timer * 5 * 1.5) * RSDK.Sin256(Zone->timer * 5);
+			int32 cos = RSDK.Cos256(Zone->timer * 5 * 3) * RSDK.Sin256(Zone->timer * 5);
+			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, sin * 12 + self->position.x, cos * 18 + self->position.y);
+			sparkle->velocity.x = sin * 5 + self->velocity.x;
+			sparkle->velocity.y = cos * 5 + self->velocity.y;
+			sparkle->state        = Debris_State_Move;
+			sparkle->timer        = 12;
+			sparkle->inkEffect    = INK_ADD;
+			sparkle->alpha        = 0x100;
+			sparkle->drawGroup    = Zone->objectDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
+			sparkle = CREATE_ENTITY(Debris, NULL, -sin * 12 + self->position.x, -cos * 18 + self->position.y);
+			sparkle->velocity.x = -sin * 5 + self->velocity.x;
+			sparkle->velocity.y = -cos * 5 + self->velocity.y;
+			sparkle->state        = Debris_State_Move;
+			sparkle->timer        = 12;
+			sparkle->inkEffect    = INK_ADD;
+			sparkle->alpha        = 0x100;
+			sparkle->drawGroup    = Zone->objectDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
+		}*/
+
 		if (self->characterID == ID_SONIC && ext->can_dash && self->velocity.y >= 0 && self->jumpPress) {
 			Player_HyperSonicDash();
 			ext->can_dash = false;
@@ -264,9 +289,11 @@ void Player_Update_OVERLOAD() {
 			entity = RSDK_GET_ENTITY_GEN(SuperFlickySlot);
 			if (entity->classID != SuperFlicky->classID) RSDK.ResetEntity(entity, SuperFlicky->classID, self);
 		}
-		if ((void*)self->state == (void*)Player_State_KnuxGlideLeft || (void*)self->state == (void*)Player_State_KnuxGlideRight) {
+		if (((void*)self->state == (void*)Player_State_KnuxGlideLeft && self->left)
+		|| ((void*)self->state == (void*)Player_State_KnuxGlideRight && self->right)) {
 			// gliding momentum retention
 			if (prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
+				//self->velocity.x = 0x80000 * (self->direction ? -1 : 1);
 				if (self->velocity.x > 0 && ext->prev_xvel > self->velocity.x) self->velocity.x = ext->prev_xvel;
 				if (self->velocity.x < 0 && ext->prev_xvel < self->velocity.x) self->velocity.x = ext->prev_xvel;
 				self->abilitySpeed = self->velocity.x / RSDK.Cos512(self->timer) << 9;

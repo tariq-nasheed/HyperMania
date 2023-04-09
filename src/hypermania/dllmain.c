@@ -187,7 +187,7 @@ void InitModAPI(void) {
 	OBJ_HUD_SETUP;
 
 
-	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, NULL, NULL, ImageTrail_Draw_Hook, NULL, NULL, NULL, NULL, NULL);
+	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, ImageTrail_LateUpdate_OVERLOAD, NULL, ImageTrail_Draw_OVERLOAD, ImageTrail_Create_OVERLOAD, NULL, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(HPZEmerald, HPZEmerald_Update_Hook, NULL, NULL, HPZEmerald_Draw_Hook, HPZEmerald_Create_Hook, HPZEmerald_StageLoad_Hook, NULL, NULL, NULL);
 
 	// New --------------------------------------------------------------------

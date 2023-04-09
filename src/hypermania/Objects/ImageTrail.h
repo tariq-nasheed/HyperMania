@@ -3,6 +3,11 @@
 
 #include "GameAPI/Game.h"
 
+// =============================================================================
+
+// Definitions -----------------------------------------------------------------
+
+// =============================================================================
 // Constants
 #define IMAGETRAIL_TRACK_COUNT (7)
 
@@ -35,7 +40,27 @@ typedef struct {
 // Object Struct
 extern ObjectImageTrail *ImageTrail;
 
-// Standard Entity Events
-void ImageTrail_Draw_Hook(void);
+// =============================================================================
+
+// Mod Definitions -------------------------------------------------------------
+
+// =============================================================================
+typedef struct {
+	Vector2 statePos[1];
+	int32 stateRotation[1];
+	uint8 stateDirection[1];
+	uint8 stateVisible[1];
+	int32 stateScale[1];
+	Animator stateAnimator[1];
+} ImageTrailExt;
+
+// =============================================================================
+
+// Functions -------------------------------------------------------------------
+
+// =============================================================================
+void ImageTrail_Create_OVERLOAD(void* data);
+void ImageTrail_Draw_OVERLOAD();
+void ImageTrail_LateUpdate_OVERLOAD();
 
 #endif //! OBJ_IMAGETRAIL_H
