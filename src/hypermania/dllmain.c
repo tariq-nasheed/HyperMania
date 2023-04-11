@@ -1,6 +1,7 @@
 #include "../GameAPI/C/GameAPI/Game.h"
 
 #include "util.h"
+#include "crash.h"
 #include "ModConfig.h"
 
 // game classes litte/no notable modifications
@@ -130,7 +131,22 @@ void StageCleanup(void* data) {
 }
 
 void InitModAPI(void) {
-	printf("******************** HYPERMANIA loaded ********************\n");
+	printf(
+		"\033[93;1mH"
+		"\033[91;1mY"
+		"\033[95;1mP"
+		"\033[96;1mE"
+		"\033[32;1mR"
+		"\033[92;1mM"
+		"\033[37;1mA"
+		"\033[93;1mN"
+		"\033[91;1mI"
+		"\033[95;1mA"
+		"\033[0m"
+	);
+	printf(" loaded\n");
+	CRASH_HANDLING_SETUP;
+
 	Mod.AddModCallback(MODCB_ONSTAGELOAD, StageSetup);
 	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 

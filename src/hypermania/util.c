@@ -8,6 +8,21 @@ bool32 HPZ_SuperSpecialStage;
 // -----------------------------------------------------------------------------
 
 // =============================================================================
+// max output length: 47 characters (counting null terminator)
+#define SAVEMSG_LEN 47
+static void HM_Save_FormatString(char* str) {
+	char emerald_mask[7];
+	for (int32 i = 0; i != 7; ++i) {
+		emerald_mask[i] = (HM_global.currentSave->superEmeralds & 1 << i) ? '1' : '0';
+	}
+	sprintf(
+		str,
+		"emeralds %stransfered, current mask: %.7s",
+		(HM_global.currentSave->transferedEmeralds) ? "" : "not ",
+		emerald_mask
+	);
+}
+
 static void HM_Save_SaveCB(int32 status) {
 #if MANIA_USE_PLUS
 	const bool32 success = (status == STATUS_OK || status == STATUS_NOTFOUND) ? true : false;
@@ -15,23 +30,15 @@ static void HM_Save_SaveCB(int32 status) {
 	const bool32 success = (status) ? true : false;
 #endif
 	if (!success) {
-		printf("hypermania save failed to save!\n");
+		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] failed to save persistent data");
 		return;
 	}
-	printf("save finish\n");
+	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] persistent data saved");
 
 	if (!HM_global.currentSave) return;
-	printf("emeralds transfered? ");
-	if (HM_global.currentSave->transferedEmeralds) {
-		printf("yes\n");
-	} else {
-		printf("no\n");
-	}
-	printf("current super emerald mask: ");
-	for (int32 i = 0; i != 7; ++i) {
-		printf("%d", (HM_global.currentSave->superEmeralds & 1 << i) ? 1 : 0);
-	}
-	printf("\n");
+	char save_message[SAVEMSG_LEN];
+	HM_Save_FormatString(save_message);
+	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] save info: %s", save_message);
 }
 
 static void HM_Save_LoadCB(int32 status) {
@@ -41,23 +48,15 @@ static void HM_Save_LoadCB(int32 status) {
 	const bool32 success = (status) ? true : false;
 #endif
 	if (!success) {
-		printf("hypermania save failed to load!\n");
+		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] failed to load persistent data");
 		return;
 	}
-	printf("load finish\n");
+	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] persistent data loaded");
 
 	if (!HM_global.currentSave) return;
-	printf("emeralds transfered? ");
-	if (HM_global.currentSave->transferedEmeralds) {
-		printf("yes\n");
-	} else {
-		printf("no\n");
-	}
-	printf("current super emerald mask: ");
-	for (int32 i = 0; i != 7; ++i) {
-		printf("%d", (HM_global.currentSave->superEmeralds & 1 << i) ? 1 : 0);
-	}
-	printf("\n");
+	char save_message[SAVEMSG_LEN];
+	HM_Save_FormatString(save_message);
+	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] save info: %s", save_message);
 }
 
 
@@ -68,12 +67,10 @@ HM_SaveRAM* HM_Save_GetDataPtr(int32 slot, bool32 encore) {
 }
 
 void HM_Save_SaveFile() {
-	printf("save start\n");
 	API.SaveUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_SaveCB, false);
 }
 
 void HM_Save_LoadFile() {
-	printf("load start\n");
 	API.LoadUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_LoadCB);
 }
 
@@ -90,11 +87,11 @@ int8 ExtMemoryRevIndex[MAX_EXTMEM_ENTITIES];
 
 void* AllocExtMem(int32 owner_id, uint32 bytes) {
 	if (ExtMemory_size == MAX_EXTMEM_ENTITIES) {
-		printf("ERROR: max extended memory objects already reached\n");
+		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] max extended memory objects already reached");
 		return NULL;
 	}
 	if (owner_id >= ENTITY_COUNT - TEMPENTITY_COUNT) {
-		printf("ERROR: temp entitities are invalid\n");
+		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] temporary entitities are invalid");
 		return NULL;
 	}
 

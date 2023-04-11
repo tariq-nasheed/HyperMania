@@ -2,4 +2,4 @@
 
 ./build.sh
 cd ../../..
-./RSDKv5U
+./RSDKv5U console=true

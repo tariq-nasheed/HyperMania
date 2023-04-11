@@ -327,18 +327,6 @@ void Player_Update_OVERLOAD() {
 }
 
 bool32 Player_State_Transform_HOOK(bool32 skippedState) {
-	/*RSDK_THIS(Player);
-	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
-
-	if (!ERZStart && HM_global.currentSave->transferedEmeralds && HM_global.currentSave->superEmeralds != 0b01111111) {
-		printf("collect all super emeralds >:(\n");
-		self->state = ext->prev_state;
-#if GAME_VERSION != VER_100
-		self->isTransforming = false;
-#endif
-		self->interaction = true;
-		return true;
-	}*/
 	return false;
 }
 
