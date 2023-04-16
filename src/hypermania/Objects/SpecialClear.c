@@ -52,7 +52,7 @@ void SpecialClear_Create_OVERLOAD(void* data) {
 			if (globals->gameMode < MODE_TIMEATTACK && self->machBonus + self->ringBonus >= 10000)
 				self->hasContinues = true;
 
-			SaveRAM *saveRAM = SaveGame_GetSaveRAM();
+			SaveRAM *saveRAM = GetSaveRAM_Safe();
 			self->score      = saveRAM->score;
 			self->score1UP   = saveRAM->score1UP;
 			self->lives      = saveRAM->lives;
@@ -161,7 +161,7 @@ void SpecialClear_Draw_OVERLOAD() {
 
 	// Draw Emeralds
 	if (UFO_Setup) {
-		SaveRAM *saveRAM = SaveGame_GetSaveRAM();
+		SaveRAM *saveRAM = GetSaveRAM_Safe();
 		for (int32 i = 0; i < 7; ++i) {
 			int32 frame = 7;
 			if ((saveRAM->chaosEmeralds >> i) & 1)

@@ -136,17 +136,17 @@ void StageCleanup(void* data) {
 
 void InitModAPI(void) {
 	printf(
-		"\033[93;1mH"
-		"\033[91;1mY"
-		"\033[95;1mP"
-		"\033[96;1mE"
-		"\033[32;1mR"
-		"\033[92;1mM"
-		"\033[37;1mA"
-		"\033[93;1mN"
-		"\033[91;1mI"
-		"\033[95;1mA"
-		"\033[0m"
+		"\x1b[93mH"
+		"\x1b[91mY"
+		"\x1b[95mP"
+		"\x1b[96mE"
+		"\x1b[32mR"
+		"\x1b[92mM"
+		"\x1b[37mA"
+		"\x1b[93mN"
+		"\x1b[91mI"
+		"\x1b[95mA"
+		"\x1b[0m"
 	);
 	printf(" loaded\n");
 	CRASH_HANDLING_SETUP;
