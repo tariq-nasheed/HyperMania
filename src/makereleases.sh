@@ -44,7 +44,3 @@ zip -r src/$modname-windows-legacy.zip --junk-paths src/release-files/modSetting
 cd src/release-files
 zip -r ../$modname-windows-legacy.zip Data
 cd ..
-
-# SOURCE CODE ##################################################################
-zip -r $modname-src.zip $srclist
-tar czf $modname-src.tar.gz $srclist
