@@ -3,4 +3,6 @@
 /src/boilerplate
 hypermania.*
 libhypermania.*
-modSettings.ini
+/modSettings.ini
+HyperMania*.zip
+HyperMania*.tar.gz

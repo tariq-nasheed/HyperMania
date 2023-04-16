@@ -38,14 +38,15 @@ or you can use `./build.sh` to automate this process if you don't mind running C
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary
 - `WINDOWS_BUILD` - Set to enable cross-compiling to Windows on Unix systems
+- `LEGACY` - Set to use version 1 of the mod loader
 
 # Settings
 - `originsHyperDash` - Set to true to use Origins-style controls for Sonic's hyper dash (only activated when holding a direction, locks out drop dash until landing), also makes flash brighter
 
 - `hyperStyle` - Enum that controls how hyper forms look:
- - 0 - non-Sonic characters use super palette that pulsates white
- - 1 - non-Sonic characters reuse super palette cycling and don't have hyper sparkles
- - 2 - non-Sonic characters use Hyper Sonic's 6-color pulsating palette 
+>- 0 - non-Sonic characters use super palette that pulsates white
+>- 1 - non-Sonic characters reuse super palette cycling and don't have hyper sparkles
+>- 2 - non-Sonic characters use Hyper Sonic's 6-color pulsating palette 
 
 # Planned features
 + Hyper ability for Ray
@@ -55,4 +56,5 @@ or you can use `./build.sh` to automate this process if you don't mind running C
 
 # Credits
 + jubbalub + Hydropper - Super Emerald sprites, emerald cave map
-+ Tee Lopes - Hyper theme
++ Tee Lopes - Sonic Forces Theme Unofficial Remix (Hyper theme)
++ Axanery - GameConfig.bin used in legacy builds
