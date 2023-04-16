@@ -15,7 +15,7 @@ static color ColorCycle[6] = { 0xF0F000, 0xfCD8FC,  0xB4D8FC, 0x90FC90,  0xD8fC6
 
 // -----------------------------------------------------------------------------
 bool32 IsHPZStage() {
-	return SaveGame_GetSaveRAM()->chaosEmeralds == 0b01111111;
+	return GET_SAVERAM()->chaosEmeralds == 0b01111111;
 }
 
 void SpecialRing_StageLoad_OVERLOAD() {
@@ -58,7 +58,7 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 				if (Player_CheckCollisionTouch(player, self, &SpecialRing->hitbox) && SceneInfo->timeEnabled) {
 					self->sparkleRadius = TO_FIXED(16);
 					self->state         = SpecialRing_State_Flash;
-					SaveRAM *saveRAM = SaveGame_GetSaveRAM();
+					SaveRAM *saveRAM = GET_SAVERAM();
 #if GAME_VERSION != VER_100
 					if ((saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
 #else
@@ -118,7 +118,7 @@ bool32 SpecialRing_State_Flash_HOOK(bool32 skippedState) {
 	}
 
 #if GAME_VERSION != VER_100
-	SaveRAM *saveRAM = SaveGame_GetSaveRAM();
+	SaveRAM *saveRAM = GET_SAVERAM();
 	if ((saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) || !self->id) {
 #else
 	if (saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) {
@@ -164,7 +164,7 @@ void SpecialRing_State_HPZ_Warp() {
 		RSDK.PlaySfx(SpecialRing->sfxSpecialWarp, false, 0xFE);
 		destroyEntity(self);
 
-		SaveRAM *saveRAM       = SaveGame_GetSaveRAM();
+		SaveRAM *saveRAM       = GET_SAVERAM();
 		saveRAM->storedStageID = SceneInfo->listPos;
 		RSDK.SetScene("HyperMania", "Hidden Palace");
 #if MANIA_USE_PLUS

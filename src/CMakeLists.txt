@@ -11,8 +11,6 @@ if(WINDOWS_BUILD)
 	set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 endif()
 
-set(CMAKE_C_FLAGS "-O2")
-set(CMAKE_CXX_FLAGS "-O2")
 if(RELEASE)
 	message(STATUS "Stripping symbols and debug info")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -s")
@@ -21,6 +19,16 @@ else()
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 endif()
+
+if(LEGACY)
+	message(STATUS "Making legacy build")
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRETRO_MOD_LOADER_VER=1")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DRETRO_MOD_LOADER_VER=1")
+
+endif()
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(MOD_NAME hypermania CACHE STRING "Used as root directory for mod source + logic file name")
 
 add_library(hypermania SHARED
@@ -39,7 +47,6 @@ target_include_directories(hypermania PRIVATE
 
 set_target_properties(hypermania PROPERTIES OUTPUT_NAME ${MOD_NAME})
 set_target_properties(hypermania PROPERTIES PREFIX "")
-
 if(WINDOWS_BUILD)
 	set_target_properties(hypermania PROPERTIES SUFFIX ".dll")
 endif()

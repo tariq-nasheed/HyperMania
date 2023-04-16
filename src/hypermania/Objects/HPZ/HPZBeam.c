@@ -71,7 +71,7 @@ void HPZBeam_Create(void *data) {
 }
 
 void HPZBeam_StageLoad(void) {
-	HPZBeam->sfxImpact = RSDK.GetSfx("BeamImpact.wav");
+	HPZBeam->sfxImpact = RSDK.GetSfx("Stage/BeamImpact.wav");
 	HPZBeam->aniFrames = RSDK.LoadSpriteAnimation("HPZ/WarpBeam.bin", SCOPE_STAGE);
 }
 

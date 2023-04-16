@@ -30,15 +30,15 @@ static void HM_Save_SaveCB(int32 status) {
 	const bool32 success = (status) ? true : false;
 #endif
 	if (!success) {
-		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] failed to save persistent data");
+		HYPERMANIA_PRINT(PRINT_ERROR, "failed to save persistent data");
 		return;
 	}
-	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] persistent data saved");
+	HYPERMANIA_PRINT(PRINT_NORMAL, "persistent data saved");
 
 	if (!HM_global.currentSave) return;
 	char save_message[SAVEMSG_LEN];
 	HM_Save_FormatString(save_message);
-	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] save info: %s", save_message);
+	HYPERMANIA_PRINT(PRINT_NORMAL, "save info: %s", save_message);
 }
 
 static void HM_Save_LoadCB(int32 status) {
@@ -48,15 +48,15 @@ static void HM_Save_LoadCB(int32 status) {
 	const bool32 success = (status) ? true : false;
 #endif
 	if (!success) {
-		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] failed to load persistent data");
+		HYPERMANIA_PRINT(PRINT_ERROR, "failed to load persistent data");
 		return;
 	}
-	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] persistent data loaded");
+	HYPERMANIA_PRINT(PRINT_NORMAL, "persistent data loaded");
 
 	if (!HM_global.currentSave) return;
 	char save_message[SAVEMSG_LEN];
 	HM_Save_FormatString(save_message);
-	RSDK.PrintLog(PRINT_NORMAL, "[HyperMania] save info: %s", save_message);
+	HYPERMANIA_PRINT(PRINT_NORMAL, "save info: %s", save_message);
 }
 
 
@@ -67,11 +67,19 @@ HM_SaveRAM* HM_Save_GetDataPtr(int32 slot, bool32 encore) {
 }
 
 void HM_Save_SaveFile() {
+#if RETRO_REV02
 	API.SaveUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_SaveCB, false);
+#else
+	RSDK.SaveUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM));
+#endif
 }
 
 void HM_Save_LoadFile() {
+#if RETRO_REV02
 	API.LoadUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_LoadCB);
+#else
+	RSDK.LoadUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM));
+#endif
 }
 
 
@@ -87,11 +95,11 @@ int8 ExtMemoryRevIndex[MAX_EXTMEM_ENTITIES];
 
 void* AllocExtMem(int32 owner_id, uint32 bytes) {
 	if (ExtMemory_size == MAX_EXTMEM_ENTITIES) {
-		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] max extended memory objects already reached");
+		HYPERMANIA_PRINT(PRINT_ERROR, "max extended memory objects already reached");
 		return NULL;
 	}
 	if (owner_id >= ENTITY_COUNT - TEMPENTITY_COUNT) {
-		RSDK.PrintLog(PRINT_ERROR, "[HyperMania] temporary entitities are invalid");
+		HYPERMANIA_PRINT(PRINT_ERROR, "temporary entitities are invalid");
 		return NULL;
 	}
 

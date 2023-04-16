@@ -154,12 +154,14 @@ void Player_Update_OVERLOAD() {
 	ext->prev_xvel = self->velocity.x;
 	void* prev_state = self->state;
 
+#if MANIA_USE_PLUS
 	formerCanSuperCB = Player->canSuperCB;
 	Player->canSuperCB = disableSuperPostTransfer;
 	Mod.Super(Player->classID, SUPER_UPDATE, NULL);
 	if (Player->canSuperCB == disableSuperPostTransfer) {
 		Player->canSuperCB = formerCanSuperCB;
 	}
+#endif
 
 	if (prev_state != self->state) {
 		ext->prev_state = prev_state;
@@ -321,7 +323,7 @@ void Player_Update_OVERLOAD() {
 		Music_JingleFadeOut(TRACK_SUPER, false);
 		Music_PlayJingle(TRACK_SUPER);
 #else
-		Music_TransitionTrack(TRACK_HYPER, 1.0);
+		//Music_TransitionTrack(TRACK_HYPER, 1.0);
 #endif
 	}
 }
@@ -335,7 +337,9 @@ bool32 Player_State_Ground_HOOK(bool32 skippedState) {
 	RSDK_THIS(Player);
 	if (!Player_IsHyper(self)) return false;
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+#if MANIA_USE_PLUS
 	if (self->characterID == ID_MIGHTY) ext->can_dash = true;
+#endif
 	return false;
 }
 
@@ -360,7 +364,11 @@ bool32 Player_JumpAbility_Mighty_HOOK(bool32 skippedState) {
 
 	if (!self->invertGravity
 	&& self->jumpPress && self->jumpAbilityState == 0
+#if MANIA_USE_PLUS
 	&& (self->stateInput != Player_Input_P2_AI || (self->up && globals->gameMode != MODE_ENCORE))) {
+#else
+	&& self->stateInput != Player_Input_P2_AI) {
+#endif
 		self->velocity.y *= 2;
 		RSDK.StopSfx(Player->sfxRelease);
 		RSDK.PlaySfx(Player->sfxPeelRelease, false, 0xFF);

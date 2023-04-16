@@ -62,7 +62,11 @@ void StageSetup(void* data) {
 	if (globals->saveSlotID == NO_SAVE_SLOT) {
 		HM_global.currentSave = &HM_global.noSaveSlot;
 	} else {
+#if MANIA_USE_PLUS
 		HM_global.currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, globals->gameMode == MODE_ENCORE);
+#else
+		HM_global.currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, false);
+#endif
 	}
 	// mnmggggggggggggmmmmmmmm
 	if (!loaded_already) {
@@ -215,16 +219,16 @@ void InitModAPI(void) {
 }
 
 #if RETRO_USE_MOD_LOADER
-#  define ADD_PUBLIC_FUNC(func) Mod.AddPublicFunction(#func, (void *)(func))
+  #define ADD_PUBLIC_FUNC(func) Mod.AddPublicFunction(#func, (void *)(func))
 
 void InitModAPI(void);
 
 bool32 LinkModLogic(EngineInfo *info, const char *id) {
-#  if MANIA_USE_PLUS
+  #if MANIA_USE_PLUS
 	LinkGameLogicDLL(info);
-#  else
+  #else
 	LinkGameLogicDLL(*info);
-#  endif
+  #endif
 	globals = Mod.GetGlobals();
 	modID = id;
 	InitModAPI();

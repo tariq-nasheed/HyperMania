@@ -9,12 +9,24 @@ extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, 
 // Helper macros ---------------------------------------------------------------
 
 // =============================================================================
+#if RETRO_REV02
+  #define HYPERMANIA_PRINT(mode, ...) \
+    RSDK.PrintLog(mode, "[HyperMania] "__VA_ARGS__);
+#else
+  #define HYPERMANIA_PRINT(mode, ...) \
+    { \
+      char str[512]; \
+      sprintf(str, "[HyperMania] "__VA_ARGS__); \
+      RSDK.PrintMessage(str, MESSAGE_STRING); \
+    }
+#endif
+
 #define IMPORT_PUBLIC_FUNC(name) \
   name = Mod.GetPublicFunction(NULL, #name); \
-  if (name == NULL) RSDK.PrintLog(PRINT_ERROR, "[HyperMania] "#name" is not a public function\n")
+  if (name == NULL) HYPERMANIA_PRINT(PRINT_ERROR, #name" is not a public function\n")
 #define HOOK_STATE(name, priority) \
   void (*name##_fn) = Mod.GetPublicFunction(NULL, #name); \
-  if (name##_fn == NULL) RSDK.PrintLog(PRINT_ERROR, "[HyperMania] "#name" is not a public function\n"); \
+  if (name##_fn == NULL) HYPERMANIA_PRINT(PRINT_ERROR, #name" is not a public function\n") \
   else Mod.RegisterStateHook(name##_fn, name##_HOOK, priority)
 #define HOOK_IMPORTED_STATE(name, priority) Mod.RegisterStateHook(name, name##_HOOK, priority)
 
@@ -24,6 +36,11 @@ extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, 
 
 // =============================================================================
 #define SAVE_FILE_NAME "HyperManiaSaveData.bin"
+#if MANIA_USE_PLUS
+  #define GET_SAVERAM() SaveGame_GetSaveRAM()
+#else
+  #define GET_SAVERAM() (SaveRAM*)((globals->saveSlotID == NO_SAVE_SLOT) ? globals->noSaveSlot : SaveGame_GetDataPtr(globals->saveSlotID))
+#endif
 
 typedef struct {
 	uint32 transferedEmeralds;
