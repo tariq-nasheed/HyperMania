@@ -36,11 +36,6 @@ extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, 
 
 // =============================================================================
 #define SAVE_FILE_NAME "HyperManiaSaveData.bin"
-#if MANIA_USE_PLUS
-  #define GET_SAVERAM() SaveGame_GetSaveRAM()
-#else
-  #define GET_SAVERAM() (SaveRAM*)((globals->saveSlotID == NO_SAVE_SLOT) ? globals->noSaveSlot : SaveGame_GetDataPtr(globals->saveSlotID))
-#endif
 
 typedef struct {
 	uint32 transferedEmeralds;
