@@ -27,7 +27,6 @@ typedef struct {
 
 extern ObjectBuzzBomber *BuzzBomber;
 void BuzzBomber_EnemyInfoHook(void);
-void BuzzBomber_DestroyProjectile(EntityPlayer* player, Entity* e);
 extern void (*BuzzBomber_State_Flying)(void);
 extern void (*BuzzBomber_State_Idle)(void);
 extern void (*BuzzBomber_State_DetectedPlayer)(void);

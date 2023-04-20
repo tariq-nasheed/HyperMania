@@ -521,7 +521,12 @@ int32 Player_GetIndexFromID(int32 ID) {
 void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
 	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
-		if (!entity->classID || !IsVulnerableEnemy(entity, false) || !IsEnemyOnScreen(entity)) continue;
-		HitEnemy(player, entity);
+		if (entity->classID && IsVulnerableEnemy(entity, false) && IsEnemyOnScreen(entity)) {
+			HitEnemy(player, entity);
+		}
+
+		if (!IsAttackableEntity(entity, 0)) continue;
+		if (!RSDK.CheckOnScreen(entity, NULL)) continue;
+		AttackableClasses[EntAttackIndex[RSDK.GetEntitySlot(entity)]].onHit(player, entity);
 	}
 }

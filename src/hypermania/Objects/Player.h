@@ -413,4 +413,37 @@ Hitbox* GetEnemyHitbox(void* e);
 bool32 IsEnemyOnScreen(void* e);
 void HitEnemy(EntityPlayer* player, void* e);
 
+
+#define BreakBadnik(player, e) Generic_BadnikBreak(player, e, true)
+#define MAX_ATTACKABLE_CLASSES 32
+#define ENTATTACK_INVALID -1
+#define ADD_ATTACKABLE_CLASS(id, vulnerable_func, hitbox_func, hit_func, flags_) { \
+  AttackableClasses[AttackableClasses_size].classID = id; \
+  AttackableClasses[AttackableClasses_size].checkVulnerable = vulnerable_func; \
+  AttackableClasses[AttackableClasses_size].getHitbox = hitbox_func; \
+  AttackableClasses[AttackableClasses_size].onHit = hit_func; \
+  AttackableClasses[AttackableClasses_size].flags = flags_; \
+  ++AttackableClasses_size; \
+}
+
+enum AttackableFlags {
+	ATKFLAG_NONE     = 0x00,
+	ATKFLAG_NOANIMAL = 0x01,
+	ATKFLAG_ISBOSS   = 0x02
+};
+typedef struct {
+	uint16 classID;
+	bool32  (*checkVulnerable)(Entity*);
+	Hitbox* (*getHitbox)(Entity*);
+	void    (*onHit)(EntityPlayer*, Entity*);
+	uint8 flags;
+} attackinfo_t;
+extern attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
+extern uint32       AttackableClasses_size;
+
+extern int8 EntAttackIndex[ENTITY_COUNT];
+bool32 IsAttackableEntity(Entity* self, uint8 mask);
+
+
+
 #endif //! OBJ_PLAYER_H

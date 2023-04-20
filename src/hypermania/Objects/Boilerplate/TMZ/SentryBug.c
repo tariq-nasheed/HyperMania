@@ -31,5 +31,5 @@ void SentryBug_EnemyInfoHook(void) {
 void SentryBug_StopSound(EntityPlayer* player, Entity* e) {
 	EntitySentryBug* self = (EntitySentryBug*)e;
 	RSDK.StopSfx(SentryBug->sfxSwarm);
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, e, true);
 }

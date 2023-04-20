@@ -69,6 +69,22 @@ typedef struct {
 	StateMachine(state);
 } EntityEnemy;
 
+
+
+
+
+
+bool32 Generic_CheckVulnerable(Entity* self);
+Hitbox* Generic_GetHitbox(Entity* self);
+void Generic_OnHit(EntityPlayer* player, Entity* self);
+
+
+
+
+
+
+
+
 typedef struct {
 	uint16 classID;
 	bool32 animal;
@@ -81,7 +97,7 @@ typedef struct {
 extern EnemyInfo EnemyDefs[32];
 extern int16 EnemyInfoSlot;
 
-void BreakBadnik(EntityPlayer* player, Entity* entity);
+void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnimals);
 
 #define GET_MANIA_FUNC(name) name = Mod.GetPublicFunction(NULL, #name)
 #define REGISTER_ENEMY(name) MOD_REGISTER_OBJ_OVERLOAD(name, NULL, NULL, NULL, NULL, NULL, name##_EnemyInfoHook, NULL, NULL, NULL)

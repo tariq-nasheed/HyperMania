@@ -35,5 +35,5 @@ void FlasherMKII_EnemyInfoHook(void) {
 void FlasherMKII_StopSound(EntityPlayer* player, Entity* e) {
 	EntityFlasherMKII* self = (EntityFlasherMKII*)e;
 	RSDK.StopSfx(FlasherMKII->sfxZap);
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, e, true);
 }

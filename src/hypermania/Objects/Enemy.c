@@ -67,6 +67,42 @@
 EnemyInfo EnemyDefs[32];
 int16 EnemyInfoSlot;
 
+
+
+
+
+
+attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
+uint32       AttackableClasses_size;
+int8 EntAttackIndex[ENTITY_COUNT];
+
+bool32 IsAttackableEntity(Entity* self, uint8 mask) {
+	if (!self) return false;
+	int8 index = EntAttackIndex[RSDK.GetEntitySlot(self)];
+	if (index == ENTATTACK_INVALID) return false;
+	return AttackableClasses[index].checkVulnerable(self);
+}
+
+
+bool32 Generic_CheckVulnerable(Entity* self) {
+	return true;
+}
+
+Hitbox* Generic_GetHitbox(Entity* self) {
+	return NULL;
+}
+
+void Generic_OnHit(EntityPlayer* player, Entity* self) {
+	uint8 flags = EntAttackIndex[RSDK.GetEntitySlot(self)];
+	Generic_BadnikBreak(player, self, (flags & ATKFLAG_NOANIMAL) ? false : true);
+}
+
+
+
+
+
+
+
 bool32 IsVulnerableEnemy(void* e, bool32 count_bosses) {
 	if (!e) return false;
 
@@ -123,9 +159,8 @@ bool32 IsEnemyOnScreen(void* e) {
 	return RSDK.CheckOnScreen(entity, &range);
 }
 
-bool32 last_animal = false;
-void BreakBadnik(EntityPlayer* player, Entity* badnik) {
-	if (last_animal) CREATE_ENTITY(Animals, INT_TO_VOID((Animals->animalTypes[(RSDK.Rand(0, 32) >> 4)]) + 1), badnik->position.x, badnik->position.y);
+void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnimals) {
+	if (spawnAnimals) CREATE_ENTITY(Animals, INT_TO_VOID((Animals->animalTypes[(RSDK.Rand(0, 32) >> 4)]) + 1), badnik->position.x, badnik->position.y);
 	EntityExplosion *explosion = CREATE_ENTITY(Explosion, INT_TO_VOID(EXPLOSION_ENEMY), badnik->position.x, badnik->position.y);
 	explosion->drawGroup       = Zone->objectDrawGroup[1];
 	RSDK.PlaySfx(Explosion->sfxDestroy, false, 255);
@@ -176,12 +211,10 @@ void HitEnemy(EntityPlayer* player, void* e) {
 	Entity* entity = (Entity*)e;
 	for (int32 i = 0; i != EnemyInfoSlot; ++i) {
 		if (EnemyDefs[i].classID == entity->classID) {
-			// dumb
-			last_animal = EnemyDefs[i].animal;
 			if (EnemyDefs[i].destroy_func) {
 				EnemyDefs[i].destroy_func(player, entity);
 			} else if (!EnemyDefs[i].boss) {
-				BreakBadnik(player, entity);
+				Generic_BadnikBreak(player, entity, EnemyDefs[i].animal);
 			}
 		}
 	}
