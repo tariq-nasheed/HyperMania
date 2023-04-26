@@ -60,14 +60,9 @@ typedef struct {
 extern ObjectDDWrecker *DDWrecker;
 
 void DDWrecker_EnemyInfoHook(void);
-bool32 DDWrecker_CheckVulnerable(Entity* e);
-Hitbox* DDWrecker_GetHitbox(Entity* e);
-void DDWrecker_TakeHit(EntityPlayer* player, Entity* e);
 extern void (*DDWrecker_StateBall_Vulnerable)(void);
-extern void (*DDWrecker_StateBall_Partnerless)(void);
 extern void (*DDWrecker_StateBall_Spiked)(void);
-extern void (*DDWrecker_State_Die)(void);
-extern void (*DDWrecker_State_EndBounceAttack)(void);
-extern void (*DDWrecker_State_Debris)(void);
+extern void (*DDWrecker_StateBall_Partnerless)(void);
+extern void (*DDWrecker_Hit)(void);
 
 #endif //! OBJ_DDWRECKER_H

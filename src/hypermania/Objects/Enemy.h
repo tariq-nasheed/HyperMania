@@ -1,6 +1,8 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "GameAPI/Game.h"
 // .h includes start on line 3
+#include "Boilerplate/PGZ/HeavyShinobi.h"
+#include "Boilerplate/PGZ/Shiversaw.h"
 #include "Boilerplate/FBZ/BigSqueeze.h"
 #include "Boilerplate/SPZ/WeatherMobile.h"
 #include "Boilerplate/CPZ/AmoebaDroid.h"
@@ -73,7 +75,7 @@ typedef struct {
 
 
 
-
+extern int32 AttackableClasses_startidx;
 bool32 Generic_CheckVulnerable(Entity* self);
 Hitbox* Generic_GetHitbox(Entity* self);
 void Generic_OnHit(EntityPlayer* player, Entity* self);
@@ -104,6 +106,8 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 
 // object hooks start after the following line (pattern match)
 #define HOOK_ENEMY_OBJECTS \
+  OBJ_HEAVYSHINOBI_SETUP; \
+  OBJ_SHIVERSAW_SETUP; \
   REGISTER_ENEMY(BigSqueeze); \
   MOD_REGISTER_OBJECT_HOOK(TVPole); \
   REGISTER_ENEMY(WeatherMobile); \
@@ -170,6 +174,7 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 
 // function imports start after the following line (pattern match
 #define IMPORT_ENEMY_FUNCTIONS \
+  GET_MANIA_FUNC(Shiversaw_Hit); \
   GET_MANIA_FUNC(BigSqueeze_StateBoss_Idle); \
   GET_MANIA_FUNC(BigSqueeze_StateBoss_Electrified); \
   GET_MANIA_FUNC(BigSqueeze_HandleWallCollisions); \
@@ -193,17 +198,14 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(AmoebaDroid_State_GatherBlobs); \
   GET_MANIA_FUNC(AmoebaDroid_State_SpinBlobs); \
   GET_MANIA_FUNC(AmoebaDroid_State_Destroyed); \
-  GET_MANIA_FUNC(DERobot_State_Explode); \
-  GET_MANIA_FUNC(DERobot_State_ArmDestroyed); \
+  GET_MANIA_FUNC(DERobot_Hit); \
   GET_MANIA_FUNC(DERobot_State_FallLand); \
   GET_MANIA_FUNC(DERobot_State_Walk); \
   GET_MANIA_FUNC(DERobot_State_ArmAttack); \
+  GET_MANIA_FUNC(DDWrecker_Hit); \
   GET_MANIA_FUNC(DDWrecker_StateBall_Vulnerable); \
-  GET_MANIA_FUNC(DDWrecker_StateBall_Partnerless); \
   GET_MANIA_FUNC(DDWrecker_StateBall_Spiked); \
-  GET_MANIA_FUNC(DDWrecker_State_Die); \
-  GET_MANIA_FUNC(DDWrecker_State_EndBounceAttack); \
-  GET_MANIA_FUNC(DDWrecker_State_Debris); \
+  GET_MANIA_FUNC(DDWrecker_StateBall_Partnerless); \
   \
   \
   GET_MANIA_FUNC(FlasherMKII_State_Idle); \
@@ -358,17 +360,12 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Newtron_State_Fly); \
   GET_MANIA_FUNC(Newtron_State_Shoot); \
   GET_MANIA_FUNC(Chopper_State_Jump); \
-  GET_MANIA_FUNC(Chopper_State_Swim); \
-  GET_MANIA_FUNC(Chopper_State_ChargeDelay); \
-  GET_MANIA_FUNC(Crabmeat_State_Moving); \
-  GET_MANIA_FUNC(Crabmeat_State_Shoot); \
+  GET_MANIA_FUNC(Crabmeat_State_Projectile); \
   GET_MANIA_FUNC(Batbrain_State_CheckPlayerInRange); \
   GET_MANIA_FUNC(Batbrain_State_DropToPlayer); \
   GET_MANIA_FUNC(Batbrain_State_Fly); \
   GET_MANIA_FUNC(Batbrain_State_FlyToCeiling); \
-  GET_MANIA_FUNC(Motobug_State_Fall); \
-  GET_MANIA_FUNC(Motobug_State_Move); \
-  GET_MANIA_FUNC(Motobug_State_Idle); \
+  GET_MANIA_FUNC(Motobug_State_Smoke); \
   GET_MANIA_FUNC(BuzzBomber_State_Flying); \
   GET_MANIA_FUNC(BuzzBomber_State_Idle); \
   GET_MANIA_FUNC(BuzzBomber_State_DetectedPlayer)

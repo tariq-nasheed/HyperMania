@@ -15,12 +15,12 @@ bool32 BuzzBomber_CheckVulnerable(Entity* self) {
 
 Hitbox* BuzzBomber_GetHitbox(Entity* self) { return &(BuzzBomber->hitboxBadnik); }
 
-void BuzzBomber_onHit(EntityPlayer* player, Entity* self) {
+void BuzzBomber_OnHit(EntityPlayer* player, Entity* self) {
 	if (((EntityBuzzBomber*)self)->projectile) destroyEntity(((EntityBuzzBomber*)self)->projectile);
-	Generic_BadnikBreak(player, (Entity*)self, true);
+	Generic_BadnikBreak(player, self, true);
 }
 
 void BuzzBomber_EnemyInfoHook(void) {
 	Mod.Super(BuzzBomber->classID, SUPER_STAGELOAD, NULL);
-	ADD_ATTACKABLE_CLASS(BuzzBomber->classID, BuzzBomber_CheckVulnerable, BuzzBomber_GetHitbox, Generic_OnHit, ATKFLAG_NONE);
+	ADD_ATTACKABLE_CLASS(BuzzBomber->classID, BuzzBomber_CheckVulnerable, BuzzBomber_GetHitbox, BuzzBomber_OnHit, NULL, ATKFLAG_NONE);
 }

@@ -5,15 +5,17 @@ void (*Newtron_State_StartFly)(void);
 void (*Newtron_State_Fly)(void);
 void (*Newtron_State_Shoot)(void);
 
+bool32 Newtron_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityNewtron*)self)->state == Newtron_State_StartFly
+	 || ((EntityNewtron*)self)->state == Newtron_State_Fly
+	 || ((EntityNewtron*)self)->state == Newtron_State_Shoot
+	);
+}
+
+Hitbox* Newtron_GetHitbox(Entity* self) { return &(Newtron->hitboxShoot); }
+
 void Newtron_EnemyInfoHook(void) {
 	Mod.Super(Newtron->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Newtron->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Newtron_State_StartFly;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Newtron->hitboxShoot;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Newtron_State_Fly;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Newtron->hitboxShoot;
-	EnemyDefs[EnemyInfoSlot].states[2].func = Newtron_State_Shoot;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &Newtron->hitboxShoot;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Newtron->classID, Newtron_CheckVulnerable, Newtron_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

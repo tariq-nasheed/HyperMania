@@ -124,6 +124,11 @@ void StageCleanup(void* data) {
 	// saving save file ----------------------------------------------------
 	if (globals->saveSlotID != NO_SAVE_SLOT && HM_global.currentSave && HM_global.currentSave != &HM_global.noSaveSlot) HM_Save_SaveFile();
 
+	// Attackable Classes --------------------------------------------------
+	AttackableClasses_size = 0;
+	AttackableClasses_startidx = ENTATTACK_INVALID;
+	memset(AttackableClasses, 0, sizeof(AttackableClasses));
+
 	// enemy callback shit idk ---------------------------------------------
 	EnemyInfoSlot = 0;
 	memset(EnemyDefs, 0, sizeof(EnemyInfo) * 16);

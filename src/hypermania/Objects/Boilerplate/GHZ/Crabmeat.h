@@ -22,7 +22,6 @@ typedef struct {
 
 extern ObjectCrabmeat *Crabmeat;
 void Crabmeat_EnemyInfoHook(void);
-extern void (*Crabmeat_State_Moving)(void);
-extern void (*Crabmeat_State_Shoot)(void);
+extern void (*Crabmeat_State_Projectile)(void);
 
 #endif //! OBJ_CRABMEAT_H

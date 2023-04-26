@@ -32,7 +32,6 @@ typedef struct {
 
 extern ObjectSplats *Splats;
 void Splats_EnemyInfoHook(void);
-void Splats_Destroy(EntityPlayer* player, Entity* e);
 extern void (*Splats_State_BounceAround)(void);
 extern void (*Splats_State_JumpOutOfJar)(void);
 extern void (*Splats_State_HandleBouncing)(void);

@@ -22,8 +22,6 @@ typedef struct {
 
 extern ObjectMotobug *Motobug;
 void Motobug_EnemyInfoHook(void);
-extern void (*Motobug_State_Fall)(void);
-extern void (*Motobug_State_Move)(void);
-extern void (*Motobug_State_Idle)(void);
+extern void (*Motobug_State_Smoke)(void);
 
 #endif //! OBJ_MOTOBUG_H

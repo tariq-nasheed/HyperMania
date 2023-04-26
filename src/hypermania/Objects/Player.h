@@ -417,12 +417,14 @@ void HitEnemy(EntityPlayer* player, void* e);
 #define BreakBadnik(player, e) Generic_BadnikBreak(player, e, true)
 #define MAX_ATTACKABLE_CLASSES 32
 #define ENTATTACK_INVALID -1
-#define ADD_ATTACKABLE_CLASS(id, vulnerable_func, hitbox_func, hit_func, flags_) { \
-  AttackableClasses[AttackableClasses_size].classID = id; \
-  AttackableClasses[AttackableClasses_size].checkVulnerable = vulnerable_func; \
-  AttackableClasses[AttackableClasses_size].getHitbox = hitbox_func; \
-  AttackableClasses[AttackableClasses_size].onHit = hit_func; \
-  AttackableClasses[AttackableClasses_size].flags = flags_; \
+#define ADD_ATTACKABLE_CLASS(id, vulnerable_func, hitbox_func, hit_func, pos_func, flags_) { \
+  if (AttackableClasses_startidx == ENTATTACK_INVALID) AttackableClasses_startidx = id; \
+  const uint32 index = id - AttackableClasses_startidx; \
+  AttackableClasses[index].checkVulnerable = vulnerable_func; \
+  AttackableClasses[index].getHitbox = hitbox_func; \
+  AttackableClasses[index].onHit = hit_func; \
+  AttackableClasses[index].adjustPos = pos_func; \
+  AttackableClasses[index].flags = flags_; \
   ++AttackableClasses_size; \
 }
 
@@ -431,18 +433,20 @@ enum AttackableFlags {
 	ATKFLAG_NOANIMAL = 0x01,
 	ATKFLAG_ISBOSS   = 0x02
 };
+
 typedef struct {
-	uint16 classID;
 	bool32  (*checkVulnerable)(Entity*);
 	Hitbox* (*getHitbox)(Entity*);
 	void    (*onHit)(EntityPlayer*, Entity*);
+	void    (*adjustPos)(Entity*); // optional for "weird" classes (i.e. catterkiller jr.)
 	uint8 flags;
 } attackinfo_t;
+
 extern attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
 extern uint32       AttackableClasses_size;
+extern int32        AttackableClasses_startidx;
 
-extern int8 EntAttackIndex[ENTITY_COUNT];
-bool32 IsAttackableEntity(Entity* self, uint8 mask);
+bool32 IsAttackableEntity(Entity* self, uint8 blacklist_mask);
 
 
 

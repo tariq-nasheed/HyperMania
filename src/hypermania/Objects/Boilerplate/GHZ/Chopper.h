@@ -26,7 +26,5 @@ typedef struct {
 extern ObjectChopper *Chopper;
 void Chopper_EnemyInfoHook(void);
 extern void (*Chopper_State_Jump)(void);
-extern void (*Chopper_State_Swim)(void);
-extern void (*Chopper_State_ChargeDelay)(void);
 
 #endif //! OBJ_CHOPPER_H

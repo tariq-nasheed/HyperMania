@@ -1,6 +1,8 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
 // .c includes start on line 3
+#include "Boilerplate/PGZ/HeavyShinobi.c"
+#include "Boilerplate/PGZ/Shiversaw.c"
 #include "Boilerplate/FBZ/BigSqueeze.c"
 #include "Boilerplate/SPZ/WeatherMobile.c"
 #include "Boilerplate/CPZ/AmoebaDroid.c"
@@ -72,14 +74,15 @@ int16 EnemyInfoSlot;
 
 
 
+int8 EntAttackIndex[ENTITY_COUNT];
 attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
 uint32       AttackableClasses_size;
-int8 EntAttackIndex[ENTITY_COUNT];
+int32        AttackableClasses_startidx;
 
-bool32 IsAttackableEntity(Entity* self, uint8 mask) {
-	if (!self) return false;
-	int8 index = EntAttackIndex[RSDK.GetEntitySlot(self)];
-	if (index == ENTATTACK_INVALID) return false;
+bool32 IsAttackableEntity(Entity* self, uint8 blacklist_mask) {
+	if (!self || AttackableClasses_startidx > self->classID) return false;
+	const uint32 index = self->classID - AttackableClasses_startidx;
+	if (index >= MAX_ATTACKABLE_CLASSES || AttackableClasses[index].flags & blacklist_mask || !AttackableClasses[index].checkVulnerable) return false;
 	return AttackableClasses[index].checkVulnerable(self);
 }
 

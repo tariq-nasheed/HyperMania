@@ -25,10 +25,21 @@ void SuperFlicky_Update(void) {
 					self->player->position.y - 0xC00000 + 0xC00000 * (i & 2)
 				};
 			} else if (self->instanceTarget[i]) {
-				target_pos = (Vector2){
-					self->instanceTarget[i]->position.x,
-					self->instanceTarget[i]->position.y
-				};
+				if (!IsAttackableEntity(self->instanceTarget[i], 0)) {
+					target_pos = (Vector2){
+						self->instanceTarget[i]->position.x,
+						self->instanceTarget[i]->position.y
+					};
+				} else {
+					const Vector2 old_pos = self->instanceTarget[i]->position;
+					const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
+					if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
+					target_pos = (Vector2){
+						self->instanceTarget[i]->position.x,
+						self->instanceTarget[i]->position.y
+					};
+					self->instanceTarget[i]->position = old_pos;
+				}
 			} else {
 				target_pos = (Vector2){
 					self->player->position.x + (RSDK.Sin256(self->instanceOsc[i]) * 2 << 12),
@@ -69,11 +80,24 @@ void SuperFlicky_Update(void) {
 		self->position.y = self->instancePos[i].y;
 
 		if (self->instanceTarget[i]) {
-			Hitbox* hitbox = GetEnemyHitbox(self->instanceTarget[i]);
-			if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], hitbox)) {
-				HitEnemy(self->player, self->instanceTarget[i]);
-				self->instanceTarget[i] = NULL;
-				self->instanceCooldown[i] = 0x78;
+			if (!IsAttackableEntity(self->instanceTarget[i], 0)) {
+				Hitbox* hitbox = GetEnemyHitbox(self->instanceTarget[i]);
+				if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], hitbox)) {
+					HitEnemy(self->player, self->instanceTarget[i]);
+					self->instanceTarget[i] = NULL;
+					self->instanceCooldown[i] = 120;
+				}
+			} else {
+				const Vector2 old_pos = self->instanceTarget[i]->position;
+				const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
+				if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
+
+				if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], AttackableClasses[index].getHitbox(self->instanceTarget[i]))) {
+					AttackableClasses[index].onHit(self->player, self->instanceTarget[i]);
+					self->instanceTarget[i] = NULL;
+					self->instanceCooldown[i] = 120;
+				}
+				if (self->instanceTarget[i]) self->instanceTarget[i]->position = old_pos;
 			}
 		}
 
@@ -192,7 +216,7 @@ void SuperFlicky_StageLoad(void) {
 	SuperFlicky->hitbox.top    = -4;
 	SuperFlicky->hitbox.right  = 4;
 	SuperFlicky->hitbox.bottom = 4;
-	SuperFlicky->sfxFlee = RSDK.GetSfx("FlickyFlee.wav");
+	SuperFlicky->sfxFlee = RSDK.GetSfx("Global/FlickyFlee.wav");
 }
 
 #if RETRO_INCLUDE_EDITOR
@@ -210,14 +234,23 @@ void SuperFlicky_HandleAttack(int32 slot) {
 		} else {
 			SuperFlicky_TryFindValidTarget(slot);
 		}
+		return;
 	}
 
-	if (self->instanceTarget[slot] &&
-	(  !IsVulnerableEnemy(self->instanceTarget[slot], true)
-	|| !IsEnemyOnScreen(self->instanceTarget[slot])
-	|| self->instanceTarget[slot]->active == ACTIVE_DISABLED)) {
-		self->instanceTarget[slot] = NULL;
-		self->instanceCooldown[slot] = 0x78;
+	if ((!IsAttackableEntity(self->instanceTarget[slot], 0) && !IsVulnerableEnemy(self->instanceTarget[slot], true))
+	 || self->instanceTarget[slot]->active == ACTIVE_DISABLED) {
+		const Vector2 old_pos = self->instanceTarget[slot]->position;
+		if (IsAttackableEntity(self->instanceTarget[slot], 0)) {
+			const uint32 index = self->instanceTarget[slot]->classID - AttackableClasses_startidx;
+			if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[slot]);
+		}
+		const bool32 visible = RSDK.CheckOnScreen(self->instanceTarget[slot], NULL);
+		self->instanceTarget[slot]->position = old_pos;
+
+		if (!visible) {
+			self->instanceTarget[slot] = NULL;
+			self->instanceCooldown[slot] = 0x78;
+		}
 	}
 }
 
@@ -226,21 +259,32 @@ void SuperFlicky_TryFindValidTarget(int32 slot) {
 
 	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
-		if (!entity->classID || !IsVulnerableEnemy(entity, true) || !IsEnemyOnScreen(entity)) continue;
 
 		// checking if potential victim is already being targeted by another flicky
 		bool32 is_victim = false;
-		for (int32 i = 0; i != SUPERFLICKY_COUNT; ++i) {
-			if (i == slot) continue;
-			if (self->instanceTarget[i] == entity) {
+		for (int32 l = 0; l != SUPERFLICKY_COUNT; ++l) {
+			if (l == slot) continue;
+			if (self->instanceTarget[l] == entity) {
 				is_victim = true;
 				break;
 			}
 		}
+		if (is_victim) continue;
 
-		if (!is_victim) {
+		if (entity->classID && IsVulnerableEnemy(entity, true) && IsEnemyOnScreen(entity)) {
 			self->instanceTarget[slot] = entity;
 			break;
 		}
+
+		if (!IsAttackableEntity(entity, 0)) continue;
+		const uint32 index = entity->classID - AttackableClasses_startidx;
+		const Vector2 old_pos = entity->position;
+		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
+		const bool32 visible = RSDK.CheckOnScreen(entity, NULL);
+		entity->position = old_pos;
+		if (!visible) continue;
+
+		self->instanceTarget[slot] = entity;
+		break;
 	}
 }

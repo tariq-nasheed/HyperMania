@@ -35,8 +35,8 @@ typedef struct {
     Entity *head;
     Entity *shoulderFront;
     Entity *eggman;
-    Entity *legs[6]; // knee, leg, foot (for back, then for front)
-    Entity *arms[4]; // arm, hand, (for back, then for front)
+    Entity *legs[6];
+    Entity *arms[4];
     int32 movingSide;
     int32 unused5;
     int32 angleVel;
@@ -60,11 +60,9 @@ typedef struct {
 
 extern ObjectDERobot *DERobot;
 void DERobot_EnemyInfoHook(void);
-void DERobot_TakeHit(EntityPlayer* player, Entity* e);
 extern void (*DERobot_State_FallLand)(void);
 extern void (*DERobot_State_Walk)(void);
 extern void (*DERobot_State_ArmAttack)(void);
-extern void (*DERobot_State_Explode)(void);
-extern void (*DERobot_State_ArmDestroyed)(void);
+extern void (*DERobot_Hit)(void);
 
 #endif //! OBJ_DEROBOT_H

@@ -318,14 +318,14 @@ void Player_Update_OVERLOAD() {
 	}
 
 	// music handling ------------------------------------------------------
-	if (!ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
+	/*if (!ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
 #if MANIA_USE_PLUS
 		Music_JingleFadeOut(TRACK_SUPER, false);
 		Music_PlayJingle(TRACK_SUPER);
 #else
 		//Music_TransitionTrack(TRACK_HYPER, 1.0);
 #endif
-	}
+	}*/
 }
 
 bool32 Player_State_Transform_HOOK(bool32 skippedState) {
@@ -519,14 +519,25 @@ int32 Player_GetIndexFromID(int32 ID) {
 }
 
 void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
+	int fuck = 0;
 	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
-		if (entity->classID && IsVulnerableEnemy(entity, false) && IsEnemyOnScreen(entity)) {
+		if (entity->classID && IsVulnerableEnemy(entity, false)) {
 			HitEnemy(player, entity);
+			++fuck;
 		}
 
-		if (!IsAttackableEntity(entity, 0)) continue;
-		if (!RSDK.CheckOnScreen(entity, NULL)) continue;
-		AttackableClasses[EntAttackIndex[RSDK.GetEntitySlot(entity)]].onHit(player, entity);
+		if (!IsAttackableEntity(entity, ATKFLAG_ISBOSS)) continue;
+		const uint32 index = entity->classID - AttackableClasses_startidx;
+
+		const Vector2 old_pos = entity->position;
+		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
+		if (RSDK.CheckOnScreen(entity, NULL)) {
+			AttackableClasses[index].onHit(player, entity);
+			++fuck;
+		} else {
+			entity->position = old_pos;
+		}
 	}
+	printf("%d\n", fuck);
 }
