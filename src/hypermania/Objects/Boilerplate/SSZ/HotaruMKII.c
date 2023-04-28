@@ -1,16 +1,19 @@
 #include "HotaruMKII.h"
 
-ObjectHotaruMKII *HotaruMKII;
-void (*HotaruMKII_State_Charging)(void);
-void (*HotaruMKII_State_LaserAttack)(void);
+ObjectHotaruMKII* HotaruMKII;
+void (*HotaruMKII_State_Charging)();
+void (*HotaruMKII_State_LaserAttack)();
 
-void HotaruMKII_EnemyInfoHook(void) {
+bool32 HotaruMKII_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityHotaruMKII*)self)->state == HotaruMKII_State_Charging
+	 || ((EntityHotaruMKII*)self)->state == HotaruMKII_State_LaserAttack
+	);
+}
+
+Hitbox* HotaruMKII_GetHitbox(Entity* self) { return &(HotaruMKII->hitboxBadnik); }
+
+void HotaruMKII_EnemyInfoHook() {
 	Mod.Super(HotaruMKII->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = HotaruMKII->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = HotaruMKII_State_Charging;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &HotaruMKII->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = HotaruMKII_State_LaserAttack;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &HotaruMKII->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(HotaruMKII->classID, HotaruMKII_CheckVulnerable, HotaruMKII_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

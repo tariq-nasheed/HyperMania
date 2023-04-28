@@ -1,43 +1,37 @@
 #include "Hotaru.h"
 
-ObjectHotaru *Hotaru;
-void (*Hotaru_State_CheckPlayerInRange)(void);
-void (*Hotaru_State_FlyOnScreen)(void);
-void (*Hotaru_State_AttachedToScreen)(void);
-void (*Hotaru_State_Charging)(void);
-void (*Hotaru_State_Attacking)(void);
-void (*Hotaru_State_FinishedAttacking)(void);
+ObjectHotaru* Hotaru;
 
-void Hotaru_EnemyInfoHook(void) {
-	Mod.Super(Hotaru->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Hotaru->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Hotaru_State_CheckPlayerInRange;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Hotaru->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Hotaru_State_FlyOnScreen;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Hotaru->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[2].func = Hotaru_State_AttachedToScreen;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &Hotaru->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[3].func = Hotaru_State_Charging;
-	EnemyDefs[EnemyInfoSlot].states[3].hitbox = &Hotaru->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[4].func = Hotaru_State_Attacking;
-	EnemyDefs[EnemyInfoSlot].states[4].hitbox = &Hotaru->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[5].func = Hotaru_State_FinishedAttacking;
-	EnemyDefs[EnemyInfoSlot].states[5].hitbox = &Hotaru->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].destroy_func = Hotaru_Destroy;
-	++EnemyInfoSlot;
+Hitbox* Hotaru_GetHitbox(Entity* self) { return &(Hotaru->hitboxBadnik); }
+
+void Hotaru_OnHit(EntityPlayer* player, Entity* self) {
+	Vector2 position = self->position;
+	if (!(((EntityHotaru*)self)->destroyedHotarus & 1)) {
+		position.x += ((EntityHotaru*)self)->offset1.x;
+		position.y += ((EntityHotaru*)self)->offset1.y;
+		Generic_BadnikBreak_NoEntity(player, position, true);
+		((EntityHotaru*)self)->destroyedHotarus |= 1;
+		if (SceneInfo->entity->classID == SuperFlicky->classID) return;
+	}
+	if (!(((EntityHotaru*)self)->destroyedHotarus & 2)) {
+		position.x += ((EntityHotaru*)self)->offset2.x;
+		position.y += ((EntityHotaru*)self)->offset2.y;
+		Generic_BadnikBreak_NoEntity(player, position, true);
+		((EntityHotaru*)self)->destroyedHotarus |= 2;
+	}
 }
 
-void Hotaru_Destroy(EntityPlayer* player, Entity* e) {
-	EntityHotaru* self = (EntityHotaru*)e;
+void Hotaru_AdjustPos(Entity* self) {
+	if (!(((EntityHotaru*)self)->destroyedHotarus & 1)) {
+		self->position.x += ((EntityHotaru*)self)->offset1.x;
+		self->position.y += ((EntityHotaru*)self)->offset1.y;
+	} else if (!(((EntityHotaru*)self)->destroyedHotarus & 2)) {
+		self->position.x += ((EntityHotaru*)self)->offset2.x;
+		self->position.y += ((EntityHotaru*)self)->offset2.y;
+	}
+}
 
-	int32 storeX = self->position.x;
-	int32 storeY = self->position.y;
-	self->position.x += self->offset1.x;
-	self->position.y += self->offset1.y;
-	if (!(self->destroyedHotarus & 1)) self->destroyedHotarus |= 1;
-	if (!(self->destroyedHotarus & 2)) self->destroyedHotarus |= 2;
-	BreakBadnik(player, e);
-	self->position.x = storeX;
-	self->position.y = storeY;
+void Hotaru_EnemyInfoHook() {
+	Mod.Super(Hotaru->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(Hotaru->classID, Generic_CheckVulnerable, Hotaru_GetHitbox, Hotaru_OnHit, Hotaru_AdjustPos, ATKFLAG_NONE);
 }

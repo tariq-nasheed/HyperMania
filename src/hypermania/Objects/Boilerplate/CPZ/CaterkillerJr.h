@@ -26,9 +26,11 @@ typedef struct {
     Animator smokePuffAnimators[3];
 } EntityCaterkillerJr;
 
-extern ObjectCaterkillerJr *CaterkillerJr;
-void CaterkillerJr_EnemyInfoHook(void);
-void CaterkillerJr_SpawnDebris(EntityPlayer* player, Entity* e);
-extern void (*CaterkillerJr_State_Move)(void);
+extern ObjectCaterkillerJr* CaterkillerJr;
+
+void CaterkillerJr_EnemyInfoHook();
+
+#define OBJ_CATERKILLERJR_SETUP \
+  REGISTER_ENEMY(CaterkillerJr)
 
 #endif //! OBJ_CATERKILLERJR_H

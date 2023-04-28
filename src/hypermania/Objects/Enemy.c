@@ -1,6 +1,9 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
 // .c includes start on line 3
+#include "Boilerplate/SSZ/GigaMetal.c"
+#include "Boilerplate/SSZ/MetalSonic.c"
+#include "Boilerplate/SSZ/HotaruHiWatt.c"
 #include "Boilerplate/PGZ/HeavyShinobi.c"
 #include "Boilerplate/PGZ/Shiversaw.c"
 #include "Boilerplate/FBZ/BigSqueeze.c"
@@ -82,8 +85,8 @@ int32        AttackableClasses_startidx;
 bool32 IsAttackableEntity(Entity* self, uint8 blacklist_mask) {
 	if (!self || AttackableClasses_startidx > self->classID) return false;
 	const uint32 index = self->classID - AttackableClasses_startidx;
-	if (index >= MAX_ATTACKABLE_CLASSES || AttackableClasses[index].flags & blacklist_mask || !AttackableClasses[index].checkVulnerable) return false;
-	return AttackableClasses[index].checkVulnerable(self);
+	if (index >= MAX_ATTACKABLE_CLASSES || !AttackableClasses[index].checkVulnerable) return false;
+	return (AttackableClasses[index].checkVulnerable(self) && !(AttackableClasses[index].flags & blacklist_mask)); // mask check happens at the very end to account for hotaru hi-watts BULLSHIT
 }
 
 
@@ -208,6 +211,52 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnima
 
 	destroyEntity(badnik);
 	badnik->active = ACTIVE_DISABLED;
+}
+
+// hotaru lol
+void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32 spawnAnimals) {
+	if (spawnAnimals) CREATE_ENTITY(Animals, INT_TO_VOID((Animals->animalTypes[(RSDK.Rand(0, 32) >> 4)]) + 1), position.x, position.y);
+	EntityExplosion *explosion = CREATE_ENTITY(Explosion, INT_TO_VOID(EXPLOSION_ENEMY), position.x, position.y);
+	explosion->drawGroup       = Zone->objectDrawGroup[1];
+	RSDK.PlaySfx(Explosion->sfxDestroy, false, 255);
+
+	if (Zone_GetZoneID() > ZONE_INVALID) {
+		int32 characterID = 0;
+		switch (player->characterID) {
+			case ID_SONIC: characterID = 1; break;
+			case ID_TAILS: characterID = 2; break;
+			case ID_KNUCKLES: characterID = 3; break;
+#if MANIA_USE_PLUS
+			case ID_MIGHTY: characterID = 4; break;
+			case ID_RAY: characterID = 5; break;
+#endif
+			default: characterID = 0; break;
+		}
+
+#if MANIA_USE_PLUS
+		//StatInfo info;
+		/*TimeAttackData_TrackEnemyDefeat(&info, Zone_GetZoneID(), Zone->actID, characterID, SceneInfo->filter == (FILTER_BOTH | FILTER_ENCORE),
+		                                FROM_FIXED(position.x), FROM_FIXED(position.y)); // TODO import*/
+		//API.TryTrackStat(&info);
+#else
+		//APICallback_TrackEnemyDefeat(Zone_GetZoneID(), Zone->actID, characterID, FROM_FIXED(position.x), FROM_FIXED(position.y)); // TODO import
+#endif
+	}
+
+	if (globals->gameMode != MODE_COMPETITION) player = RSDK_GET_ENTITY(SLOT_PLAYER1, Player);
+	EntityScoreBonus* scoreBonus = CREATE_ENTITY(ScoreBonus, NULL, position.x, position.y);
+	scoreBonus->drawGroup        = Zone->objectDrawGroup[1];
+	scoreBonus->animator.frameID = player->scoreBonus;
+
+	switch (player->scoreBonus) {
+		case 0: Player_GiveScore(player, 100); break;
+		case 1: Player_GiveScore(player, 200); break;
+		case 2: Player_GiveScore(player, 500); break;
+		case 14: Player_GiveScore(player, 1000); break;
+		case 15: Player_GiveScore(player, 10000); break;
+		default: break;
+	}
+	if (player->scoreBonus < 15) player->scoreBonus++;
 }
 
 void HitEnemy(EntityPlayer* player, void* e) {

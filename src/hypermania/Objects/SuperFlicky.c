@@ -237,20 +237,11 @@ void SuperFlicky_HandleAttack(int32 slot) {
 		return;
 	}
 
-	if ((!IsAttackableEntity(self->instanceTarget[slot], 0) && !IsVulnerableEnemy(self->instanceTarget[slot], true))
-	 || self->instanceTarget[slot]->active == ACTIVE_DISABLED) {
-		const Vector2 old_pos = self->instanceTarget[slot]->position;
-		if (IsAttackableEntity(self->instanceTarget[slot], 0)) {
-			const uint32 index = self->instanceTarget[slot]->classID - AttackableClasses_startidx;
-			if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[slot]);
-		}
-		const bool32 visible = RSDK.CheckOnScreen(self->instanceTarget[slot], NULL);
-		self->instanceTarget[slot]->position = old_pos;
-
-		if (!visible) {
-			self->instanceTarget[slot] = NULL;
-			self->instanceCooldown[slot] = 0x78;
-		}
+	if (self->instanceTarget[slot]->active == ACTIVE_DISABLED
+	 || (!IsAttackableEntity(self->instanceTarget[slot], 0) && !IsVulnerableEnemy(self->instanceTarget[slot], true))
+	 || !AttackableClasses[self->instanceTarget[slot]->classID - AttackableClasses_startidx].checkVulnerable(self->instanceTarget[slot])) {
+		self->instanceTarget[slot] = NULL;
+		self->instanceCooldown[slot] = 120; // TODO is this even supposed to happen? make sure to check AIR code later
 	}
 }
 

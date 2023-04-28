@@ -1,6 +1,9 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "GameAPI/Game.h"
 // .h includes start on line 3
+#include "Boilerplate/SSZ/GigaMetal.h"
+#include "Boilerplate/SSZ/MetalSonic.h"
+#include "Boilerplate/SSZ/HotaruHiWatt.h"
 #include "Boilerplate/PGZ/HeavyShinobi.h"
 #include "Boilerplate/PGZ/Shiversaw.h"
 #include "Boilerplate/FBZ/BigSqueeze.h"
@@ -79,6 +82,7 @@ extern int32 AttackableClasses_startidx;
 bool32 Generic_CheckVulnerable(Entity* self);
 Hitbox* Generic_GetHitbox(Entity* self);
 void Generic_OnHit(EntityPlayer* player, Entity* self);
+void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32 spawnAnimals);
 
 
 
@@ -106,6 +110,9 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 
 // object hooks start after the following line (pattern match)
 #define HOOK_ENEMY_OBJECTS \
+  OBJ_METALSONIC_SETUP; \
+  OBJ_GIGAMETAL_SETUP; \
+  OBJ_HOTARUHIWATT_SETUP; \
   OBJ_HEAVYSHINOBI_SETUP; \
   OBJ_SHIVERSAW_SETUP; \
   REGISTER_ENEMY(BigSqueeze); \
@@ -143,11 +150,11 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(Jellygnite); \
   REGISTER_ENEMY(Blastoid); \
   REGISTER_ENEMY(Pointdexter); \
-  REGISTER_ENEMY(Kabasira); \
-  REGISTER_ENEMY(Dango); \
-  REGISTER_ENEMY(Kanabun); \
-  REGISTER_ENEMY(HotaruMKII); \
-  REGISTER_ENEMY(Hotaru); \
+  OBJ_KABASIRA_SETUP; \
+  OBJ_DANGO_SETUP; \
+  OBJ_KANABUN_SETUP; \
+  OBJ_HOTARUMKII_SETUP; \
+  OBJ_HOTARU_SETUP; \
   REGISTER_ENEMY(Woodrow); \
   REGISTER_ENEMY(Dragonfly); \
   REGISTER_ENEMY(IceBomba); \
@@ -162,7 +169,7 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(MicDrop); \
   REGISTER_ENEMY(Spiny); \
   REGISTER_ENEMY(Grabber); \
-  REGISTER_ENEMY(CaterkillerJr); \
+  OBJ_CATERKILLERJR_SETUP; \
   REGISTER_ENEMY(Bubbler); \
   REGISTER_ENEMY(Splats); \
   REGISTER_ENEMY(Newtron); \
@@ -170,7 +177,7 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(Crabmeat); \
   REGISTER_ENEMY(Batbrain); \
   REGISTER_ENEMY(Motobug); \
-  REGISTER_ENEMY(BuzzBomber)
+  OBJ_BUZZBOMBER_SETUP
 
 // function imports start after the following line (pattern match
 #define IMPORT_ENEMY_FUNCTIONS \
@@ -283,18 +290,6 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Jellygnite_State_GrabbedPlayer); \
   GET_MANIA_FUNC(Blastoid_State_Body); \
   GET_MANIA_FUNC(Pointdexter_State_Swimming); \
-  GET_MANIA_FUNC(Kabasira_State_Moving); \
-  GET_MANIA_FUNC(Dango_State_Uncurling); \
-  GET_MANIA_FUNC(Dango_State_Falling_Curled); \
-  GET_MANIA_FUNC(Dango_State_Rolling); \
-  GET_MANIA_FUNC(Dango_State_Curling); \
-  GET_MANIA_FUNC(Dango_State_Falling_Uncurled); \
-  GET_MANIA_FUNC(Dango_State_Turning); \
-  GET_MANIA_FUNC(Dango_State_Walking); \
-  GET_MANIA_FUNC(Kanabun_State_Turning); \
-  GET_MANIA_FUNC(Kanabun_State_Moving); \
-  GET_MANIA_FUNC(HotaruMKII_State_LaserAttack); \
-  GET_MANIA_FUNC(HotaruMKII_State_Charging); \
   GET_MANIA_FUNC(Woodrow_State_Idle); \
   GET_MANIA_FUNC(Woodrow_State_MoveUp); \
   GET_MANIA_FUNC(Woodrow_State_MoveDown); \
@@ -345,7 +340,6 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Grabber_State_GrabbedPlayer); \
   GET_MANIA_FUNC(Grabber_State_Struggle); \
   GET_MANIA_FUNC(Grabber_State_PlayerEscaped); \
-  GET_MANIA_FUNC(CaterkillerJr_State_Move); \
   GET_MANIA_FUNC(Bubbler_State_MotherPatrol); \
   GET_MANIA_FUNC(Bubbler_State_FoundPlayer); \
   GET_MANIA_FUNC(Bubbler_State_AttackPlayer); \
@@ -365,7 +359,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Batbrain_State_DropToPlayer); \
   GET_MANIA_FUNC(Batbrain_State_Fly); \
   GET_MANIA_FUNC(Batbrain_State_FlyToCeiling); \
-  GET_MANIA_FUNC(Motobug_State_Smoke); \
-  GET_MANIA_FUNC(BuzzBomber_State_Flying); \
-  GET_MANIA_FUNC(BuzzBomber_State_Idle); \
-  GET_MANIA_FUNC(BuzzBomber_State_DetectedPlayer)
+  GET_MANIA_FUNC(Motobug_State_Smoke)

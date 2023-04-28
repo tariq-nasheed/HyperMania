@@ -48,6 +48,7 @@ typedef struct {
 } EntityHeavyShinobi;
 
 extern ObjectHeavyShinobi* HeavyShinobi;
+
 void HeavyShinobi_EnemyInfoHook(void);
 extern void (*HeavyShinobi_State_Idle)();
 extern void (*HeavyShinobi_State_Slash)();

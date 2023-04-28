@@ -1,8 +1,7 @@
 #include "CaterkillerJr.h"
 
+ObjectCaterkillerJr* CaterkillerJr;
 Hitbox hitbox;
-ObjectCaterkillerJr *CaterkillerJr;
-void (*CaterkillerJr_State_Move)(void);
 
 Hitbox* CaterkillerJr_GetHitbox(Entity* self) { return &hitbox; }
 
@@ -22,7 +21,7 @@ void CaterkillerJr_OnHit(EntityPlayer* player, Entity* self) {
 
 void CaterkillerJr_AdjustPos(Entity* self) { self->position = ((EntityCaterkillerJr*)self)->bodyPosition[0]; }
 
-void CaterkillerJr_EnemyInfoHook(void) {
+void CaterkillerJr_EnemyInfoHook() {
 	// catterkiller has a weird lopsided hitbox that makes collision with super flickies + screen nukes unreliable so we define our own instead
 	hitbox.left   = -8;
 	hitbox.top    = -8;
