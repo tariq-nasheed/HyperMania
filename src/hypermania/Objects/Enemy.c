@@ -1,6 +1,8 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
 // .c includes start on line 3
+#include "Boilerplate/OOZ/MegaOctus.c"
+#include "Boilerplate/OOZ/MeterDroid.c"
 #include "Boilerplate/MSZ/HeavyMystic.c"
 #include "Boilerplate/MSZ/DBTower.c"
 #include "Boilerplate/MSZ/UberCaterkiller.c"

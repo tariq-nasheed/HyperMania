@@ -1,8 +1,8 @@
 #include "DBTower.h"
 
 ObjectDBTower* DBTower;
-void (*DBTower_State_HandleBoss)(void);
-void (*DBTower_State_Destroyed)(void);
+void (*DBTower_State_HandleBoss)();
+void (*DBTower_State_Destroyed)();
 
 bool32 DBTower_CheckVulnerable(Entity* self) {
 	if (((EntityDBTower*)self)->invincibilityTimer) return false;

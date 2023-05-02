@@ -22,7 +22,7 @@ void CaterkillerJr_OnHit(EntityPlayer* player, Entity* self) {
 void CaterkillerJr_AdjustPos(Entity* self) { self->position = ((EntityCaterkillerJr*)self)->bodyPosition[0]; }
 
 void CaterkillerJr_EnemyInfoHook() {
-	// catterkiller has a weird lopsided hitbox that makes collision with super flickies + screen nukes unreliable so we define our own instead
+	// catterkiller jr has a weird lopsided hitbox that makes collision with super flickies + screen nukes unreliable so we define our own instead
 	hitbox.left   = -8;
 	hitbox.top    = -8;
 	hitbox.right  = 8;

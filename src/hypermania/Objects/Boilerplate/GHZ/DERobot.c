@@ -1,10 +1,10 @@
 #include "DERobot.h"
 
 ObjectDERobot* DERobot;
-void (*DERobot_State_FallLand)(void);
-void (*DERobot_State_Walk)(void);
-void (*DERobot_State_ArmAttack)(void);
-void (*DERobot_Hit)(void);
+void (*DERobot_State_FallLand)();
+void (*DERobot_State_Walk)();
+void (*DERobot_State_ArmAttack)();
+void (*DERobot_Hit)();
 
 bool32 DERobot_CheckVulnerable(Entity* self) {
 	if (((EntityDERobot*)self)->invincibilityTimer) return false;
@@ -24,7 +24,7 @@ void DERobot_OnHit(EntityPlayer* player, Entity* self) {
 	SceneInfo->entity = old_entity;
 }
 
-void DERobot_EnemyInfoHook(void) {
+void DERobot_EnemyInfoHook() {
 	Mod.Super(DERobot->classID, SUPER_STAGELOAD, NULL);
 	ADD_ATTACKABLE_CLASS(DERobot->classID, DERobot_CheckVulnerable, DERobot_GetHitbox, DERobot_OnHit, NULL, ATKFLAG_ISBOSS);
 }

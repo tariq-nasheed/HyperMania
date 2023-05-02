@@ -1,6 +1,8 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "GameAPI/Game.h"
 // .h includes start on line 3
+#include "Boilerplate/OOZ/MegaOctus.h"
+#include "Boilerplate/OOZ/MeterDroid.h"
 #include "Boilerplate/MSZ/HeavyMystic.h"
 #include "Boilerplate/MSZ/DBTower.h"
 #include "Boilerplate/MSZ/UberCaterkiller.h"
@@ -114,6 +116,8 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 
 // object hooks start after the following line (pattern match)
 #define HOOK_ENEMY_OBJECTS \
+  OBJ_MEGAOCTUS_SETUP; \
+  OBJ_METERDROID_SETUP; \
   OBJ_HEAVYMYSTIC_SETUP; \
   OBJ_DBTOWER_SETUP; \
   OBJ_UBERCATERKILLER_SETUP; \
