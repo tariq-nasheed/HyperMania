@@ -7,9 +7,7 @@ void (*GigaMetal_Hit)();
 
 bool32 GigaMetal_CheckVulnerable(Entity* self) {
 	if (GigaMetal->invincibleTimer) return false;
-	return (
-	    ((EntityGigaMetal*)self)->state == GigaMetal_StateBody_Marching
-	);
+	return (((EntityGigaMetal*)self)->state == GigaMetal_StateBody_Marching);
 }
 
 Hitbox* GigaMetal_GetHitbox(Entity* self) { return &(GigaMetal->hitboxCore); }

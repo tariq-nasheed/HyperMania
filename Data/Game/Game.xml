@@ -6,7 +6,7 @@
 		<object name="SuperFlicky" />
 	</objects>
 	<sounds>
-		<soundfx path="FlickyFlee.wav" />
+		<soundfx path="Global/FlickyFlee.wav" />
 		<soundfx path="Stage/Impact2.wav" />
 		<soundfx path="Stage/Impact5.wav" />
 	</sounds>

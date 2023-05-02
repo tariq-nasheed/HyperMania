@@ -1,6 +1,6 @@
 #include "DERobot.h"
 
-ObjectDERobot *DERobot;
+ObjectDERobot* DERobot;
 void (*DERobot_State_FallLand)(void);
 void (*DERobot_State_Walk)(void);
 void (*DERobot_State_ArmAttack)(void);

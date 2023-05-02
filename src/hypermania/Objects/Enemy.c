@@ -1,6 +1,10 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
 // .c includes start on line 3
+#include "Boilerplate/MSZ/HeavyMystic.c"
+#include "Boilerplate/MSZ/DBTower.c"
+#include "Boilerplate/MSZ/UberCaterkiller.c"
+#include "Boilerplate/HCZ/LaundroMobile.c"
 #include "Boilerplate/SSZ/GigaMetal.c"
 #include "Boilerplate/SSZ/MetalSonic.c"
 #include "Boilerplate/SSZ/HotaruHiWatt.c"

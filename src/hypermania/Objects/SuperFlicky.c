@@ -239,7 +239,7 @@ void SuperFlicky_HandleAttack(int32 slot) {
 
 	if (self->instanceTarget[slot]->active == ACTIVE_DISABLED
 	 || (!IsAttackableEntity(self->instanceTarget[slot], 0) && !IsVulnerableEnemy(self->instanceTarget[slot], true))
-	 || !AttackableClasses[self->instanceTarget[slot]->classID - AttackableClasses_startidx].checkVulnerable(self->instanceTarget[slot])) {
+	 || (IsAttackableEntity(self->instanceTarget[slot], 0) && !AttackableClasses[self->instanceTarget[slot]->classID - AttackableClasses_startidx].checkVulnerable(self->instanceTarget[slot]))) {
 		self->instanceTarget[slot] = NULL;
 		self->instanceCooldown[slot] = 120; // TODO is this even supposed to happen? make sure to check AIR code later
 	}
