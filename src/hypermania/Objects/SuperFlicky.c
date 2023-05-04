@@ -3,7 +3,6 @@
 #include "Player.h"
 #include "Zone.h"
 
-// NOTE FOR THE FUTURE WHEN ADDING BOSS SUPPORT: cooldown resets after hitting boss while not changing target (this will mean adding some sort of per-instance IsAttacking bool)
 ObjectSuperFlicky* SuperFlicky;
 
 void SuperFlicky_Update(void) {
@@ -27,16 +26,17 @@ void SuperFlicky_Update(void) {
 			} else if (self->instanceTarget[i]) {
 				if (!IsAttackableEntity(self->instanceTarget[i], 0)) {
 					target_pos = (Vector2){
-						self->instanceTarget[i]->position.x,
+						self->instanceTarget[i]->position.x ,
 						self->instanceTarget[i]->position.y
 					};
 				} else {
 					const Vector2 old_pos = self->instanceTarget[i]->position;
 					const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
+					const Hitbox* hitbox = AttackableClasses[index].getHitbox(self->instanceTarget[i]);
 					if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
 					target_pos = (Vector2){
-						self->instanceTarget[i]->position.x,
-						self->instanceTarget[i]->position.y
+						self->instanceTarget[i]->position.x + (hitbox->right + hitbox->left) * 0xFFFF / 2,
+						self->instanceTarget[i]->position.y + (hitbox->bottom + hitbox->top) * 0xFFFF / 2
 					};
 					self->instanceTarget[i]->position = old_pos;
 				}

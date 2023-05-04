@@ -1,6 +1,11 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "GameAPI/Game.h"
 // .h includes start on line 3
+#include "Boilerplate/LRZ/RockDrill.h"
+#include "Boilerplate/LRZ/HeavyKing.h"
+#include "Boilerplate/LRZ/HeavyRider.h"
+#include "Boilerplate/LRZ/DrillerdroidO.h"
+#include "Boilerplate/LRZ/Drillerdroid.h"
 #include "Boilerplate/OOZ/MegaOctus.h"
 #include "Boilerplate/OOZ/MeterDroid.h"
 #include "Boilerplate/MSZ/HeavyMystic.h"
@@ -116,6 +121,11 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 
 // object hooks start after the following line (pattern match)
 #define HOOK_ENEMY_OBJECTS \
+  OBJ_ROCKDRILL_SETUP; \
+  OBJ_HEAVYKING_SETUP; \
+  OBJ_HEAVYRIDER_SETUP; \
+  OBJ_DRILLERDROIDO_SETUP; \
+  OBJ_DRILLERDROID_SETUP; \
   OBJ_MEGAOCTUS_SETUP; \
   OBJ_METERDROID_SETUP; \
   OBJ_HEAVYMYSTIC_SETUP; \

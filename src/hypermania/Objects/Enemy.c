@@ -1,6 +1,11 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
 // .c includes start on line 3
+#include "Boilerplate/LRZ/RockDrill.c"
+#include "Boilerplate/LRZ/HeavyKing.c"
+#include "Boilerplate/LRZ/HeavyRider.c"
+#include "Boilerplate/LRZ/DrillerdroidO.c"
+#include "Boilerplate/LRZ/Drillerdroid.c"
 #include "Boilerplate/OOZ/MegaOctus.c"
 #include "Boilerplate/OOZ/MeterDroid.c"
 #include "Boilerplate/MSZ/HeavyMystic.c"
