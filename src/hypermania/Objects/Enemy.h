@@ -1,6 +1,8 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "GameAPI/Game.h"
 // .h includes start on line 3
+#include "Boilerplate/MMZ/Gachapandora.h"
+#include "Boilerplate/MMZ/EggPistonsMKII.h"
 #include "Boilerplate/LRZ/RockDrill.h"
 #include "Boilerplate/LRZ/HeavyKing.h"
 #include "Boilerplate/LRZ/HeavyRider.h"
@@ -121,6 +123,8 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 
 // object hooks start after the following line (pattern match)
 #define HOOK_ENEMY_OBJECTS \
+  OBJ_GACHAPANDORA_SETUP; \
+  OBJ_EGGPISTONSMKII_SETUP; \
   OBJ_ROCKDRILL_SETUP; \
   OBJ_HEAVYKING_SETUP; \
   OBJ_HEAVYRIDER_SETUP; \
