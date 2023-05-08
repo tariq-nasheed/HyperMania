@@ -21,7 +21,7 @@ void EggPistonsMKII_OnHit(EntityPlayer* player, Entity* self) {
 	SceneInfo->entity = self;
 	EggPistonsMKII_Hit();
 	SceneInfo->entity = old_entity;
-	// softlock without this because the check only happens in EggPistonsMKII_State_PinchMode (why????)
+	// boss softlocks without this because the check only happens in EggPistonsMKII_State_PinchMode (why????)
 	if (!EggPistonsMKII->health) ((EntityEggPistonsMKII*)self)->state = EggPistonsMKII_State_Destroyed;
 }
 

@@ -535,9 +535,8 @@ void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
 		if (RSDK.CheckOnScreen(entity, NULL)) {
 			AttackableClasses[index].onHit(player, entity);
 			++fuck;
-		} else {
-			entity->position = old_pos;
 		}
+		entity->position = old_pos;
 	}
 	printf("%d\n", fuck);
 }

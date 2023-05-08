@@ -94,6 +94,7 @@ void SuperFlicky_Update(void) {
 
 				if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], AttackableClasses[index].getHitbox(self->instanceTarget[i]))) {
 					AttackableClasses[index].onHit(self->player, self->instanceTarget[i]);
+					self->instanceTarget[i]->position = old_pos;
 					self->instanceTarget[i] = NULL;
 					self->instanceCooldown[i] = 120;
 				}

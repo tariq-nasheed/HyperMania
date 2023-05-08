@@ -1,6 +1,10 @@
 // WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
 // .c includes start on line 3
+#include "Boilerplate/ERZ/PhantomMystic.c"
+#include "Boilerplate/ERZ/PhantomShinobi.c"
+#include "Boilerplate/ERZ/PhantomEgg.c"
+#include "Boilerplate/TMZ/CrimsonEye.c"
 #include "Boilerplate/MMZ/Gachapandora.c"
 #include "Boilerplate/MMZ/EggPistonsMKII.c"
 #include "Boilerplate/LRZ/RockDrill.c"
