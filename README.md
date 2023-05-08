@@ -8,7 +8,7 @@ Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game, f
 
 ***Extremely WIP***, casual play is possible but with bugs and rough presentation.
 
-Press **Z** (default binding is E key) while super or collect all Super Emeralds to transform into Hyper state.
+Press transform + up in debug mode while super or collect all Super Emeralds to transform into your Hyper form.
 # Status
 - Hyper abilities - Sonic, Tails, Knuckles, and Mighty are feature complete,
 Ray does not have an ability yet.
@@ -41,12 +41,7 @@ or you can use `./build.sh` to automate this process if you don't mind running C
 - `LEGACY` - Set to use version 1 of the mod loader
 
 # Settings
-- `originsHyperDash` - Set to true to use Origins-style controls for Sonic's hyper dash (only activated when holding a direction, locks out drop dash until landing), also makes flash brighter
-
-- `hyperStyle` - Enum that controls how hyper forms look:
->- 0 - non-Sonic characters use super palette that pulsates white
->- 1 - non-Sonic characters reuse super palette cycling and don't have hyper sparkles
->- 2 - non-Sonic characters use Hyper Sonic's 6-color pulsating palette 
+See [SETTINGS](SETTINGS.md)
 
 # Planned features
 + Hyper ability for Ray

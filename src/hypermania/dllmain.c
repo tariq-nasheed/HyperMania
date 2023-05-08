@@ -160,10 +160,18 @@ void InitModAPI(void) {
 	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 
 	// Config --------------------------------------------------------------
-	ModConfig.originsHyperDash = Mod.GetSettingsBool("", "Config:originsHyperDash", false);
 	ModConfig.hyperStyle = Mod.GetSettingsInteger("", "Config:hyperStyle", 0);
-	Mod.SetSettingsBool("Config:originsHyperDash", ModConfig.originsHyperDash);
+	ModConfig.hyperFlashDropDash = Mod.GetSettingsBool("", "Config:hyperFlashDropDash", true);
+	ModConfig.hyperFlashForwarding = Mod.GetSettingsBool("", "Config:hyperFlashForwarding", false);
+	ModConfig.screenFlashFactor = Mod.GetSettingsFloat("", "Config:screenFlashFactor", 1.0);
+	ModConfig.twoHeavensMode = Mod.GetSettingsBool("", "Config:twoHeavensMode", false);
+	ModConfig.enableHyperMusic = Mod.GetSettingsBool("", "Config:enableHyperMusic", true);
 	Mod.SetSettingsInteger("Config:hyperStyle", ModConfig.hyperStyle);
+	Mod.SetSettingsBool("Config:hyperFlashDropDash", ModConfig.hyperFlashDropDash);
+	Mod.SetSettingsBool("Config:hyperFlashForwarding", ModConfig.hyperFlashForwarding);
+	Mod.SetSettingsFloat("Config:screenFlashFactor", ModConfig.screenFlashFactor);
+	Mod.SetSettingsBool("Config:twoHeavensMode", ModConfig.twoHeavensMode);
+	Mod.SetSettingsBool("Config:enableHyperMusic", ModConfig.enableHyperMusic);
 	Mod.SaveSettings();
 
 	// Boilerplate ---------------------------------------------------------

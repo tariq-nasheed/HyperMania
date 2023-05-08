@@ -174,14 +174,14 @@ void Player_Update_OVERLOAD() {
 
 	// hyper transformation ------------------------------------------------
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
-	if (!ext->is_hyper && (controller->keyZ.press || HM_global.currentSave->superEmeralds == 0b01111111)) {
-		if (!ERZStart) Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
+	if (!ext->is_hyper && ((self->up && controller->keyY.press && (ModConfig.twoHeavensMode || SceneInfo->debugMode)) || (!ModConfig.twoHeavensMode && HM_global.currentSave->superEmeralds == 0b01111111))) {
+		if (ModConfig.enableHyperMusic && !ERZStart) Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
 		ext->blend.state = HYPERBLEND_FADEIN;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
 		ext->can_dash = true; // this was added solely to replicate the dashing out of transform thing from S3&K
 
-		if (controller->keyZ.press) {
+		if (controller->keyY.press) {
 			RSDK.PlaySfx(Player->sfxRelease, false, 0xFF);
 			RSDK.PlaySfx(RSDK.GetSfx("Global/Twinkle.wav"), false, 0xFF); // TODO not good
 			if (FXFade) {
@@ -192,6 +192,10 @@ void Player_Update_OVERLOAD() {
 		}
 	}
 	if (!ext->is_hyper) return;
+
+	if (ModConfig.twoHeavensMode && !ERZStart && Zone->timer & 1) {
+		--self->superRingLossTimer;
+	}
 
 	// encore shit ---------------------------------------------------------
 #if MANIA_USE_PLUS
@@ -318,14 +322,14 @@ void Player_Update_OVERLOAD() {
 	}
 
 	// music handling ------------------------------------------------------
-	/*if (!ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
+	if (ModConfig.enableHyperMusic && !ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
 #if MANIA_USE_PLUS
 		Music_JingleFadeOut(TRACK_SUPER, false);
 		Music_PlayJingle(TRACK_SUPER);
 #else
 		//Music_TransitionTrack(TRACK_HYPER, 1.0);
 #endif
-	}*/
+	}
 }
 
 bool32 Player_State_Transform_HOOK(bool32 skippedState) {
@@ -407,11 +411,17 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 				}
 			}
 			Player_ClearEnemiesOnScreen(self);
-			EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-			fade->timer = 0x180;
-			fade->speedOut = 0x18;
-			fade->state = FXFade_State_FadeIn;
-		
+			if (ModConfig.screenFlashFactor > 0.0) {
+				EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
+				if (ModConfig.screenFlashFactor < 1.3333) {
+					fade->timer = 0x180 * ModConfig.screenFlashFactor;
+					fade->state = FXFade_State_FadeIn;
+				} else {
+					fade->speedIn = 0x180 * ModConfig.screenFlashFactor;
+					fade->state = FXFade_State_FadeOut;
+				}
+				fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
+			}
 		} else {
 			self->velocity.x *= 2;
 			self->velocity.y *= 2;
@@ -424,16 +434,18 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 void Player_HyperSonicDash() {
 	RSDK_THIS(Player);
 
-	if (globals->medalMods & MEDAL_NODROPDASH) self->jumpAbilityState = 0;
-	else if (!ModConfig.originsHyperDash) self->jumpAbilityState = 22; // naughty naughty
 	if (!(self->up || self->down || self->left || self->right)) {
-		if (ModConfig.originsHyperDash) return;
+		if (!ModConfig.hyperFlashForwarding) return;
 		self->velocity.x = 0x80000 * (self->direction ? -1 : 1);
 		self->velocity.y = 0;
 	} else {
 		self->velocity.x = 0x80000 * (self->right - self->left);
 		self->velocity.y = 0x80000 * (self->down - self->up);
-		if (ModConfig.originsHyperDash)  self->jumpAbilityState = 0;
+	}
+	if (globals->medalMods & MEDAL_NODROPDASH) {
+		self->jumpAbilityState = 0;
+	} else {
+		if (ModConfig.hyperFlashDropDash) self->jumpAbilityState = 22;
 	}
 	Player_ClearEnemiesOnScreen(self);
 
@@ -445,15 +457,16 @@ void Player_HyperSonicDash() {
 		camera->state     = Camera_State_FollowY;
 	}
 
-	EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-	if (!ModConfig.originsHyperDash) {
-		fade->timer = 0x200;
-		fade->speedOut = 0x30;
-		fade->state = FXFade_State_FadeIn;
-	} else {
-		fade->speedIn = 0x200;
-		fade->speedOut = 0x30;
-		fade->state = FXFade_State_FadeOut;
+	if (ModConfig.screenFlashFactor > 0.0) {
+		EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
+		if (ModConfig.screenFlashFactor < 1.0) {
+			fade->timer = 0x200 * ModConfig.screenFlashFactor;
+			fade->state = FXFade_State_FadeIn;
+		} else {
+			fade->speedIn = 0x200 * ModConfig.screenFlashFactor;
+			fade->state = FXFade_State_FadeOut;
+		}
+		fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
 	}
 
 	const int32 vel = 0x2C000;
@@ -519,12 +532,10 @@ int32 Player_GetIndexFromID(int32 ID) {
 }
 
 void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
-	int fuck = 0;
 	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
 		if (entity->classID && IsVulnerableEnemy(entity, false)) {
 			HitEnemy(player, entity);
-			++fuck;
 		}
 
 		if (!IsAttackableEntity(entity, ATKFLAG_ISBOSS)) continue;
@@ -534,9 +545,7 @@ void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
 		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
 		if (RSDK.CheckOnScreen(entity, NULL)) {
 			AttackableClasses[index].onHit(player, entity);
-			++fuck;
 		}
 		entity->position = old_pos;
 	}
-	printf("%d\n", fuck);
 }
