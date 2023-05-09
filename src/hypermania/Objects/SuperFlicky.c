@@ -103,13 +103,14 @@ void SuperFlicky_Update(void) {
 		}
 
 		if (self->player->characterID == ID_TAILS && Player_IsHyper(self->player) && !(Zone->timer & 7)) {
-			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, self->instancePos[i].x, self->instancePos[i].y);
-			sparkle->state        = Debris_State_Move;
-			sparkle->timer        = 12;
-			sparkle->inkEffect    = INK_ADD;
-			sparkle->alpha        = 0x100;
-			sparkle->drawGroup    = Zone->objectDrawGroup[1];
-			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0 + 0);
+			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, self->instancePos[i].x + RSDK.Rand(-TO_FIXED(8), TO_FIXED(8)), self->instancePos[i].y + RSDK.Rand(-TO_FIXED(8), TO_FIXED(8)));
+			sparkle->velocity.y = -0x8000;
+			sparkle->state      = Debris_State_Move;
+			sparkle->timer      = 14 - (Zone->timer & 1);
+			sparkle->inkEffect  = INK_ADD;
+			sparkle->alpha      = 0x100;
+			sparkle->drawGroup  = Zone->objectDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, Zone->timer & 1);
 		}
 		RSDK.ProcessAnimation(&self->instanceAnimator[i]);
 

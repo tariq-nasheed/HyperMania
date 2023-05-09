@@ -469,14 +469,14 @@ void Player_HyperSonicDash() {
 		fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
 	}
 
-	const int32 vel = 0x2C000;
+	const int32 vel = TO_FIXED(2);
 	for (int32 i = 0; i != 4; ++i) {
 		EntityDebris* debris = CREATE_ENTITY(Debris, Debris_State_Move, self->position.x, self->position.y);
-		debris->timer = 13;
+		debris->timer = 17;
 		debris->velocity.x = vel - vel * (2 * (i & 1));
 		debris->velocity.y = vel - vel * (i & 2);
 		debris->drawGroup = Zone->playerDrawGroup[1];
-		RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 0);
+		RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
 		if (self->drawFX & FX_SCALE) {
 			debris->drawFX |= FX_SCALE;
 			debris->scale.x = self->scale.x;

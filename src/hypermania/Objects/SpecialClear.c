@@ -357,8 +357,7 @@ void SpecialClear_Draw_OVERLOAD() {
 		}
 	}
 
-	if (self->showFade)
-		RSDK.FillScreen(self->fillColor, self->timer, self->timer - 128, self->timer - 256);
+	if (self->showFade) RSDK.FillScreen(self->fillColor, self->timer, self->timer - 128, self->timer - 256);
 }
 
 void SpecialClear_State_SetupDelay() {
