@@ -174,14 +174,16 @@ void Player_Update_OVERLOAD() {
 
 	// hyper transformation ------------------------------------------------
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
-	if (!ext->is_hyper && ((self->up && controller->keyY.press && (ModConfig.twoHeavensMode || SceneInfo->debugMode)) || (!ModConfig.twoHeavensMode && HM_global.currentSave->superEmeralds == 0b01111111))) {
+	if (!ext->is_hyper
+	&& (HM_global.currentSave->superEmeralds == 0b01111111 || SceneInfo->debugMode)
+	&& ((!ModConfig.twoHeavensMode && HM_global.currentSave->superEmeralds == 0b01111111) || (self->up && controller->keyY.press))) {
 		if (ModConfig.enableHyperMusic && !ERZStart) Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
 		ext->blend.state = HYPERBLEND_FADEIN;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
 		ext->can_dash = true; // this was added solely to replicate the dashing out of transform thing from S3&K
 
-		if (controller->keyY.press) {
+		if (self->up && controller->keyY.press) {
 			RSDK.PlaySfx(Player->sfxRelease, false, 0xFF);
 			RSDK.PlaySfx(RSDK.GetSfx("Global/Twinkle.wav"), false, 0xFF); // TODO not good
 			if (FXFade) {

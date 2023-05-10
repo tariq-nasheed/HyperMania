@@ -91,6 +91,8 @@ extern ObjectSpecialClear *SpecialClear;
 typedef struct {
 	int32 SEAniFrames;
 	Animator SEAnimator;
+	bool32 startFadingBackground;
+	int32 backgroundFade;
 } SpecialClearStaticExt_t;
 
 extern SpecialClearStaticExt_t SpecialClearStaticExt;
@@ -101,7 +103,10 @@ extern SpecialClearStaticExt_t SpecialClearStaticExt;
 // Functions -------------------------------------------------------------------
 
 // =============================================================================
+bool32 SpecialClear_State_TallyScore_HOOK(bool32);
+
 extern void (*SpecialClear_State_EnterText)();
+extern void (*SpecialClear_State_TallyScore)();
 extern void (*SpecialClear_State_ExitFinishMessage)();
 extern void (*SpecialClear_State_ExitResults)();
 extern void (*SpecialClear_DrawNumbers)(Vector2 *pos, int32 value);
@@ -115,9 +120,11 @@ void SpecialClear_State_SetupDelay();
 
 #define OBJ_SPECIALCLEAR_SETUP \
   IMPORT_PUBLIC_FUNC(SpecialClear_State_EnterText); \
+  IMPORT_PUBLIC_FUNC(SpecialClear_State_TallyScore); \
   IMPORT_PUBLIC_FUNC(SpecialClear_State_ExitFinishMessage); \
   IMPORT_PUBLIC_FUNC(SpecialClear_State_ExitResults); \
   IMPORT_PUBLIC_FUNC(SpecialClear_DrawNumbers); \
+  HOOK_IMPORTED_STATE(SpecialClear_State_TallyScore, 0); \
   MOD_REGISTER_OBJ_OVERLOAD(SpecialClear, SpecialClear_Update_OVERLOAD, NULL, NULL, SpecialClear_Draw_OVERLOAD, SpecialClear_Create_OVERLOAD, SpecialClear_StageLoad_OVERLOAD, NULL, NULL, NULL)
 
 #endif //! OBJ_SPECIALCLEAR_H

@@ -181,6 +181,7 @@ void InitModAPI(void) {
 	OBJ_PAUSEMENU_SETUP;
 	Camera_State_FollowY = Mod.GetPublicFunction(NULL, "Camera_State_FollowY");
 	Camera_ShakeScreen = Mod.GetPublicFunction(NULL, "Camera_ShakeScreen");
+	IMPORT_PUBLIC_FUNC(Camera_SetupLerp);
 	Debris_State_Move = Mod.GetPublicFunction(NULL, "Debris_State_Move");
 	Debris_State_FallAndFlicker = Mod.GetPublicFunction(NULL, "Debris_State_FallAndFlicker");
 	FXFade_State_FadeIn = Mod.GetPublicFunction(NULL, "FXFade_State_FadeIn");

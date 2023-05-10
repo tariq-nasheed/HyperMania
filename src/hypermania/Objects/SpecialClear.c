@@ -6,15 +6,33 @@ ObjectSpecialClear *SpecialClear;
 SpecialClearStaticExt_t SpecialClearStaticExt;
 
 void (*SpecialClear_State_EnterText)();
+void (*SpecialClear_State_TallyScore)();
 void (*SpecialClear_State_ExitFinishMessage)();
 void (*SpecialClear_State_ExitResults)();
 void (*SpecialClear_DrawNumbers)(Vector2 *pos, int32 value);
 
 // -----------------------------------------------------------------------------
+bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
+	//if (skippedState) return true;
+	RSDK_THIS(SpecialClear);
+
+	if (self->state != SpecialClear_State_TallyScore) {
+		SpecialClearStaticExt.startFadingBackground = true;
+		EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+		camera->state = NULL;
+		camera->position.y -= TO_FIXED(256);
+		camera->boundsT -= TO_FIXED(256);
+		Camera_SetupLerp(CAMERA_LERP_NORMAL, 0, camera->position.x, camera->position.y + TO_FIXED(256), 1);
+	}
+	return false;
+}
+
 void SpecialClear_StageLoad_OVERLOAD() {
 	Mod.Super(SpecialClear->classID, SUPER_STAGELOAD, NULL);
 	SpecialClearStaticExt.SEAniFrames = RSDK.LoadSpriteAnimation("Special/ResultsSE.bin", SCOPE_STAGE);
 	RSDK.SetSpriteAnimation(SpecialClearStaticExt.SEAniFrames, 0, &SpecialClearStaticExt.SEAnimator, true, 0);
+	SpecialClearStaticExt.startFadingBackground = false;
+	SpecialClearStaticExt.backgroundFade = 0x200;
 }
 
 void SpecialClear_Create_OVERLOAD(void* data) {
@@ -152,6 +170,11 @@ void SpecialClear_Update_OVERLOAD() {
 
 void SpecialClear_Draw_OVERLOAD() {
 	RSDK_THIS(SpecialClear);
+
+	if (!UFO_Setup && SpecialClearStaticExt.backgroundFade) {
+		RSDK.FillScreen(0xF0F0F0, SpecialClearStaticExt.backgroundFade, SpecialClearStaticExt.backgroundFade - 128, SpecialClearStaticExt.backgroundFade - 256);
+	}
+	if (SpecialClearStaticExt.startFadingBackground) SpecialClearStaticExt.backgroundFade -= 0x10;
 
 	Vector2 vertPos[4];
 	Vector2 drawPos;
