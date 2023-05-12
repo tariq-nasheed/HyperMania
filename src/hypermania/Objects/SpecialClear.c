@@ -13,17 +13,73 @@ void (*SpecialClear_DrawNumbers)(Vector2 *pos, int32 value);
 
 // -----------------------------------------------------------------------------
 bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
-	//if (skippedState) return true;
+	if (skippedState) return true;
 	RSDK_THIS(SpecialClear);
 
-	if (self->state != SpecialClear_State_TallyScore) {
-		SpecialClearStaticExt.startFadingBackground = true;
-		EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
-		camera->state = NULL;
-		camera->position.y -= TO_FIXED(256);
-		camera->boundsT -= TO_FIXED(256);
-		Camera_SetupLerp(CAMERA_LERP_NORMAL, 0, camera->position.x, camera->position.y + TO_FIXED(256), 1);
+	if (!UFO_Setup) {
+		if (!SpecialClearStaticExt.startFadingBackground) {
+			SpecialClearStaticExt.startFadingBackground = true;
+			Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
+			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+			camera->state = StateMachine_None;
+			camera->position.x = emerald->position.x;
+			camera->position.y -= TO_FIXED(244);
+
+			camera->boundsT -= TO_FIXED(1024);
+			camera->boundsL -= TO_FIXED(1024);
+			camera->boundsR += TO_FIXED(1024);
+
+			HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
+			RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
+		}
 	}
+	return false;
+}
+
+bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
+	RSDK_THIS(SpecialClear);
+
+	if (self->timer == 179) {
+		self->timer = 0;
+		SpecialClearStaticExt.drawContinue = true;
+
+		SaveRAM *saveRAM      = SaveGame_GetSaveRAM();
+		saveRAM->score        = self->score;
+		globals->restartScore = self->score;
+		saveRAM->score1UP     = self->score1UP;
+		saveRAM->lives        = self->lives;
+#if MANIA_USE_PLUS
+		saveRAM->continues      = globals->continues;
+		saveRAM->characterFlags = globals->characterFlags;
+		saveRAM->stock          = globals->stock;
+		saveRAM->playerID       = globals->playerID;
+#endif
+		self->state = SpecialClear_State_WaitToRevealSuperEmerald;
+	}
+
+	return false;
+}
+
+bool32 SpecialClear_State_ShowTotalScore_NoContinues_HOOK(bool32 skippedState) {
+	RSDK_THIS(SpecialClear);
+
+	if (self->timer == 59) {
+		self->timer = 0;
+
+		SaveRAM *saveRAM      = SaveGame_GetSaveRAM();
+		saveRAM->score        = self->score;
+		globals->restartScore = self->score;
+		saveRAM->score1UP     = self->score1UP;
+		saveRAM->lives        = self->lives;
+#if MANIA_USE_PLUS
+		saveRAM->continues      = globals->continues;
+		saveRAM->characterFlags = globals->characterFlags;
+		saveRAM->stock          = globals->stock;
+		saveRAM->playerID       = globals->playerID;
+#endif
+		self->state = SpecialClear_State_WaitToRevealSuperEmerald;
+	}
+
 	return false;
 }
 
@@ -33,6 +89,7 @@ void SpecialClear_StageLoad_OVERLOAD() {
 	RSDK.SetSpriteAnimation(SpecialClearStaticExt.SEAniFrames, 0, &SpecialClearStaticExt.SEAnimator, true, 0);
 	SpecialClearStaticExt.startFadingBackground = false;
 	SpecialClearStaticExt.backgroundFade = 0x200;
+	SpecialClearStaticExt.drawContinue = false;
 }
 
 void SpecialClear_Create_OVERLOAD(void* data) {
@@ -394,5 +451,123 @@ void SpecialClear_State_SetupDelay() {
 		Music_PlayTrack(TRACK_ACTCLEAR);
 	} else {
 		self->timer -= 16;
+	}
+}
+
+void SpecialClear_State_WaitToRevealSuperEmerald() {
+	RSDK_THIS(SpecialClear);
+
+	++self->timer;
+	if (SpecialClearStaticExt.drawContinue) self->continueIconVisible = ((self->timer + 179) >> 3) & 1;
+	if (self->timer >= 60) {
+		self->timer = 0;
+
+		EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+		Camera_SetupLerp(CAMERA_LERP_NORMAL, 0, camera->position.x, camera->position.y + TO_FIXED(244), 1);
+		self->state = SpecialClear_State_RevealSuperEmerald;
+	}
+}
+
+void SpecialClear_State_RevealSuperEmerald() {
+	RSDK_THIS(SpecialClear);
+
+	++self->timer;
+	if (SpecialClearStaticExt.drawContinue) self->continueIconVisible = ((self->timer + 239) >> 3) & 1;
+
+	if (self->timer >= 24) {
+		if (self->messagePos1.x != 0x1400000) self->messagePos1.x += 0x180000;
+		if (self->messagePos2.x != -0x1400000) self->messagePos2.x -= 0x180000;
+	}
+	if (self->timer >= 42 && self->scoreBonusPos.x != 0x1E80000) self->scoreBonusPos.x += 0x100000;
+	if (self->timer >= 60 && self->ringBonusPos.x != 0x3080000) self->ringBonusPos.x += 0x100000;
+	if (self->timer >= 78) {
+		if (self->machBonusPos.x != 0x4280000) self->machBonusPos.x += 0x100000;
+		if (self->perfectBonusPos.x != 0x4280000) self->perfectBonusPos.x += 0x100000;
+	}
+	if (self->timer >= 96 && self->continuePos.x != 0x5480000) self->continuePos.x += 0x100000;
+
+	EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+	RSDKScreenInfo* screen = &ScreenInfo[camera->screenID];
+	if (screen->size.y + screen->position.y >= camera->boundsB) {
+		self->timer = 0;
+		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
+		self->state = SpecialClear_State_ActivateSuperEmerald;
+	}
+}
+
+void SpecialClear_State_ActivateSuperEmerald() {
+	RSDK_THIS(SpecialClear);
+
+	++self->timer;
+	if (self->timer == 224) {
+		Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
+		HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
+		RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[ext->type], &ext->animator, true, 0);
+		RSDK.PlaySfx(HPZIntro->sfxEmeraldFlying, false, 0xFF);
+	}
+
+	if (self->timer >= 284) {
+		self->timer    = 0;
+		if (HM_global.currentSave->superEmeralds == 0b01111111) {
+			Entity* emerald = SortedSuperEmeralds[3];
+			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+			RSDKScreenInfo* screen = &ScreenInfo[camera->screenID];
+			Camera_SetupLerp(CAMERA_LERP_NORMAL, 0, emerald->position.x - (screen->size.x >> 1), camera->position.y, 1);
+			self->state = SpecialClear_State_RevealMasterEmerald;
+		} else {
+			self->showFade = true;
+			self->fillColor = 0x000000;
+			self->state = SpecialClear_State_ExitResults;
+		}
+	}
+}
+
+void SpecialClear_State_RevealMasterEmerald() {
+	RSDK_THIS(SpecialClear);
+
+	EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+	if (!camera->state) {
+		self->timer = 0;
+		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
+		self->state = SpecialClear_State_ActivateMasterEmerald;
+	}
+}
+
+void SpecialClear_State_ActivateMasterEmerald() {
+	RSDK_THIS(SpecialClear);
+
+	++self->timer;
+	if (self->timer >= 120) {
+		self->timer       = 0;
+		self->messagePos1.y = 0x880000;
+		self->messagePos2.y = 0xA00000;
+		self->messageType = SC_MSG_SUPER; // TODO should probably make this a seperate enum
+		self->state       = SpecialClear_State_EnterHyperMessage;
+	}
+}
+
+void SpecialClear_State_EnterHyperMessage() {
+	RSDK_THIS(SpecialClear);
+
+	if (self->messagePos1.x > 0)
+		self->messagePos1.x -= 0x180000;
+
+	if (self->messagePos2.x >= 0) {
+		RSDK.PlaySfx(SpecialClear->sfxEvent, false, 0xFF);
+		self->state = SpecialClear_State_ShowHyperMessage;
+	}
+	else {
+		self->messagePos2.x += 0x180000;
+	}
+}
+
+void SpecialClear_State_ShowHyperMessage() {
+	RSDK_THIS(SpecialClear);
+
+	if (++self->timer == 160) {
+		self->timer    = 0;
+		self->showFade = true;
+		self->fillColor = 0x000000;
+		self->state = SpecialClear_State_ExitResults;
 	}
 }

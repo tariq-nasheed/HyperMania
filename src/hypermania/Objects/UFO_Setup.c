@@ -37,11 +37,9 @@ void SetupHPZResults(void* data) {
 		if (HPZ_results) {
 			if (Zone->timer == 2) {
 				HPZ_results = false;
-				Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
 				foreach_active(Player, player) {
 					player->visible = false;
 					player->active  = ACTIVE_NEVER;
-					//player->position.x = emerald->position.x;
 				}
 				RSDK.ResetEntitySlot(1, SpecialClear->classID, NULL);
 			} else {

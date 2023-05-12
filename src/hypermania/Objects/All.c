@@ -23,7 +23,7 @@
 // im sorry jesus
 typedef struct {
 	Entity* owner;
-	int32 color; // -1 means untransformed
+	int32 type; // -1 means untransformed
 	Animator animator;
 } HPZEmeraldExt;
 
@@ -43,7 +43,6 @@ uint32 super_emerald_lookup[7] = {
 #include "SpecialRing.c"
 #include "UFO_Setup.c"
 #include "UFO_Player.c"
-#include "SpecialClear.c"
 #include "HUD.c"
 #include "UISaveSlot.c"
 
@@ -59,5 +58,6 @@ struct {
 #include "HPZ/HPZIntro.c"
 #include "HPZ/HPZBeam.c"
 #include "HPZ/HPZEmerald.c"
+#include "SpecialClear.c"
 
 #include "Enemy.c"

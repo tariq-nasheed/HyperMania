@@ -19,7 +19,7 @@ void HPZBeam_Update(void) {
 				Entity* emerald = SortedSuperEmeralds[i];
 				if (emerald && emerald->position.x == self->position.x) {
 					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
-					ext->color = super_emerald_lookup[i] - 1;
+					ext->type = i;
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
 					HM_global.currentSave->transferedEmeralds |= 1 << i;
 					break;

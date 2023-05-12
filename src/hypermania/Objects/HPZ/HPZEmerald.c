@@ -9,7 +9,7 @@ void HPZEmerald_Update_Hook(void) {
 
 	if (!HPZSetup) return;
 	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	if (!ext || ext->color == -1 || HM_global.currentSave->superEmeralds & 1 << ext->color) return;
+	if (!ext || ext->type == -1 || HM_global.currentSave->superEmeralds & 1 << (super_emerald_lookup[ext->type] - 1)) return;
 
 	Hitbox hitbawks;
 	hitbawks.left = -16;
@@ -24,7 +24,7 @@ void HPZEmerald_Update_Hook(void) {
 				++counter;
 				if (counter == 0x1F) {
 					RSDK.SetScene("Special Stage", "");
-					SceneInfo->listPos += ext->color;
+					SceneInfo->listPos += ext->type;
 #if MANIA_USE_PLUS
 					SceneInfo->listPos += 7;
 #endif
@@ -40,7 +40,7 @@ void HPZEmerald_Update_Hook(void) {
 void HPZEmerald_Draw_Hook(void) {
 	RSDK_THIS(HPZEmerald);
 	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	if (!ext || ext->color == -1) {
+	if (!ext || ext->type == -1) {
 		Mod.Super(HPZEmerald->classID, SUPER_DRAW, NULL);
 		return;
 	}
@@ -60,14 +60,14 @@ void HPZEmerald_Create_Hook(void* data) {
 			HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
 			if (!ext) return;
 			ext->owner = (Entity*)self;
-			if (HM_global.currentSave->superEmeralds & 1 << i) {
-				ext->color = i;
+			if (HM_global.currentSave->superEmeralds & 1 << (super_emerald_lookup[i] - 1)) {
+				ext->type = i;
 				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
 			} else if (HM_global.currentSave->transferedEmeralds & 1 << i) {
-				ext->color = i;
+				ext->type = i;
 				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
 			} else {
-				ext->color = -1;
+				ext->type = -1;
 			}
 			break;
 		}
