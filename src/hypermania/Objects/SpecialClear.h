@@ -94,6 +94,13 @@ typedef struct {
 	bool32 startFadingBackground;
 	int32 backgroundFade;
 	bool32 drawContinue;
+	int32 sparkleAniFrames;
+	int32 sparkleType; // 0 - none, 1 - normal, 2 - inverted
+	Vector2 sparkleTarget;
+	int32 sparkleAngle;
+	int32 sparkleDistance;
+	Vector2 sparklePos[16];
+	Animator sparkleAnimator[16];
 } SpecialClearStaticExt_t;
 
 extern SpecialClearStaticExt_t SpecialClearStaticExt;

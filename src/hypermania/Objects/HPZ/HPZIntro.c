@@ -4,7 +4,7 @@
 
 ObjectHPZIntro* HPZIntro;
 
-Entity* SortedSuperEmeralds[7];
+Entity* SortedSuperEmeralds[8];
 
 color idk1[36];
 color idk2[36] = { 0xA00000, 0xB01820, 0xC03040, 0xD04860, 0xE06080, 0x4040C8, 0x5858C8, 0xE060E0, 0x7070C8, 0x8888C8, 0xA0A0C8, 0xC048C8,

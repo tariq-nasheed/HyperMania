@@ -26,7 +26,7 @@ typedef struct {
 
 
 //asdopfkasudfasdf
-extern Entity* SortedSuperEmeralds[7];
+extern Entity* SortedSuperEmeralds[8];
 
 // Object Struct
 extern ObjectHPZIntro* HPZIntro;

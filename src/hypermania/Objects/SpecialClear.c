@@ -86,10 +86,12 @@ bool32 SpecialClear_State_ShowTotalScore_NoContinues_HOOK(bool32 skippedState) {
 void SpecialClear_StageLoad_OVERLOAD() {
 	Mod.Super(SpecialClear->classID, SUPER_STAGELOAD, NULL);
 	SpecialClearStaticExt.SEAniFrames = RSDK.LoadSpriteAnimation("Special/ResultsSE.bin", SCOPE_STAGE);
+	SpecialClearStaticExt.sparkleAniFrames = RSDK.LoadSpriteAnimation("HPZ/Sparkles.bin", SCOPE_STAGE);
 	RSDK.SetSpriteAnimation(SpecialClearStaticExt.SEAniFrames, 0, &SpecialClearStaticExt.SEAnimator, true, 0);
 	SpecialClearStaticExt.startFadingBackground = false;
 	SpecialClearStaticExt.backgroundFade = 0x200;
 	SpecialClearStaticExt.drawContinue = false;
+	SpecialClearStaticExt.sparkleType = 0;
 }
 
 void SpecialClear_Create_OVERLOAD(void* data) {
@@ -222,6 +224,26 @@ void SpecialClear_Update_OVERLOAD() {
 		self->showFade = true;
 		RSDK.PlaySfx(SpecialClear->sfxSpecialWarp, false, 0xFF);
 		self->state = SpecialClear_State_ExitResults;
+	}
+
+	if (SpecialClearStaticExt.sparkleType) {
+		for (int32 i = 0; i != 16; ++i) {
+			SpecialClearStaticExt.sparklePos[i].x = SpecialClearStaticExt.sparkleTarget.x + RSDK.Cos256(SpecialClearStaticExt.sparkleAngle + 0x10 * i) * SpecialClearStaticExt.sparkleDistance;
+			SpecialClearStaticExt.sparklePos[i].y = SpecialClearStaticExt.sparkleTarget.y + RSDK.Sin256(SpecialClearStaticExt.sparkleAngle + 0x10 * i) * SpecialClearStaticExt.sparkleDistance;
+		}
+	}
+	switch (SpecialClearStaticExt.sparkleType) {
+		case 1:
+			SpecialClearStaticExt.sparkleAngle += 4;
+			SpecialClearStaticExt.sparkleDistance -= 0x100;
+			if (SpecialClearStaticExt.sparkleDistance < 0) SpecialClearStaticExt.sparkleType = 0;
+			break;
+		case 2:
+			SpecialClearStaticExt.sparkleAngle -= 4;
+			SpecialClearStaticExt.sparkleDistance += 0x100;
+			if (SpecialClearStaticExt.sparkleDistance >= 0x10000) SpecialClearStaticExt.sparkleType = 0;
+			break;
+		default: break;
 	}
 }
 
@@ -437,6 +459,13 @@ void SpecialClear_Draw_OVERLOAD() {
 		}
 	}
 
+	if (SpecialClearStaticExt.sparkleType) {
+		for (int32 i = 0; i != 16; ++i) {
+			RSDK.DrawSprite(&SpecialClearStaticExt.sparkleAnimator[i], &SpecialClearStaticExt.sparklePos[i], false);
+			RSDK.ProcessAnimation(&SpecialClearStaticExt.sparkleAnimator[i]);
+		}
+	}
+
 	if (self->showFade) RSDK.FillScreen(self->fillColor, self->timer, self->timer - 128, self->timer - 256);
 }
 
@@ -492,6 +521,16 @@ void SpecialClear_State_RevealSuperEmerald() {
 		self->timer = 0;
 		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
 		self->state = SpecialClear_State_ActivateSuperEmerald;
+		SpecialClearStaticExt.sparkleType = 1;
+		Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
+		SpecialClearStaticExt.sparkleTarget = emerald->position;
+		SpecialClearStaticExt.sparkleAngle = 0;
+		SpecialClearStaticExt.sparkleDistance = 0xe000;
+		for (int32 i = 0; i != 16; ++i) {
+			SpecialClearStaticExt.sparklePos[i].x = SpecialClearStaticExt.sparkleTarget.x + RSDK.Cos256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
+			SpecialClearStaticExt.sparklePos[i].y = SpecialClearStaticExt.sparkleTarget.y + RSDK.Sin256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
+			RSDK.SetSpriteAnimation(SpecialClearStaticExt.sparkleAniFrames, 0, &SpecialClearStaticExt.sparkleAnimator[i], true, i);
+		}
 	}
 }
 
@@ -499,14 +538,14 @@ void SpecialClear_State_ActivateSuperEmerald() {
 	RSDK_THIS(SpecialClear);
 
 	++self->timer;
-	if (self->timer == 224) {
+	if (self->timer - 1 == 224) {
 		Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
 		HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 		RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[ext->type], &ext->animator, true, 0);
 		RSDK.PlaySfx(HPZIntro->sfxEmeraldFlying, false, 0xFF);
 	}
 
-	if (self->timer >= 284) {
+	if (self->timer >= 254) {
 		self->timer    = 0;
 		if (HM_global.currentSave->superEmeralds == 0b01111111) {
 			Entity* emerald = SortedSuperEmeralds[3];
@@ -530,6 +569,16 @@ void SpecialClear_State_RevealMasterEmerald() {
 		self->timer = 0;
 		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
 		self->state = SpecialClear_State_ActivateMasterEmerald;
+		SpecialClearStaticExt.sparkleType = 2;
+		Entity* emerald = SortedSuperEmeralds[7];
+		SpecialClearStaticExt.sparkleTarget = emerald->position;
+		SpecialClearStaticExt.sparkleAngle = 0;
+		SpecialClearStaticExt.sparkleDistance = 0;
+		for (int32 i = 0; i != 16; ++i) {
+			SpecialClearStaticExt.sparklePos[i].x = SpecialClearStaticExt.sparkleTarget.x + RSDK.Cos256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
+			SpecialClearStaticExt.sparklePos[i].y = SpecialClearStaticExt.sparkleTarget.y + RSDK.Sin256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
+			RSDK.SetSpriteAnimation(SpecialClearStaticExt.sparkleAniFrames, 0, &SpecialClearStaticExt.sparkleAnimator[i], true, i);
+		}
 	}
 }
 
@@ -537,10 +586,10 @@ void SpecialClear_State_ActivateMasterEmerald() {
 	RSDK_THIS(SpecialClear);
 
 	++self->timer;
-	if (self->timer >= 120) {
+	if (self->timer >= 60) {
 		self->timer       = 0;
-		self->messagePos1.y = 0x880000;
-		self->messagePos2.y = 0xA00000;
+		self->messagePos1.y = 0xB80000;
+		self->messagePos2.y = 0xD00000;
 		self->messageType = SC_MSG_SUPER; // TODO should probably make this a seperate enum
 		self->state       = SpecialClear_State_EnterHyperMessage;
 	}

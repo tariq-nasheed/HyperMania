@@ -55,21 +55,26 @@ void HPZEmerald_Create_Hook(void* data) {
 	Mod.Super(HPZEmerald->classID, SUPER_CREATE, data);
 	RSDK_THIS(HPZEmerald);
 
-	for (int32 i = 0; i != 7; ++i) {
-		if (SortedSuperEmeralds[i] == (Entity*)self) {
-			HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
-			if (!ext) return;
-			ext->owner = (Entity*)self;
-			if (HM_global.currentSave->superEmeralds & 1 << (super_emerald_lookup[i] - 1)) {
-				ext->type = i;
-				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
-			} else if (HM_global.currentSave->transferedEmeralds & 1 << i) {
-				ext->type = i;
-				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
-			} else {
-				ext->type = -1;
+	if (self->type == HPZEMERALD_MASTER) {
+		// you might think this is a misnomer but you'd be wrong! the master emerald IS technically a super emerald according to the japanese sonic jam guidebook! (https://twitter.com/chaotic_hog/status/1652734301702610946)
+		SortedSuperEmeralds[7] = (Entity*)self;
+	} else {
+		for (int32 i = 0; i != 7; ++i) {
+			if (SortedSuperEmeralds[i] == (Entity*)self) {
+				HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
+				if (!ext) return;
+				ext->owner = (Entity*)self;
+				if (HM_global.currentSave->superEmeralds & 1 << (super_emerald_lookup[i] - 1)) {
+					ext->type = i;
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
+				} else if (HM_global.currentSave->transferedEmeralds & 1 << i) {
+					ext->type = i;
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
+				} else {
+					ext->type = -1;
+				}
+				break;
 			}
-			break;
 		}
 	}
 }
