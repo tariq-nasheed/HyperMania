@@ -27,15 +27,12 @@ typedef struct {
 	Animator animator;
 } HPZEmeraldExt;
 
-uint32 super_emerald_lookup[7] = {
-	7, // red
-	3, // blue
-	2, // yellow
-	1, // green
-	4, // purple
-	5, // gray
-	6  // cyan
-};
+// left to right ordering converted to a centered origin that fans out with a left-leaning bias
+uint32 super_emerald_lookup[7]    = { 5, 3, 1, 0, 2, 4, 6 }; // linear order -> super emerald order
+uint32 super_emerald_revlookup[7] = { 3, 2, 4, 1, 5, 0, 6 }; // super emerald order -> linear order
+
+// Sonic 3's emerald order is identical to Mania's with the exceptions being blue/purple and cyan/red are flipped
+uint32 sonic3_emerald_lookup[7] = { 0, 1, 3, 2, 4, 6, 5 };
 
 
 #include "Player.c"

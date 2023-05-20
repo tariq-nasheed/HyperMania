@@ -37,10 +37,9 @@ void UISaveSlot_Draw_OVERLOAD() {
 		HM_SaveRAM* save = ((UISaveSlotExt*)GetExtMem(RSDK.GetEntitySlot(self)))->save;
 
 		for (int32 i = 0; i < 7; ++i) {
-			const int32 index = super_emerald_lookup[i] - 1;
-			drawPos.x = self->position.x - 0x240000 + 0xC0000 * index;
+			drawPos.x = self->position.x - 0x240000 + 0xC0000 * i;
 			if (save->transferedEmeralds & 1 << i) {
-				UISaveSlotStaticExt.SEAnimator.frameID = (save->superEmeralds & 1 << i) ? index + 1 : 8;
+				UISaveSlotStaticExt.SEAnimator.frameID = (save->superEmeralds & 1 << i) ? i + 1 : 8;
 				if (UISaveSlotStaticExt.SEAnimator.frameID != 8 && timer >> 1 & 1) {
 					UISaveSlotStaticExt.SEAnimator.frameID = 0;
 				}

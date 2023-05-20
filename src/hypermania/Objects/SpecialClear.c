@@ -19,7 +19,7 @@ bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
 	if (!UFO_Setup) {
 		if (!SpecialClearStaticExt.startFadingBackground) {
 			SpecialClearStaticExt.startFadingBackground = true;
-			Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
+			Entity* emerald = SortedSuperEmeralds[super_emerald_revlookup[UFO_HPZbuffer.specialStageID]];
 			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
 			camera->state = StateMachine_None;
 			camera->position.x = emerald->position.x;
@@ -522,7 +522,7 @@ void SpecialClear_State_RevealSuperEmerald() {
 		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
 		self->state = SpecialClear_State_ActivateSuperEmerald;
 		SpecialClearStaticExt.sparkleType = 1;
-		Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
+		Entity* emerald = SortedSuperEmeralds[super_emerald_revlookup[UFO_HPZbuffer.specialStageID]];
 		SpecialClearStaticExt.sparkleTarget = emerald->position;
 		SpecialClearStaticExt.sparkleAngle = 0;
 		SpecialClearStaticExt.sparkleDistance = 0xe000;
@@ -539,16 +539,16 @@ void SpecialClear_State_ActivateSuperEmerald() {
 
 	++self->timer;
 	if (self->timer - 1 == 224) {
-		Entity* emerald = SortedSuperEmeralds[UFO_HPZbuffer.specialStageID];
+		Entity* emerald = SortedSuperEmeralds[super_emerald_revlookup[UFO_HPZbuffer.specialStageID]];
 		HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
-		RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[ext->type], &ext->animator, true, 0);
+		RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, sonic3_emerald_lookup[super_emerald_lookup[ext->type]] + 1, &ext->animator, true, 0);
 		RSDK.PlaySfx(HPZIntro->sfxEmeraldFlying, false, 0xFF);
 	}
 
 	if (self->timer >= 254) {
 		self->timer    = 0;
 		if (HM_global.currentSave->superEmeralds == 0b01111111) {
-			Entity* emerald = SortedSuperEmeralds[3];
+			Entity* emerald = SortedSuperEmeralds[7];
 			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
 			RSDKScreenInfo* screen = &ScreenInfo[camera->screenID];
 			Camera_SetupLerp(CAMERA_LERP_NORMAL, 0, emerald->position.x - (screen->size.x >> 1), camera->position.y, 1);

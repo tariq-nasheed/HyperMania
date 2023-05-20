@@ -9,7 +9,7 @@ void HPZEmerald_Update_Hook(void) {
 
 	if (!HPZSetup) return;
 	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	if (!ext || ext->type == -1 || HM_global.currentSave->superEmeralds & 1 << (super_emerald_lookup[ext->type] - 1)) return;
+	if (!ext || ext->type == -1 || HM_global.currentSave->superEmeralds & 1 << sonic3_emerald_lookup[super_emerald_lookup[ext->type]]) return;
 
 	Hitbox hitbawks;
 	hitbawks.left = -16;
@@ -24,7 +24,7 @@ void HPZEmerald_Update_Hook(void) {
 				++counter;
 				if (counter == 0x1F) {
 					RSDK.SetScene("Special Stage", "");
-					SceneInfo->listPos += ext->type;
+					SceneInfo->listPos += super_emerald_lookup[ext->type];
 #if MANIA_USE_PLUS
 					SceneInfo->listPos += 7;
 #endif
@@ -64,11 +64,15 @@ void HPZEmerald_Create_Hook(void* data) {
 				HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
 				if (!ext) return;
 				ext->owner = (Entity*)self;
-				if (HM_global.currentSave->superEmeralds & 1 << (super_emerald_lookup[i] - 1)) {
+
+				const int32 index = sonic3_emerald_lookup[super_emerald_lookup[i]];
+				if (HM_global.currentSave->transferedEmeralds & 1 << index) {
 					ext->type = i;
-					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, super_emerald_lookup[i], &ext->animator, true, 0);
-				} else if (HM_global.currentSave->transferedEmeralds & 1 << i) {
-					ext->type = i;
+				}
+
+				if (HM_global.currentSave->superEmeralds & 1 << index) {
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, index + 1, &ext->animator, true, 0);
+				} else if (HM_global.currentSave->transferedEmeralds & 1 << index) {
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
 				} else {
 					ext->type = -1;
