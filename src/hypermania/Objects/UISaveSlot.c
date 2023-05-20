@@ -40,7 +40,7 @@ void UISaveSlot_Draw_OVERLOAD() {
 			drawPos.x = self->position.x - 0x240000 + 0xC0000 * i;
 			if (save->transferedEmeralds & 1 << i) {
 				UISaveSlotStaticExt.SEAnimator.frameID = (save->superEmeralds & 1 << i) ? i + 1 : 8;
-				if (UISaveSlotStaticExt.SEAnimator.frameID != 8 && timer >> 1 & 1) {
+				if (UISaveSlotStaticExt.SEAnimator.frameID != 8 && timer & 1) {
 					UISaveSlotStaticExt.SEAnimator.frameID = 0;
 				}
 				RSDK.DrawSprite(&UISaveSlotStaticExt.SEAnimator, &drawPos, false);

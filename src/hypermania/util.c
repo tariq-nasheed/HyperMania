@@ -11,13 +11,13 @@ bool32 HPZ_SuperSpecialStage;
 // max output length: 47 characters (counting null terminator)
 #define SAVEMSG_LEN 47
 static void HM_Save_FormatString(char* str) {
-	char emerald_mask[7];
-	for (int32 i = 0; i != 7; ++i) {
+	char emerald_mask[8];
+	for (int32 i = 0; i != 8; ++i) {
 		emerald_mask[i] = (HM_global.currentSave->superEmeralds & 1 << i) ? '1' : '0';
 	}
 	sprintf(
 		str,
-		"emeralds %stransfered, current mask: %.7s",
+		"emeralds %stransfered, current mask: %.8s",
 		(HM_global.currentSave->transferedEmeralds) ? "" : "not ",
 		emerald_mask
 	);

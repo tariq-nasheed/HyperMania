@@ -529,7 +529,7 @@ void SpecialClear_State_RevealSuperEmerald() {
 		for (int32 i = 0; i != 16; ++i) {
 			SpecialClearStaticExt.sparklePos[i].x = SpecialClearStaticExt.sparkleTarget.x + RSDK.Cos256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
 			SpecialClearStaticExt.sparklePos[i].y = SpecialClearStaticExt.sparkleTarget.y + RSDK.Sin256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
-			RSDK.SetSpriteAnimation(SpecialClearStaticExt.sparkleAniFrames, 0, &SpecialClearStaticExt.sparkleAnimator[i], true, i);
+			RSDK.SetSpriteAnimation(SpecialClearStaticExt.sparkleAniFrames, 0, &SpecialClearStaticExt.sparkleAnimator[i], true, i % 8);
 		}
 	}
 }
@@ -577,7 +577,7 @@ void SpecialClear_State_RevealMasterEmerald() {
 		for (int32 i = 0; i != 16; ++i) {
 			SpecialClearStaticExt.sparklePos[i].x = SpecialClearStaticExt.sparkleTarget.x + RSDK.Cos256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
 			SpecialClearStaticExt.sparklePos[i].y = SpecialClearStaticExt.sparkleTarget.y + RSDK.Sin256(0x10 * i) * SpecialClearStaticExt.sparkleDistance;
-			RSDK.SetSpriteAnimation(SpecialClearStaticExt.sparkleAniFrames, 0, &SpecialClearStaticExt.sparkleAnimator[i], true, i);
+			RSDK.SetSpriteAnimation(SpecialClearStaticExt.sparkleAniFrames, 0, &SpecialClearStaticExt.sparkleAnimator[i], true, i % 8);
 		}
 	}
 }
