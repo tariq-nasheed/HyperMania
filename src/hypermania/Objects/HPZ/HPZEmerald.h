@@ -16,7 +16,7 @@ typedef struct {
 
 typedef struct {
     RSDK_ENTITY
-    StateMachine(state); // unused... until NOW!!!!
+    StateMachine(state); // unused
     uint8 type;
     bool32 solid;
     Vector2 startPos;

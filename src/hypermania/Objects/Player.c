@@ -27,6 +27,7 @@ void (*Player_State_KnuxWallClimb)(void);
 void (*Player_Input_P2_AI)();
 void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
+void (*Player_State_Static)();
 bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
 
 // -----------------------------------------------------------------------------

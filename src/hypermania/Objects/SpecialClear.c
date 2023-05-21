@@ -31,6 +31,8 @@ bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
 
 			HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 			RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
+			ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(SortedSuperEmeralds[7]));
+			ext->type = -1;
 		}
 	}
 	return false;
@@ -565,7 +567,7 @@ void SpecialClear_State_RevealMasterEmerald() {
 	RSDK_THIS(SpecialClear);
 
 	EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
-	if (!camera->state) {
+	if (FROM_FIXED(camera->position.x) == FROM_FIXED(camera->endLerpPos.x)) {
 		self->timer = 0;
 		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
 		self->state = SpecialClear_State_ActivateMasterEmerald;
@@ -587,6 +589,8 @@ void SpecialClear_State_ActivateMasterEmerald() {
 
 	++self->timer;
 	if (self->timer >= 60) {
+		HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(SortedSuperEmeralds[7]));
+		ext->type = 0;
 		self->timer       = 0;
 		self->messagePos1.y = 0xB80000;
 		self->messagePos2.y = 0xD00000;
