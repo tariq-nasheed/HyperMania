@@ -60,7 +60,7 @@ void HPZEmerald_Draw_Hook(void) {
 	if (self->type != HPZEMERALD_MASTER) {
 		RSDK.SetActivePalette(6, 0, ScreenInfo->size.y);
 		RSDK.DrawSprite(&ext->animator, NULL, false);
-		ext->animator.frameID = Zone->timer & 1;
+		if (ext->animator.animationID > 0) ext->animator.frameID = Zone->timer & 1;
 		RSDK.SetActivePalette(0, 0, ScreenInfo->size.y);
 	} else {
 		// ext->type gets reused as timer for master emerald
