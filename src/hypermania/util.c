@@ -53,7 +53,6 @@ static void HM_Save_LoadCB(int32 status) {
 	}
 	HYPERMANIA_PRINT(PRINT_NORMAL, "persistent data loaded");
 
-	if (!HM_global.currentSave) return;
 	char save_message[SAVEMSG_LEN];
 	HM_Save_FormatString(save_message);
 	HYPERMANIA_PRINT(PRINT_NORMAL, "save info: %s", save_message);
@@ -67,6 +66,12 @@ HM_SaveRAM* HM_Save_GetDataPtr(int32 slot, bool32 encore) {
 }
 
 void HM_Save_SaveFile() {
+	SaveRAM* save = GetSaveRAM_Safe();
+	if (save && save->chaosEmeralds == 0b00000000) {
+		HYPERMANIA_PRINT(PRINT_NORMAL, "erased save game detected! deleting super emerald data");
+		HM_global.currentSave->transferedEmeralds = 0b00000000;
+		HM_global.currentSave->superEmeralds      = 0b00000000;
+	}
 #if RETRO_REV02
 	API.SaveUserFile(SAVE_FILE_NAME, &HM_global.saveRAM, sizeof(HM_global.saveRAM), HM_Save_SaveCB, false);
 #else
