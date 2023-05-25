@@ -28,6 +28,7 @@ void (*Player_Input_P2_AI)();
 void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
 void (*Player_State_Static)();
+void (*Player_State_Transform)();
 bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
 
 // -----------------------------------------------------------------------------
@@ -200,6 +201,30 @@ void Player_Update_OVERLOAD() {
 		--self->superRingLossTimer;
 	}
 
+	// ERZ shit ------------------------------------------------------------
+#if MANIA_USE_PLUS
+	if (Player->superDashCooldown == 30) {
+#else
+	if (ERZStart->superDashCooldown == 30) {
+#endif
+		Player_ClearEnemiesOnScreen(self);
+		RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
+		const int32 vel = TO_FIXED(2);
+		for (int32 i = 0; i != 4; ++i) {
+			EntityDebris* debris = CREATE_ENTITY(Debris, Debris_State_Move, self->position.x, self->position.y);
+			debris->timer = 17;
+			debris->velocity.x = vel - vel * (2 * (i & 1));
+			debris->velocity.y = vel - vel * (i & 2);
+			debris->drawGroup = Zone->playerDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
+			if (self->drawFX & FX_SCALE) {
+				debris->drawFX |= FX_SCALE;
+				debris->scale.x = self->scale.x;
+				debris->scale.y = self->scale.y;
+			}
+		}
+	}
+
 	// encore shit ---------------------------------------------------------
 #if MANIA_USE_PLUS
 	if (ext->prev_ID != self->characterID) {
@@ -281,7 +306,7 @@ void Player_Update_OVERLOAD() {
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
 		}*/
 
-		if (self->characterID == ID_SONIC && ext->can_dash && self->velocity.y >= 0 && self->jumpPress) {
+		if (self->characterID == ID_SONIC && ext->can_dash && self->jumpPress && self->state == Player_State_Air) {
 			Player_HyperSonicDash();
 			ext->can_dash = false;
 		}
@@ -335,17 +360,13 @@ void Player_Update_OVERLOAD() {
 	}
 }
 
-bool32 Player_State_Transform_HOOK(bool32 skippedState) {
-	return false;
-}
-
-
 bool32 Player_State_Ground_HOOK(bool32 skippedState) {
 	RSDK_THIS(Player);
 	if (!Player_IsHyper(self)) return false;
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 #if MANIA_USE_PLUS
 	if (self->characterID == ID_MIGHTY) ext->can_dash = true;
+	if (self->characterID == ID_SONIC) ext->can_dash = false;
 #endif
 	return false;
 }

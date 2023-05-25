@@ -469,8 +469,8 @@ extern void (*Player_State_KnuxWallClimb)();
 extern void (*Player_Input_P2_AI)();
 extern void (*Player_JumpAbility_Mighty)();
 extern void (*Player_State_Static)();
+extern void (*Player_State_Transform)();
 
-bool32 Player_State_Transform_HOOK(bool32);
 bool32 Player_State_Ground_HOOK(bool32);
 bool32 Player_JumpAbility_Sonic_HOOK(bool32);
 bool32 Player_JumpAbility_Mighty_HOOK(bool32);
@@ -491,8 +491,8 @@ void Player_Update_OVERLOAD();
   IMPORT_PUBLIC_FUNC(Player_State_KnuxWallClimb); \
   IMPORT_PUBLIC_FUNC(Player_Input_P2_AI); \
   IMPORT_PUBLIC_FUNC(Player_State_Static); \
+  IMPORT_PUBLIC_FUNC(Player_State_Transform); \
   HOOK_STATE(Player_State_Ground, 1); \
-  HOOK_STATE(Player_State_Transform, 1); \
   HOOK_STATE(Player_JumpAbility_Sonic, 1); \
   HOOK_STATE(Player_JumpAbility_Mighty, 0); \
   HOOK_STATE(Player_State_MightyHammerDrop, 0); \
