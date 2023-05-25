@@ -38,8 +38,10 @@ extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, 
 #define SAVE_FILE_NAME "HyperManiaSaveData.bin"
 
 typedef struct {
-	uint32 transferedEmeralds;
-	uint32 superEmeralds;
+	uint8 transferedEmeralds;
+	uint8 padding1[3];
+	uint8 superEmeralds;
+	uint8 padding2[3];
 } HM_SaveRAM;
 
 HM_SaveRAM* HM_Save_GetDataPtr(int32 slot, bool32 encore);

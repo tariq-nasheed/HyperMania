@@ -41,7 +41,7 @@ bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
 bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 	RSDK_THIS(SpecialClear);
 
-	if (self->timer == 179) {
+	if (!UFO_Setup && self->timer == 179) {
 		self->timer = 0;
 		SpecialClearStaticExt.drawContinue = true;
 
@@ -65,7 +65,7 @@ bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 bool32 SpecialClear_State_ShowTotalScore_NoContinues_HOOK(bool32 skippedState) {
 	RSDK_THIS(SpecialClear);
 
-	if (self->timer == 59) {
+	if (!UFO_Setup && self->timer == 59) {
 		self->timer = 0;
 
 		SaveRAM *saveRAM      = SaveGame_GetSaveRAM();
