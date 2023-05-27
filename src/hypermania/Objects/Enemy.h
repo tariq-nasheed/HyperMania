@@ -149,12 +149,11 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   OBJ_HOTARUHIWATT_SETUP; \
   OBJ_HEAVYSHINOBI_SETUP; \
   OBJ_SHIVERSAW_SETUP; \
-  REGISTER_ENEMY(BigSqueeze); \
-  MOD_REGISTER_OBJECT_HOOK(TVPole); \
-  REGISTER_ENEMY(WeatherMobile); \
-  REGISTER_ENEMY(AmoebaDroid); \
-  REGISTER_ENEMY(DERobot); \
-  REGISTER_ENEMY(DDWrecker); \
+  OBJ_BIGSQUEEZE_SETUP; \
+  OBJ_WEATHERMOBILE_SETUP; \
+  OBJ_AMOEBADROID_SETUP; \
+  OBJ_DEROBOT_SETUP; \
+  OBJ_DDWRECKER_SETUP; \
   \
   \
   REGISTER_ENEMY(FlasherMKII); \
@@ -201,54 +200,20 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(Tubinaut); \
   REGISTER_ENEMY(Shutterbug); \
   REGISTER_ENEMY(MicDrop); \
-  REGISTER_ENEMY(Spiny); \
-  REGISTER_ENEMY(Grabber); \
+  OBJ_SPINY_SETUP; \
+  OBJ_GRABBER_SETUP; \
   OBJ_CATERKILLERJR_SETUP; \
-  REGISTER_ENEMY(Bubbler); \
-  REGISTER_ENEMY(Splats); \
-  REGISTER_ENEMY(Newtron); \
-  REGISTER_ENEMY(Chopper); \
-  REGISTER_ENEMY(Crabmeat); \
-  REGISTER_ENEMY(Batbrain); \
-  REGISTER_ENEMY(Motobug); \
+  OBJ_BUBBLER_SETUP; \
+  OBJ_SPLATS_SETUP; \
+  OBJ_NEWTRON_SETUP; \
+  OBJ_CHOPPER_SETUP; \
+  OBJ_CRABMEAT_SETUP; \
+  OBJ_BATBRAIN_SETUP; \
+  OBJ_MOTOBUG_SETUP; \
   OBJ_BUZZBOMBER_SETUP
 
 // function imports start after the following line (pattern match
 #define IMPORT_ENEMY_FUNCTIONS \
-  GET_MANIA_FUNC(Shiversaw_Hit); \
-  GET_MANIA_FUNC(BigSqueeze_StateBoss_Idle); \
-  GET_MANIA_FUNC(BigSqueeze_StateBoss_Electrified); \
-  GET_MANIA_FUNC(BigSqueeze_HandleWallCollisions); \
-  GET_MANIA_FUNC(BigSqueeze_StateBoss_Destroyed); \
-  GET_MANIA_FUNC(WeatherMobile_State_EnterEggman); \
-  GET_MANIA_FUNC(WeatherMobile_State_HandleMovement); \
-  GET_MANIA_FUNC(WeatherMobile_State_WindAttack); \
-  GET_MANIA_FUNC(WeatherMobile_State_SunAttack); \
-  GET_MANIA_FUNC(AmoebaDroid_State_DropIn); \
-  GET_MANIA_FUNC(WeatherMobile_State_EnterEggman); \
-  GET_MANIA_FUNC(WeatherMobile_State_Defeated); \
-  GET_MANIA_FUNC(WeatherMobile_StateLights_Shine); \
-  GET_MANIA_FUNC(WeatherMobile_StateLights_DimAndDissapear); \
-  GET_MANIA_FUNC(WeatherMobile_StateCloud_FadeAway); \
-  GET_MANIA_FUNC(TVPole_State_ForceRelease); \
-  GET_MANIA_FUNC(AmoebaDroid_State_DropIntoPool); \
-  GET_MANIA_FUNC(AmoebaDroid_State_SurfaceFromPool); \
-  GET_MANIA_FUNC(AmoebaDroid_State_ChooseAttack); \
-  GET_MANIA_FUNC(AmoebaDroid_State_ExitPool); \
-  GET_MANIA_FUNC(AmoebaDroid_State_BounceAttack); \
-  GET_MANIA_FUNC(AmoebaDroid_State_GatherBlobs); \
-  GET_MANIA_FUNC(AmoebaDroid_State_SpinBlobs); \
-  GET_MANIA_FUNC(AmoebaDroid_State_Destroyed); \
-  GET_MANIA_FUNC(DERobot_Hit); \
-  GET_MANIA_FUNC(DERobot_State_FallLand); \
-  GET_MANIA_FUNC(DERobot_State_Walk); \
-  GET_MANIA_FUNC(DERobot_State_ArmAttack); \
-  GET_MANIA_FUNC(DDWrecker_Hit); \
-  GET_MANIA_FUNC(DDWrecker_StateBall_Vulnerable); \
-  GET_MANIA_FUNC(DDWrecker_StateBall_Spiked); \
-  GET_MANIA_FUNC(DDWrecker_StateBall_Partnerless); \
-  \
-  \
   GET_MANIA_FUNC(FlasherMKII_State_Idle); \
   GET_MANIA_FUNC(FlasherMKII_State_Moving); \
   GET_MANIA_FUNC(FlasherMKII_State_WeakFlash); \
@@ -361,36 +326,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(MicDrop_State_DropRecoil); \
   GET_MANIA_FUNC(MicDrop_State_Idle); \
   GET_MANIA_FUNC(MicDrop_State_Swinging); \
-  GET_MANIA_FUNC(MicDrop_State_Electrify); \
-  GET_MANIA_FUNC(Spiny_State_Floor); \
-  GET_MANIA_FUNC(Spiny_State_Shoot_Floor); \
-  GET_MANIA_FUNC(Spiny_State_Wall); \
-  GET_MANIA_FUNC(Spiny_State_Shoot_Wall); \
-  GET_MANIA_FUNC(Grabber_State_CheckForGrab); \
-  GET_MANIA_FUNC(Grabber_State_GrabDelay); \
-  GET_MANIA_FUNC(Grabber_State_HandleTurn); \
-  GET_MANIA_FUNC(Grabber_State_TryToGrab); \
-  GET_MANIA_FUNC(Grabber_State_RiseUp); \
-  GET_MANIA_FUNC(Grabber_State_GrabbedPlayer); \
-  GET_MANIA_FUNC(Grabber_State_Struggle); \
-  GET_MANIA_FUNC(Grabber_State_PlayerEscaped); \
-  GET_MANIA_FUNC(Bubbler_State_MotherPatrol); \
-  GET_MANIA_FUNC(Bubbler_State_FoundPlayer); \
-  GET_MANIA_FUNC(Bubbler_State_AttackPlayer); \
-  GET_MANIA_FUNC(Bubbler_StateProjectile_Seed); \
-  GET_MANIA_FUNC(Bubbler_StateProjectile_Bubbler); \
-  GET_MANIA_FUNC(Splats_State_BounceAround); \
-  GET_MANIA_FUNC(Splats_State_JumpOutOfJar); \
-  GET_MANIA_FUNC(Splats_State_HandleBouncing); \
-  GET_MANIA_FUNC(Splats_State_HandleLanding); \
-  GET_MANIA_FUNC(Splats_State_NoMoreJumps); \
-  GET_MANIA_FUNC(Newtron_State_StartFly); \
-  GET_MANIA_FUNC(Newtron_State_Fly); \
-  GET_MANIA_FUNC(Newtron_State_Shoot); \
-  GET_MANIA_FUNC(Chopper_State_Jump); \
-  GET_MANIA_FUNC(Crabmeat_State_Projectile); \
-  GET_MANIA_FUNC(Batbrain_State_CheckPlayerInRange); \
-  GET_MANIA_FUNC(Batbrain_State_DropToPlayer); \
-  GET_MANIA_FUNC(Batbrain_State_Fly); \
-  GET_MANIA_FUNC(Batbrain_State_FlyToCeiling); \
-  GET_MANIA_FUNC(Motobug_State_Smoke)
+  GET_MANIA_FUNC(MicDrop_State_Electrify)

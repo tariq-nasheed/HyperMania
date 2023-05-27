@@ -1,10 +1,10 @@
 #include "DDWrecker.h"
 
-ObjectDDWrecker *DDWrecker;
-void (*DDWrecker_StateBall_Vulnerable)(void);
-void (*DDWrecker_StateBall_Spiked)(void);
-void (*DDWrecker_StateBall_Partnerless)(void);
-void (*DDWrecker_Hit)(void);
+ObjectDDWrecker* DDWrecker;
+void (*DDWrecker_StateBall_Vulnerable)();
+void (*DDWrecker_StateBall_Spiked)();
+void (*DDWrecker_StateBall_Partnerless)();
+void (*DDWrecker_Hit)();
 
 bool32 DDWrecker_CheckVulnerable(Entity* self) {
 	if (((EntityDDWrecker*)self)->invincibilityTimer) return false;
@@ -24,7 +24,7 @@ void DDWrecker_OnHit(EntityPlayer* player, Entity* self) {
 	SceneInfo->entity = old_entity;
 }
 
-void DDWrecker_EnemyInfoHook(void) {
+void DDWrecker_EnemyInfoHook() {
 	Mod.Super(DDWrecker->classID, SUPER_STAGELOAD, NULL);
 	ADD_ATTACKABLE_CLASS(DDWrecker->classID, DDWrecker_CheckVulnerable, DDWrecker_GetHitbox, DDWrecker_OnHit, NULL, ATKFLAG_ISBOSS);
 }

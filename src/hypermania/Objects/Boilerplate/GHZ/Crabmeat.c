@@ -1,7 +1,7 @@
 #include "Crabmeat.h"
 
-ObjectCrabmeat *Crabmeat;
-void (*Crabmeat_State_Projectile)(void);
+ObjectCrabmeat* Crabmeat;
+void (*Crabmeat_State_Projectile)();
 
 
 bool32 Crabmeat_CheckVulnerable(Entity* self) {
@@ -10,7 +10,7 @@ bool32 Crabmeat_CheckVulnerable(Entity* self) {
 
 Hitbox* Crabmeat_GetHitbox(Entity* self) { return &(Crabmeat->hitboxBadnik); }
 
-void Crabmeat_EnemyInfoHook(void) {
+void Crabmeat_EnemyInfoHook() {
 	Mod.Super(Crabmeat->classID, SUPER_STAGELOAD, NULL);
 	ADD_ATTACKABLE_CLASS(Crabmeat->classID, Crabmeat_CheckVulnerable, Crabmeat_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }
