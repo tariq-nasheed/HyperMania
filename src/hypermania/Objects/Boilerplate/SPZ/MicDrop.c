@@ -1,28 +1,15 @@
 #include "MicDrop.h"
 
-ObjectMicDrop *MicDrop;
-void (*MicDrop_State_CheckForPlayer)(void);
-void (*MicDrop_State_DropDown)(void);
-void (*MicDrop_State_DropRecoil)(void);
-void (*MicDrop_State_Idle)(void);
-void (*MicDrop_State_Swinging)(void);
-void (*MicDrop_State_Electrify)(void);
+ObjectMicDrop* MicDrop;
 
-void MicDrop_EnemyInfoHook(void) {
+Hitbox* MicDrop_GetHitbox(Entity* self) { return &(MicDrop->hitboxBadnik); }
+
+void MicDrop_AdjustPos(Entity* self) {
+	self->position.x = (((((EntityMicDrop*)self)->radius + 25) * RSDK.Cos512(self->angle + 128)) << 7) + ((EntityMicDrop*)self)->startPos.x;
+	self->position.y = (((((EntityMicDrop*)self)->radius + 25) * RSDK.Sin512(self->angle + 128)) << 7) + ((EntityMicDrop*)self)->startPos.y;
+}
+
+void MicDrop_EnemyInfoHook() {
 	Mod.Super(MicDrop->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = MicDrop->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = MicDrop_State_CheckForPlayer;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &MicDrop->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = MicDrop_State_DropDown;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &MicDrop->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[2].func = MicDrop_State_DropRecoil;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &MicDrop->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[3].func = MicDrop_State_Idle;
-	EnemyDefs[EnemyInfoSlot].states[3].hitbox = &MicDrop->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[4].func = MicDrop_State_Swinging;
-	EnemyDefs[EnemyInfoSlot].states[4].hitbox = &MicDrop->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[5].func = MicDrop_State_Electrify;
-	EnemyDefs[EnemyInfoSlot].states[5].hitbox = &MicDrop->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(MicDrop->classID, Generic_CheckVulnerable, MicDrop_GetHitbox, Generic_OnHit,MicDrop_AdjustPos, ATKFLAG_NONE);
 }

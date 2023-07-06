@@ -1,28 +1,21 @@
 #include "Blaster.h"
 
-ObjectBlaster *Blaster;
-void (*Blaster_State_Move)(void);
-void (*Blaster_State_HandleTurn)(void);
-void (*Blaster_State_AttackPlayer)(void);
-void (*Blaster_State_MagnetAttract)(void);
-void (*Blaster_State_MagnetReleased)(void);
-void (*Blaster_State_Fall)(void);
+ObjectBlaster* Blaster;
+void (*Blaster_State_BeginShot)();
+void (*Blaster_State_Shot)();
+void (*Blaster_State_Shell)();
 
-void Blaster_EnemyInfoHook(void) {
+bool32 Blaster_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityBlaster*)self)->state != Blaster_State_BeginShot
+	 && ((EntityBlaster*)self)->state != Blaster_State_Shot
+	 && ((EntityBlaster*)self)->state != Blaster_State_Shell
+	);
+}
+
+Hitbox* Blaster_GetHitbox(Entity* self) { return &(Blaster->hitboxBadnik); }
+
+void Blaster_EnemyInfoHook() {
 	Mod.Super(Blaster->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Blaster->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Blaster_State_Move;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Blaster->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Blaster_State_HandleTurn;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Blaster->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[2].func = Blaster_State_AttackPlayer;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &Blaster->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[3].func = Blaster_State_MagnetAttract;
-	EnemyDefs[EnemyInfoSlot].states[3].hitbox = &Blaster->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[4].func = Blaster_State_MagnetReleased;
-	EnemyDefs[EnemyInfoSlot].states[4].hitbox = &Blaster->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[5].func = Blaster_State_Fall;
-	EnemyDefs[EnemyInfoSlot].states[5].hitbox = &Blaster->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Blaster->classID, Blaster_CheckVulnerable, Blaster_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

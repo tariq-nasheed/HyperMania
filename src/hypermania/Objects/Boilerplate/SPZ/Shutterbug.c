@@ -1,19 +1,10 @@
 #include "Shutterbug.h"
 
-ObjectShutterbug *Shutterbug;
-void (*Shutterbug_State_FlyAround)(void);
-void (*Shutterbug_State_ShakeFly)(void);
-void (*Shutterbug_State_FlyAway)(void);
+ObjectShutterbug* Shutterbug;
 
-void Shutterbug_EnemyInfoHook(void) {
+Hitbox* Shutterbug_GetHitbox(Entity* self) { return &(Shutterbug->hitboxBadnik); }
+
+void Shutterbug_EnemyInfoHook() {
 	Mod.Super(Shutterbug->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Shutterbug->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Shutterbug_State_FlyAround;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Shutterbug->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Shutterbug_State_ShakeFly;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Shutterbug->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[2].func = Shutterbug_State_FlyAway;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &Shutterbug->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Shutterbug->classID, Generic_CheckVulnerable, Shutterbug_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

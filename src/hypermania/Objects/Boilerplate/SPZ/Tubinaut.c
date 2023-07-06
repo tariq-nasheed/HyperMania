@@ -1,26 +1,26 @@
 #include "Tubinaut.h"
 
-ObjectTubinaut *Tubinaut;
-void (*Tubinaut_State_Move)(void);
+ObjectTubinaut* Tubinaut;
+void (*Tubinaut_State_Move)();
 
-void Tubinaut_EnemyInfoHook(void) {
-	Mod.Super(Tubinaut->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Tubinaut->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Tubinaut_State_Move;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Tubinaut->hitboxFace;
-	EnemyDefs[EnemyInfoSlot].destroy_func = Tubinaut_SpawnBalls;
-	++EnemyInfoSlot;
+Hitbox* Tubinaut_GetHitbox(Entity* self) { return &(Tubinaut->hitboxFace); }
+
+bool32 Tubinaut_CheckVulnerable(Entity* self) {
+	return (((EntityTubinaut*)self)->state == Tubinaut_State_Move);
 }
 
-void Tubinaut_SpawnBalls(EntityPlayer* player, Entity* e) {
-	BreakBadnik(player, e);
-	EntityTubinaut* self = (EntityTubinaut*)e;
+void Tubinaut_OnHit(EntityPlayer* player, Entity* self) {
 	for (int32 i = 0; i < TUBINAUT_ORB_COUNT; ++i) {
-		if (self->ballsVisible[i]) {
-			EntityTubinaut* orb = CREATE_ENTITY(Tubinaut, INT_TO_VOID(i + 1), self->orbPositions[i].x, self->orbPositions[i].y);
-			orb->velocity.x     = 0x380 * RSDK.Cos256(self->orbAngles[i] >> 4);
-			orb->velocity.y     = 0x380 * RSDK.Sin256(self->orbAngles[i] >> 4);
+		if (((EntityTubinaut*)self)->ballsVisible[i]) {
+			EntityTubinaut* orb = CREATE_ENTITY(Tubinaut, INT_TO_VOID(i + 1), ((EntityTubinaut*)self)->orbPositions[i].x, ((EntityTubinaut*)self)->orbPositions[i].y);
+			orb->velocity.x     = 0x380 * RSDK.Cos256(((EntityTubinaut*)self)->orbAngles[i] >> 4);
+			orb->velocity.y     = 0x380 * RSDK.Sin256(((EntityTubinaut*)self)->orbAngles[i] >> 4);
 		}
 	}
+	Generic_BadnikBreak(player, self, true);
+}
+
+void Tubinaut_EnemyInfoHook() {
+	Mod.Super(Tubinaut->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(Tubinaut->classID, Tubinaut_CheckVulnerable, Tubinaut_GetHitbox, Tubinaut_OnHit, NULL, ATKFLAG_NONE);
 }

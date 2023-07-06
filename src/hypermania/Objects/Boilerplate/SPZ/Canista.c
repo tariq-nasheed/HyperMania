@@ -1,16 +1,19 @@
 #include "Canista.h"
 
-ObjectCanista *Canista;
-void (*Canista_State_Moving)(void);
-void (*Canista_State_Idle)(void);
+ObjectCanista* Canista;
+void (*Canista_State_Moving)();
+void (*Canista_State_Idle)();
 
-void Canista_EnemyInfoHook(void) {
+bool32 Canista_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityCanista*)self)->state == Canista_State_Moving
+	 || ((EntityCanista*)self)->state == Canista_State_Idle
+	);
+}
+
+Hitbox* Canista_GetHitbox(Entity* self) { return &(Canista->hitboxBadnik); }
+
+void Canista_EnemyInfoHook() {
 	Mod.Super(Canista->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Canista->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Canista_State_Moving;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Canista->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Canista_State_Idle;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Canista->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Canista->classID, Canista_CheckVulnerable, Canista_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

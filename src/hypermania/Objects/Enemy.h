@@ -194,12 +194,12 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(JuggleSaw); \
   REGISTER_ENEMY(FBZTrash); \
   REGISTER_ENEMY(Technosqueek); \
-  REGISTER_ENEMY(Clucker); \
-  REGISTER_ENEMY(Blaster); \
-  REGISTER_ENEMY(Canista); \
-  REGISTER_ENEMY(Tubinaut); \
-  REGISTER_ENEMY(Shutterbug); \
-  REGISTER_ENEMY(MicDrop); \
+  OBJ_CLUCKER_SETUP; \
+  OBJ_BLASTER_SETUP; \
+  OBJ_CANISTA_SETUP; \
+  OBJ_TUBINAUT_SETUP; \
+  OBJ_SHUTTERBUG_SETUP; \
+  OBJ_MICDROP_SETUP; \
   OBJ_SPINY_SETUP; \
   OBJ_GRABBER_SETUP; \
   OBJ_CATERKILLERJR_SETUP; \
@@ -303,27 +303,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Technosqueek_State_TurnHorizontal); \
   GET_MANIA_FUNC(Technosqueek_State_MoveVertical); \
   GET_MANIA_FUNC(Technosqueek_State_TurnVertical); \
-  GET_MANIA_FUNC(Technosqueek_State_Fall); \
-  GET_MANIA_FUNC(Clucker_State_Destroyed); \
-  GET_MANIA_FUNC(Clucker_State_Appear); \
-  GET_MANIA_FUNC(Clucker_State_ShootDelay); \
-  GET_MANIA_FUNC(Clucker_State_Shoot); \
-  GET_MANIA_FUNC(Clucker_State_Turn); \
-  GET_MANIA_FUNC(Blaster_State_Move); \
-  GET_MANIA_FUNC(Blaster_State_HandleTurn); \
-  GET_MANIA_FUNC(Blaster_State_AttackPlayer); \
-  GET_MANIA_FUNC(Blaster_State_MagnetAttract); \
-  GET_MANIA_FUNC(Blaster_State_MagnetReleased); \
-  GET_MANIA_FUNC(Blaster_State_Fall); \
-  GET_MANIA_FUNC(Canista_State_Moving); \
-  GET_MANIA_FUNC(Canista_State_Idle); \
-  GET_MANIA_FUNC(Tubinaut_State_Move); \
-  GET_MANIA_FUNC(Shutterbug_State_FlyAround); \
-  GET_MANIA_FUNC(Shutterbug_State_ShakeFly); \
-  GET_MANIA_FUNC(Shutterbug_State_FlyAway); \
-  GET_MANIA_FUNC(MicDrop_State_CheckForPlayer); \
-  GET_MANIA_FUNC(MicDrop_State_DropDown); \
-  GET_MANIA_FUNC(MicDrop_State_DropRecoil); \
-  GET_MANIA_FUNC(MicDrop_State_Idle); \
-  GET_MANIA_FUNC(MicDrop_State_Swinging); \
-  GET_MANIA_FUNC(MicDrop_State_Electrify)
+  GET_MANIA_FUNC(Technosqueek_State_Fall)

@@ -21,18 +21,9 @@ typedef struct {
 
 extern ObjectBatbrain* Batbrain;
 
-extern void (*Batbrain_State_CheckPlayerInRange)();
-extern void (*Batbrain_State_DropToPlayer)();
-extern void (*Batbrain_State_Fly)();
-extern void (*Batbrain_State_FlyToCeiling)();
-
 void Batbrain_EnemyInfoHook();
 
 #define OBJ_BATBRAIN_SETUP \
-  IMPORT_PUBLIC_FUNC(Batbrain_State_CheckPlayerInRange); \
-  IMPORT_PUBLIC_FUNC(Batbrain_State_DropToPlayer); \
-  IMPORT_PUBLIC_FUNC(Batbrain_State_Fly); \
-  IMPORT_PUBLIC_FUNC(Batbrain_State_FlyToCeiling); \
   REGISTER_ENEMY(Batbrain)
 
 #endif //! OBJ_BATBRAIN_H
