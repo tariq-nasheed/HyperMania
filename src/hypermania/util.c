@@ -8,8 +8,8 @@ bool32 HPZ_SuperSpecialStage;
 // -----------------------------------------------------------------------------
 
 // =============================================================================
-// max output length: 47 characters (counting null terminator)
-#define SAVEMSG_LEN 47
+// max output length: 47 characters (counting null terminator) (rounded to 64 to avoid stack corruptions)
+#define SAVEMSG_LEN 64
 static void HM_Save_FormatString(char* str) {
 	char emerald_mask[8];
 	for (int32 i = 0; i != 8; ++i) {
