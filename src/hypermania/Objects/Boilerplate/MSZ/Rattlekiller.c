@@ -2,22 +2,14 @@
 
 ObjectRattlekiller *Rattlekiller;
 
-void Rattlekiller_EnemyInfoHook(void) {
-	Mod.Super(Rattlekiller->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Rattlekiller->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Rattlekiller->hitboxSegment;
-	EnemyDefs[EnemyInfoSlot].destroy_func = Rattlekiller_SpawnDebris;
-	++EnemyInfoSlot;
-}
+Hitbox* Rattlekiller_GetHitbox(Entity* self) { return &(Rattlekiller->hitboxSegment); }
 
-void Rattlekiller_SpawnDebris(EntityPlayer* player, Entity* e) {
-	EntityRattlekiller* self = (EntityRattlekiller*)e;
+void Rattlekiller_OnHit(EntityPlayer* player, Entity* self) {
 	for (int32 i = 1; i < RATTLEKILLER_SEGMENT_COUNT; ++i) {
-		EntityDebris *debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, self->bodyPositions[i].x, self->bodyPositions[i].y);
+		EntityDebris *debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, ((EntityRattlekiller*)self)->bodyPositions[i].x, ((EntityRattlekiller*)self)->bodyPositions[i].y);
 
-		RSDK.SetSpriteAnimation(Rattlekiller->aniFrames, self->bodyAnimators[i]->animationID, &debris->animator, true,
-		                        self->bodyAnimators[i]->frameID);
+		RSDK.SetSpriteAnimation(Rattlekiller->aniFrames, ((EntityRattlekiller*)self)->bodyAnimators[i]->animationID, &debris->animator, true,
+		                        ((EntityRattlekiller*)self)->bodyAnimators[i]->frameID);
 		debris->velocity.x      = RSDK.Rand(-0x20000, 0x20000);
 		debris->velocity.y      = RSDK.Rand(-0x20000, -0x10000);
 		debris->gravityStrength = 0x4800;
@@ -25,5 +17,12 @@ void Rattlekiller_SpawnDebris(EntityPlayer* player, Entity* e) {
 		debris->updateRange.x   = 0x400000;
 		debris->updateRange.y   = 0x400000;
 	}
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void Rattlekiller_AdjustPos(Entity* self) { self->position = ((EntityRattlekiller*)self)->bodyPositions[0]; }
+
+void Rattlekiller_EnemyInfoHook() {
+	Mod.Super(Rattlekiller->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(Rattlekiller->classID, Generic_CheckVulnerable, Rattlekiller_GetHitbox, Rattlekiller_OnHit, Rattlekiller_AdjustPos, ATKFLAG_NONE);
 }

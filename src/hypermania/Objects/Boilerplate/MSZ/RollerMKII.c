@@ -1,16 +1,19 @@
 #include "RollerMKII.h"
 
-ObjectRollerMKII *RollerMKII;
-void (*RollerMKII_State_Idle)(void);
-void (*RollerMKII_State_SpinUp)(void);
+ObjectRollerMKII* RollerMKII;
+void (*RollerMKII_State_Idle)();
+void (*RollerMKII_State_SpinUp)();
 
-void RollerMKII_EnemyInfoHook(void) {
+bool32 RollerMKII_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityRollerMKII*)self)->state == RollerMKII_State_Idle
+	 || ((EntityRollerMKII*)self)->state == RollerMKII_State_SpinUp
+	);
+}
+
+Hitbox* RollerMKII_GetHitbox(Entity* self) { return &(RollerMKII->hitboxBadnik); }
+
+void RollerMKII_EnemyInfoHook() {
 	Mod.Super(RollerMKII->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = RollerMKII->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = RollerMKII_State_Idle;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &RollerMKII->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = RollerMKII_State_SpinUp;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &RollerMKII->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(RollerMKII->classID, RollerMKII_CheckVulnerable, RollerMKII_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

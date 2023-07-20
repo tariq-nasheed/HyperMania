@@ -4,28 +4,28 @@
 #include "GameAPI/Game.h"
 
 typedef struct {
-    RSDK_OBJECT
-    Hitbox hitboxBadnik;
-    uint16 aniFrames;
-    uint16 sfxCactDrop;
+	RSDK_OBJECT
+	Hitbox hitboxBadnik;
+	uint16 aniFrames;
+	uint16 sfxCactDrop;
 } ObjectCactula;
 
 typedef struct {
-    RSDK_ENTITY
-    StateMachine(state);
-    int32 unused;
-    int32 offsetY;
-    bool32 droppedBomb;
-    Animator bodyTopAnimator;
-    Animator bodyBottomAnimator;
-    Animator propellerAnimator;
+	RSDK_ENTITY
+	StateMachine(state);
+	int32 unused;
+	int32 offsetY;
+	bool32 droppedBomb;
+	Animator bodyTopAnimator;
+	Animator bodyBottomAnimator;
+	Animator propellerAnimator;
 } EntityCactula;
 
-extern ObjectCactula *Cactula;
+extern ObjectCactula* Cactula;
 
-void Cactula_EnemyInfoHook(void);
-extern void (*Cactula_State_CheckPlayerInRange)(void);
-extern void (*Cactula_State_Rising)(void);
-extern void (*Cactula_State_DropBomb)(void);
+void Cactula_EnemyInfoHook();
+
+#define OBJ_CACTULA_SETUP \
+  REGISTER_ENEMY(Cactula)
 
 #endif //! OBJ_CACTULA_H

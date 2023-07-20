@@ -169,13 +169,13 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(Octus); \
   REGISTER_ENEMY(Sol); \
   REGISTER_ENEMY(Aquis); \
-  REGISTER_ENEMY(Rattlekiller); \
-  REGISTER_ENEMY(RollerMKII); \
-  REGISTER_ENEMY(Vultron); \
-  REGISTER_ENEMY(Bumpalo); \
-  REGISTER_ENEMY(Armadiloid); \
-  REGISTER_ENEMY(Cactula); \
-  REGISTER_ENEMY(Hatterkiller); \
+  OBJ_RATTLEKILLER_SETUP; \
+  OBJ_ROLLERMKII_SETUP; \
+  OBJ_VULTRON_SETUP; \
+  OBJ_BUMPALO_SETUP; \
+  OBJ_ARMADILOID_SETUP; \
+  OBJ_CACTULA_SETUP; \
+  OBJ_HATTERKILLER_SETUP; \
   OBJ_TURBOSPIKER_SETUP; \
   OBJ_BUGGERNAUT_SETUP; \
   OBJ_MEGACHOPPER_SETUP; \
@@ -252,23 +252,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Aquis_State_Turning); \
   GET_MANIA_FUNC(Aquis_State_Shoot); \
   GET_MANIA_FUNC(Aquis_State_Moving); \
-  GET_MANIA_FUNC(Aquis_State_Idle); \
-  GET_MANIA_FUNC(RollerMKII_State_Idle); \
-  GET_MANIA_FUNC(RollerMKII_State_SpinUp); \
-  GET_MANIA_FUNC(Vultron_State_CheckPlayerInRange); \
-  GET_MANIA_FUNC(Vultron_State_Hop); \
-  GET_MANIA_FUNC(Vultron_State_Dive); \
-  GET_MANIA_FUNC(Vultron_State_Flying); \
-  GET_MANIA_FUNC(Vultron_State_Rise); \
-  GET_MANIA_FUNC(Vultron_State_PrepareDive); \
-  GET_MANIA_FUNC(Vultron_State_Targeting); \
-  GET_MANIA_FUNC(Bumpalo_State_Falling); \
-  GET_MANIA_FUNC(Bumpalo_State_Bumped); \
-  GET_MANIA_FUNC(Bumpalo_State_Turning); \
-  GET_MANIA_FUNC(Bumpalo_State_Charging); \
-  GET_MANIA_FUNC(Bumpalo_State_Idle); \
-  GET_MANIA_FUNC(Bumpalo_State_Moving); \
-  GET_MANIA_FUNC(Armadiloid_State_Rider); \
-  GET_MANIA_FUNC(Cactula_State_DropBomb); \
-  GET_MANIA_FUNC(Cactula_State_Rising); \
-  GET_MANIA_FUNC(Cactula_State_CheckPlayerInRange)
+  GET_MANIA_FUNC(Aquis_State_Idle)
