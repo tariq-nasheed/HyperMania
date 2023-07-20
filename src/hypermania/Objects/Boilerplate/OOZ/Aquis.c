@@ -1,25 +1,15 @@
 #include "Aquis.h"
 
-ObjectAquis *Aquis;
-void (*Aquis_State_Idle)(void);
-void (*Aquis_State_Moving)(void);
-void (*Aquis_State_Shoot)(void);
-void (*Aquis_State_Turning)(void);
-void (*Aquis_State_Flee)(void);
+ObjectAquis* Aquis;
+void (*Aquis_State_Shot)();
 
-void Aquis_EnemyInfoHook(void) {
+bool32 Aquis_CheckVulnerable(Entity* self) {
+	return (((EntityAquis*)self)->state != Aquis_State_Shot);
+}
+
+Hitbox* Aquis_GetHitbox(Entity* self) { return &(Aquis->hitboxBadnik); }
+
+void Aquis_EnemyInfoHook() {
 	Mod.Super(Aquis->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Aquis->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Aquis_State_Idle;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Aquis->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Aquis_State_Moving;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Aquis->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[2].func = Aquis_State_Shoot;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &Aquis->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[3].func = Aquis_State_Turning;
-	EnemyDefs[EnemyInfoSlot].states[3].hitbox = &Aquis->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[4].func = Aquis_State_Flee;
-	EnemyDefs[EnemyInfoSlot].states[4].hitbox = &Aquis->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Aquis->classID, Aquis_CheckVulnerable, Aquis_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

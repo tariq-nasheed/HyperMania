@@ -163,12 +163,12 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(PohBee); \
   REGISTER_ENEMY(Scarab); \
   REGISTER_ENEMY(MechaBu); \
-  REGISTER_ENEMY(Fireworm); \
-  REGISTER_ENEMY(Rexon); \
-  REGISTER_ENEMY(Toxomister); \
-  REGISTER_ENEMY(Octus); \
-  REGISTER_ENEMY(Sol); \
-  REGISTER_ENEMY(Aquis); \
+  OBJ_FIREWORM_SETUP; \
+  OBJ_REXON_SETUP; \
+  OBJ_TOXOMISTER_SETUP; \
+  OBJ_OCTUS_SETUP; \
+  OBJ_SOL_SETUP; \
+  OBJ_AQUIS_SETUP; \
   OBJ_RATTLEKILLER_SETUP; \
   OBJ_ROLLERMKII_SETUP; \
   OBJ_VULTRON_SETUP; \
@@ -231,25 +231,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(BallHog_State_Idle); \
   GET_MANIA_FUNC(MechaBu_State_Falling); \
   GET_MANIA_FUNC(MechaBu_State_Stopped); \
-  GET_MANIA_FUNC(MechaBu_State_Moving); \
-  GET_MANIA_FUNC(Fireworm_State_FlyAround); \
-  GET_MANIA_FUNC(Rexon_State_Hidden); \
-  GET_MANIA_FUNC(Rexon_State_Rising); \
-  GET_MANIA_FUNC(Rexon_State_Shooting); \
-  GET_MANIA_FUNC(Rexon_State_Destroyed); \
-  GET_MANIA_FUNC(Rexon_State_Explode); \
-  GET_MANIA_FUNC(Toxomister_State_CreateClouds); \
-  GET_MANIA_FUNC(Octus_State_Fall); \
-  GET_MANIA_FUNC(Octus_State_Shoot); \
-  GET_MANIA_FUNC(Octus_State_Jump); \
-  GET_MANIA_FUNC(Octus_State_JumpDelay); \
-  GET_MANIA_FUNC(Octus_State_CheckPlayerInRange); \
-  GET_MANIA_FUNC(Sol_State_ActiveFireball); \
-  GET_MANIA_FUNC(Sol_State_NoOrbs); \
-  GET_MANIA_FUNC(Sol_State_ShootingOrbs); \
-  GET_MANIA_FUNC(Sol_State_Moving); \
-  GET_MANIA_FUNC(Aquis_State_Flee); \
-  GET_MANIA_FUNC(Aquis_State_Turning); \
-  GET_MANIA_FUNC(Aquis_State_Shoot); \
-  GET_MANIA_FUNC(Aquis_State_Moving); \
-  GET_MANIA_FUNC(Aquis_State_Idle)
+  GET_MANIA_FUNC(MechaBu_State_Moving)

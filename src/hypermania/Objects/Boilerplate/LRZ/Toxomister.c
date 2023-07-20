@@ -1,20 +1,20 @@
 #include "Toxomister.h"
 
-ObjectToxomister *Toxomister;
-void (*Toxomister_State_CreateClouds)(void);
+ObjectToxomister* Toxomister;
+void (*Toxomister_State_CreateClouds)();
 
-void Toxomister_EnemyInfoHook(void) {
-	Mod.Super(Toxomister->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Toxomister->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Toxomister_State_CreateClouds;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Toxomister->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].destroy_func = Toxomister_DestroyCloud;
-	++EnemyInfoSlot;
+bool32 Toxomister_CheckVulnerable(Entity* self) {
+	return (((EntityToxomister*)self)->state == Toxomister_State_CreateClouds);
 }
 
-void Toxomister_DestroyCloud(EntityPlayer* player, Entity* e) {
-	EntityToxomister* self = (EntityToxomister*)e;
-	if (self->parent) destroyEntity(self->parent);
-	BreakBadnik(player, e);
+Hitbox* Toxomister_GetHitbox(Entity* self) { return &(Toxomister->hitboxBadnik); }
+
+void Toxomister_OnHit(EntityPlayer* player, Entity* self) {
+	if (((EntityToxomister*)self)->parent) destroyEntity(((EntityToxomister*)self)->parent);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void Toxomister_EnemyInfoHook() {
+	Mod.Super(Toxomister->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(Toxomister->classID, Toxomister_CheckVulnerable, Toxomister_GetHitbox, Toxomister_OnHit, NULL, ATKFLAG_NONE);
 }

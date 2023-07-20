@@ -231,6 +231,7 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnima
 }
 
 // hotaru lol
+// and rexon!
 void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32 spawnAnimals) {
 	if (spawnAnimals) CREATE_ENTITY(Animals, INT_TO_VOID((Animals->animalTypes[(RSDK.Rand(0, 32) >> 4)]) + 1), position.x, position.y);
 	EntityExplosion *explosion = CREATE_ENTITY(Explosion, INT_TO_VOID(EXPLOSION_ENEMY), position.x, position.y);
