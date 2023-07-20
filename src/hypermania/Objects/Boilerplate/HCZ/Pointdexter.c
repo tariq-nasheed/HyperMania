@@ -1,13 +1,10 @@
 #include "Pointdexter.h"
 
-ObjectPointdexter *Pointdexter;
-void (*Pointdexter_State_Swimming)(void);
+ObjectPointdexter* Pointdexter;
 
-void Pointdexter_EnemyInfoHook(void) {
+Hitbox* Pointdexter_GetHitbox(Entity* self) { return &(Pointdexter->hitbox); }
+
+void Pointdexter_EnemyInfoHook() {
 	Mod.Super(Pointdexter->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Pointdexter->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Pointdexter_State_Swimming;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Pointdexter->hitbox;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Pointdexter->classID, Generic_CheckVulnerable, Pointdexter_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

@@ -1,25 +1,22 @@
 #include "Jellygnite.h"
 
-ObjectJellygnite *Jellygnite;
-void (*Jellygnite_State_Swimming)(void);
-void (*Jellygnite_State_GrabbedPlayer)(void);
+ObjectJellygnite* Jellygnite;
+void (*Jellygnite_State_Init)();
 
-void Jellygnite_EnemyInfoHook(void) {
-	Mod.Super(Jellygnite->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Jellygnite->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Jellygnite_State_Swimming;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Jellygnite->hitbox;
-	EnemyDefs[EnemyInfoSlot].states[1].func = Jellygnite_State_GrabbedPlayer;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &Jellygnite->hitbox;
-	EnemyDefs[EnemyInfoSlot].destroy_func = Jellygnite_Destroy;
-	++EnemyInfoSlot;
+bool32 Jellygnite_CheckVulnerable(Entity* self) {
+	return (((EntityJellygnite*)self)->state != Jellygnite_State_Init && self->classID == Jellygnite->classID);
 }
 
-void Jellygnite_Destroy(EntityPlayer* player, Entity* e) {
-	EntityJellygnite* self = (EntityJellygnite*)e;
-	if (self->grabbedPlayer && player != self->grabbedPlayer) {
-		self->grabbedPlayer->state = Player_State_Air;
+Hitbox* Jellygnite_GetHitbox(Entity* self) { return &(Jellygnite->hitbox); }
+
+void Jellygnite_OnHit(EntityPlayer* player, Entity* self) {
+	if (((EntityJellygnite*)self)->grabbedPlayer && player != ((EntityJellygnite*)self)->grabbedPlayer) {
+		((EntityJellygnite*)self)->grabbedPlayer->state = Player_State_Air;
 	}
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void Jellygnite_EnemyInfoHook() {
+	Mod.Super(Jellygnite->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(Jellygnite->classID, Jellygnite_CheckVulnerable, Jellygnite_GetHitbox, Jellygnite_OnHit, NULL, ATKFLAG_NONE);
 }

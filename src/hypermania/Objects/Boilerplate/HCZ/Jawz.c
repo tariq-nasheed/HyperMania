@@ -1,13 +1,17 @@
 #include "Jawz.h"
 
-ObjectJawz *Jawz;
-void (*Jawz_State_Triggered)(void);
+ObjectJawz* Jawz;
+void (*Jawz_State_Triggered)();
 
-void Jawz_EnemyInfoHook(void) {
+bool32 Jawz_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityJawz*)self)->state == Jawz_State_Triggered
+	);
+}
+
+Hitbox* Jawz_GetHitbox(Entity* self) { return &(Jawz->hitboxBadnik); }
+
+void Jawz_EnemyInfoHook() {
 	Mod.Super(Jawz->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Jawz->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Jawz_State_Triggered;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Jawz->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Jawz->classID, Jawz_CheckVulnerable, Jawz_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }

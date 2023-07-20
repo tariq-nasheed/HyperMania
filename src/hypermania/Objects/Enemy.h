@@ -176,13 +176,13 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   REGISTER_ENEMY(Armadiloid); \
   REGISTER_ENEMY(Cactula); \
   REGISTER_ENEMY(Hatterkiller); \
-  REGISTER_ENEMY(TurboSpiker); \
-  REGISTER_ENEMY(Buggernaut); \
-  REGISTER_ENEMY(MegaChopper); \
-  REGISTER_ENEMY(Jawz); \
-  REGISTER_ENEMY(Jellygnite); \
-  REGISTER_ENEMY(Blastoid); \
-  REGISTER_ENEMY(Pointdexter); \
+  OBJ_TURBOSPIKER_SETUP; \
+  OBJ_BUGGERNAUT_SETUP; \
+  OBJ_MEGACHOPPER_SETUP; \
+  OBJ_JAWZ_SETUP; \
+  OBJ_JELLYGNITE_SETUP; \
+  OBJ_BLASTOID_SETUP; \
+  OBJ_POINTDEXTER_SETUP; \
   OBJ_KABASIRA_SETUP; \
   OBJ_DANGO_SETUP; \
   OBJ_KANABUN_SETUP; \
@@ -271,21 +271,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Armadiloid_State_Rider); \
   GET_MANIA_FUNC(Cactula_State_DropBomb); \
   GET_MANIA_FUNC(Cactula_State_Rising); \
-  GET_MANIA_FUNC(Cactula_State_CheckPlayerInRange); \
-  GET_MANIA_FUNC(TurboSpiker_State_FireShell); \
-  GET_MANIA_FUNC(TurboSpiker_State_Falling); \
-  GET_MANIA_FUNC(TurboSpiker_State_FinishTurning); \
-  GET_MANIA_FUNC(TurboSpiker_State_Turning); \
-  GET_MANIA_FUNC(TurboSpiker_State_Moving); \
-  GET_MANIA_FUNC(TurboSpiker_State_Hidden); \
-  GET_MANIA_FUNC(TurboSpiker_State_Idle); \
-  GET_MANIA_FUNC(Buggernaut_State_FlyAway); \
-  GET_MANIA_FUNC(Buggernaut_State_FlyTowardTarget); \
-  GET_MANIA_FUNC(Buggernaut_State_Idle); \
-  GET_MANIA_FUNC(MegaChopper_State_OutOfWater); \
-  GET_MANIA_FUNC(MegaChopper_State_InWater); \
-  GET_MANIA_FUNC(Jawz_State_Triggered); \
-  GET_MANIA_FUNC(Jellygnite_State_Swimming); \
-  GET_MANIA_FUNC(Jellygnite_State_GrabbedPlayer); \
-  GET_MANIA_FUNC(Blastoid_State_Body); \
-  GET_MANIA_FUNC(Pointdexter_State_Swimming)
+  GET_MANIA_FUNC(Cactula_State_CheckPlayerInRange)

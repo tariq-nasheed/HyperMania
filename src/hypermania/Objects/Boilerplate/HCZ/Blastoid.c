@@ -1,25 +1,25 @@
 #include "Blastoid.h"
 
-ObjectBlastoid *Blastoid;
-void (*Blastoid_State_Body)(void);
+ObjectBlastoid* Blastoid;
+void (*Blastoid_State_Projectile)();
 
-void Blastoid_EnemyInfoHook(void) {
-	Mod.Super(Blastoid->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Blastoid->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = Blastoid_State_Body;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Blastoid->hitboxBody;
-	EnemyDefs[EnemyInfoSlot].destroy_func = Blastoid_Destroy;
-	++EnemyInfoSlot;
+bool32 Blastoid_CheckVulnerable(Entity* self) {
+	return (((EntityBlastoid*)self)->state != Blastoid_State_Projectile);
 }
 
-void Blastoid_Destroy(EntityPlayer* player, Entity* e) {
-	EntityBlastoid* self = (EntityBlastoid*)e;
+Hitbox* Blastoid_GetHitbox(Entity* self) { return &(Blastoid->hitboxBody); }
+
+void Blastoid_OnHit(EntityPlayer* player, Entity* self) {
 	EntityCollapsingPlatform *platform = RSDK_GET_ENTITY(RSDK.GetEntitySlot(self) - 1, CollapsingPlatform);
 	if (platform->classID == CollapsingPlatform->classID) {
 		platform->active        = ACTIVE_NORMAL;
 		platform->collapseDelay = 30;
 		platform->stoodPos.x    = self->position.x;
 	}
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void Blastoid_EnemyInfoHook() {
+	Mod.Super(Blastoid->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(Blastoid->classID, Blastoid_CheckVulnerable, Blastoid_GetHitbox, Blastoid_OnHit, NULL, ATKFLAG_NONE);
 }
