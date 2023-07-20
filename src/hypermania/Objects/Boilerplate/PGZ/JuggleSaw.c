@@ -1,27 +1,23 @@
 #include "JuggleSaw.h"
 
 ObjectJuggleSaw *JuggleSaw;
-void (*JuggleSaw_StateCrab_Handle)(void);
-void (*JuggleSaw_StateCrab_ThrowSaw)(void);
+void (*JuggleSaw_StateCrab_Handle)();
+void (*JuggleSaw_StateCrab_ThrowSaw)();
 
-void JuggleSaw_EnemyInfoHook(void) {
-	Mod.Super(JuggleSaw->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = JuggleSaw->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = JuggleSaw_StateCrab_Handle;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &JuggleSaw->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].states[1].func = JuggleSaw_StateCrab_ThrowSaw;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &JuggleSaw->hitboxBadnik;
-	EnemyDefs[EnemyInfoSlot].destroy_func = JuggleSaw_DropSaw;
-	++EnemyInfoSlot;
+bool32 JuggleSaw_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityJuggleSaw*)self)->state == JuggleSaw_StateCrab_Handle
+	 || ((EntityJuggleSaw*)self)->state == JuggleSaw_StateCrab_ThrowSaw
+	);
 }
 
-void JuggleSaw_DropSaw(EntityPlayer* player, Entity* e) {
-	EntityJuggleSaw* self = (EntityJuggleSaw*)e;
-	if (self->hasSaw == JUGGLESAW_HAS_SAW) {
+Hitbox* JuggleSaw_GetHitbox(Entity* self) { return &(JuggleSaw->hitboxBadnik); }
+
+void JuggleSaw_OnHit(EntityPlayer* player, Entity* self) {
+	if (((EntityJuggleSaw*)self)->hasSaw == JUGGLESAW_HAS_SAW) {
 		int32 debrisX = self->position.x;
 		int32 debrisY = self->position.y;
-		if (self->startDir >= FLIP_Y) {
+		if (((EntityJuggleSaw*)self)->startDir >= FLIP_Y) {
 			debrisX += 0x200000 * ((self->direction & FLIP_X) ? -1 : 1);
 		} else {
 			debrisY += 0x200000 * ((self->direction & FLIP_Y) ? 1 : -1);
@@ -31,7 +27,7 @@ void JuggleSaw_DropSaw(EntityPlayer* player, Entity* e) {
 		RSDK.SetSpriteAnimation(JuggleSaw->aniFrames, 6, &debris->animator, true, 0);
 
 		int32 minVelX = -4, maxVelX = 5, minVelY = -4, maxVelY = 5;
-		if (self->startDir >= FLIP_Y) {
+		if (((EntityJuggleSaw*)self)->startDir >= FLIP_Y) {
 			minVelY = (self->direction & FLIP_X) ? -1 : -4;
 		} else {
 			minVelY = (self->direction & FLIP_Y) ? -4 : -1;
@@ -44,5 +40,10 @@ void JuggleSaw_DropSaw(EntityPlayer* player, Entity* e) {
 		debris->updateRange.x   = 0x400000;
 		debris->updateRange.y   = 0x400000;
 	}
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void JuggleSaw_EnemyInfoHook() {
+	Mod.Super(JuggleSaw->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(JuggleSaw->classID, JuggleSaw_CheckVulnerable, JuggleSaw_GetHitbox, JuggleSaw_OnHit, NULL, ATKFLAG_NONE);
 }

@@ -1,18 +1,23 @@
 #include "FBZTrash.h"
 
-Hitbox hitbox;
-ObjectFBZTrash *FBZTrash;
-void (*FBZTrash_State_OrbinautMove)(void);
+ObjectFBZTrash* FBZTrash;
+void (*FBZTrash_State_OrbinautMove)();
 
-void FBZTrash_EnemyInfoHook(void) {
-	hitbox.left   = -8;
-	hitbox.top    = -8;
-	hitbox.right  = 8;
-	hitbox.bottom = 8;
+bool32 FBZTrash_CheckVulnerable(Entity* self) {
+	return (((EntityFBZTrash*)self)->state == FBZTrash_State_OrbinautMove);
+}
+
+Hitbox* FBZTrash_GetHitbox(Entity* self) { return &(((EntityFBZTrash*)self)->hitbox); }
+
+void FBZTrash_OnHit(EntityPlayer* player, Entity* self) {
+	Generic_BadnikBreak(player, self, false);
+	// shitty hack to avoid dangling orbs (didn't happen with old system for some reason)
+	foreach_all(FBZTrash, trash) {
+		if (trash->parent == self) destroyEntity(trash);
+	}
+}
+
+void FBZTrash_EnemyInfoHook() {
 	Mod.Super(FBZTrash->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = FBZTrash->classID;
-	EnemyDefs[EnemyInfoSlot].animal = false;
-	EnemyDefs[EnemyInfoSlot].states[0].func = FBZTrash_State_OrbinautMove;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &hitbox;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(FBZTrash->classID, FBZTrash_CheckVulnerable, FBZTrash_GetHitbox, FBZTrash_OnHit, NULL, ATKFLAG_NONE);
 }

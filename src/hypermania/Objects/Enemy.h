@@ -188,12 +188,12 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   OBJ_KANABUN_SETUP; \
   OBJ_HOTARUMKII_SETUP; \
   OBJ_HOTARU_SETUP; \
-  REGISTER_ENEMY(Woodrow); \
-  REGISTER_ENEMY(Dragonfly); \
-  REGISTER_ENEMY(IceBomba); \
-  REGISTER_ENEMY(JuggleSaw); \
-  REGISTER_ENEMY(FBZTrash); \
-  REGISTER_ENEMY(Technosqueek); \
+  OBJ_WOODROW_SETUP; \
+  OBJ_DRAGONFLY_SETUP; \
+  OBJ_ICEBOMBA_SETUP; \
+  OBJ_JUGGLESAW_SETUP; \
+  OBJ_FBZTRASH_SETUP; \
+  OBJ_TECHNOSQUEEK_SETUP; \
   OBJ_CLUCKER_SETUP; \
   OBJ_BLASTER_SETUP; \
   OBJ_CANISTA_SETUP; \
@@ -288,19 +288,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   GET_MANIA_FUNC(Jellygnite_State_Swimming); \
   GET_MANIA_FUNC(Jellygnite_State_GrabbedPlayer); \
   GET_MANIA_FUNC(Blastoid_State_Body); \
-  GET_MANIA_FUNC(Pointdexter_State_Swimming); \
-  GET_MANIA_FUNC(Woodrow_State_Idle); \
-  GET_MANIA_FUNC(Woodrow_State_MoveUp); \
-  GET_MANIA_FUNC(Woodrow_State_MoveDown); \
-  GET_MANIA_FUNC(Dragonfly_State_Move); \
-  GET_MANIA_FUNC(IceBomba_State_Flying); \
-  GET_MANIA_FUNC(IceBomba_State_Turning); \
-  GET_MANIA_FUNC(IceBomba_State_FlyAway); \
-  GET_MANIA_FUNC(JuggleSaw_StateCrab_Handle); \
-  GET_MANIA_FUNC(JuggleSaw_StateCrab_ThrowSaw); \
-  GET_MANIA_FUNC(FBZTrash_State_OrbinautMove); \
-  GET_MANIA_FUNC(Technosqueek_State_MoveHorizontal); \
-  GET_MANIA_FUNC(Technosqueek_State_TurnHorizontal); \
-  GET_MANIA_FUNC(Technosqueek_State_MoveVertical); \
-  GET_MANIA_FUNC(Technosqueek_State_TurnVertical); \
-  GET_MANIA_FUNC(Technosqueek_State_Fall)
+  GET_MANIA_FUNC(Pointdexter_State_Swimming)

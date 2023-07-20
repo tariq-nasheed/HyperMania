@@ -4,34 +4,41 @@
 #include "GameAPI/Game.h"
 
 typedef struct {
-    RSDK_OBJECT
-    Hitbox hitboxBadnik;
-    Hitbox hitboxBomb;
-    Hitbox hitboxRange;
-    uint16 aniFrames;
-    uint16 sfxExplosion;
-    uint16 sfxFreeze;
+	RSDK_OBJECT
+	Hitbox hitboxBadnik;
+	Hitbox hitboxBomb;
+	Hitbox hitboxRange;
+	uint16 aniFrames;
+	uint16 sfxExplosion;
+	uint16 sfxFreeze;
 } ObjectIceBomba;
 
 typedef struct {
-    RSDK_ENTITY
-    StateMachine(state);
-    uint8 dir;
-    uint16 dist;
-    uint16 dip;
-    uint8 startDir;
-    Vector2 startPos;
-    uint32 startDist;
-    Animator bodyAnimator;
-    Animator wingAnimator;
-    Animator bombAnimator;
+	RSDK_ENTITY
+	StateMachine(state);
+	uint8 dir;
+	uint16 dist;
+	uint16 dip;
+	uint8 startDir;
+	Vector2 startPos;
+	uint32 startDist;
+	Animator bodyAnimator;
+	Animator wingAnimator;
+	Animator bombAnimator;
 } EntityIceBomba;
 
-extern ObjectIceBomba *IceBomba;
-void IceBomba_EnemyInfoHook(void);
-void IceBomba_DropBomb(EntityPlayer* player, Entity* e);
-extern void (*IceBomba_State_Flying)(void);
-extern void (*IceBomba_State_Turning)(void);
-extern void (*IceBomba_State_FlyAway)(void);
+extern ObjectIceBomba* IceBomba;
+
+extern void (*IceBomba_State_Flying)();
+extern void (*IceBomba_State_Turning)();
+extern void (*IceBomba_State_FlyAway)();
+
+void IceBomba_EnemyInfoHook();
+
+#define OBJ_ICEBOMBA_SETUP \
+  IMPORT_PUBLIC_FUNC(IceBomba_State_Flying); \
+  IMPORT_PUBLIC_FUNC(IceBomba_State_Turning); \
+  IMPORT_PUBLIC_FUNC(IceBomba_State_FlyAway); \
+  REGISTER_ENEMY(IceBomba)
 
 #endif //! OBJ_ICEBOMBA_H
