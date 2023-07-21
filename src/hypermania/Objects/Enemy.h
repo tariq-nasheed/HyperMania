@@ -86,46 +86,21 @@
 #include "Boilerplate/GHZ/Motobug.h"
 #include "Boilerplate/GHZ/BuzzBomber.h"
 
-typedef struct {
-	RSDK_ENTITY
-	StateMachine(state);
-} EntityEnemy;
-
-
-
-
-
 extern int32 AttackableClasses_startidx;
 bool32 Generic_CheckVulnerable(Entity* self);
 Hitbox* Generic_GetHitbox(Entity* self);
 void Generic_OnHit(EntityPlayer* player, Entity* self);
 void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32 spawnAnimals);
 
-
-
-
-
-
-
-
-typedef struct {
-	uint16 classID;
-	bool32 animal;
-	bool32 boss;
-	struct { void* func; Hitbox* hitbox; } states[8];
-	bool32 (*check_func)(Entity*);
-	Hitbox* (*hitbox_func)(Entity*);
-	void (*destroy_func)(EntityPlayer*, Entity*); // NOTE -- destroy_func is used as the hit callback for bosses
-} EnemyInfo;
-extern EnemyInfo EnemyDefs[32];
-extern int16 EnemyInfoSlot;
-
 void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnimals);
 
-#define GET_MANIA_FUNC(name) name = Mod.GetPublicFunction(NULL, #name)
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+
+// =============================================================================
 #define REGISTER_ENEMY(name) MOD_REGISTER_OBJ_OVERLOAD(name, NULL, NULL, NULL, NULL, NULL, name##_EnemyInfoHook, NULL, NULL, NULL)
 
-// object hooks start after the following line (pattern match)
 #define HOOK_ENEMY_OBJECTS \
   OBJ_PHANTOMMYSTIC_SETUP; \
   OBJ_PHANTOMSHINOBI_SETUP; \
@@ -211,6 +186,3 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   OBJ_BATBRAIN_SETUP; \
   OBJ_MOTOBUG_SETUP; \
   OBJ_BUZZBOMBER_SETUP
-
-// function imports start after the following line (pattern match
-#define IMPORT_ENEMY_FUNCTIONS

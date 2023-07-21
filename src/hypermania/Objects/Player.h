@@ -505,12 +505,6 @@ void Player_HyperSonicDash();
 int32 Player_GetIndexFromID(int32 ID);
 
 // shhhhhhhhhhhhh --------------------------------------------------------------
-bool32 IsVulnerableEnemy(void* e, bool32 count_bosses);
-Hitbox* GetEnemyHitbox(void* e);
-bool32 IsEnemyOnScreen(void* e);
-void HitEnemy(EntityPlayer* player, void* e);
-
-
 #define BreakBadnik(player, e) Generic_BadnikBreak(player, e, true)
 #define MAX_ATTACKABLE_CLASSES 32
 #define ENTATTACK_INVALID -1

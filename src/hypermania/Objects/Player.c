@@ -575,18 +575,12 @@ int32 Player_GetIndexFromID(int32 ID) {
 void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
 	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
-		if (entity->classID && IsVulnerableEnemy(entity, false)) {
-			HitEnemy(player, entity);
-		}
-
 		if (!IsAttackableEntity(entity, ATKFLAG_ISBOSS)) continue;
 		const uint32 index = entity->classID - AttackableClasses_startidx;
 
 		const Vector2 old_pos = entity->position;
 		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
-		if (RSDK.CheckOnScreen(entity, NULL)) {
-			AttackableClasses[index].onHit(player, entity);
-		}
+		if (RSDK.CheckOnScreen(entity, NULL)) AttackableClasses[index].onHit(player, entity);
 		entity->position = old_pos;
 	}
 }

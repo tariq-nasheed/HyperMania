@@ -86,19 +86,16 @@
 #include "Boilerplate/GHZ/Motobug.c"
 #include "Boilerplate/GHZ/BuzzBomber.c"
 
-EnemyInfo EnemyDefs[32];
-int16 EnemyInfoSlot;
-
-
-
-
-
-
 int8 EntAttackIndex[ENTITY_COUNT];
 attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
 uint32       AttackableClasses_size;
 int32        AttackableClasses_startidx;
 
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+
+// =============================================================================
 bool32 IsAttackableEntity(Entity* self, uint8 blacklist_mask) {
 	if (!self || AttackableClasses_startidx > self->classID) return false;
 	const uint32 index = self->classID - AttackableClasses_startidx;
@@ -118,68 +115,6 @@ Hitbox* Generic_GetHitbox(Entity* self) {
 void Generic_OnHit(EntityPlayer* player, Entity* self) {
 	uint8 flags = EntAttackIndex[RSDK.GetEntitySlot(self)];
 	Generic_BadnikBreak(player, self, (flags & ATKFLAG_NOANIMAL) ? false : true);
-}
-
-
-
-
-
-
-
-bool32 IsVulnerableEnemy(void* e, bool32 count_bosses) {
-	if (!e) return false;
-
-	EntityEnemy* entity = (EntityEnemy*)e;
-	for (int32 i = 0; i != EnemyInfoSlot; ++i) {
-		if (EnemyDefs[i].classID != entity->classID) continue;
-		if (!count_bosses && EnemyDefs[i].boss) continue;
-		if (EnemyDefs[i].check_func && EnemyDefs[i].check_func((Entity*)e)) return true;
-		for (int32 l = 0; l != 8; ++l) {
-			if (!EnemyDefs[i].states[l].func) {
-				// special weird hacky shit for Rattlekiller
-				if (l == 0) return true;
-				break;
-			}
-			if (EnemyDefs[i].states[l].func == entity->state) {
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-Hitbox* GetEnemyHitbox(void* e) {
-	EntityEnemy* entity = (EntityEnemy*)e;
-	for (int32 i = 0; i != EnemyInfoSlot; ++i) {
-		if (EnemyDefs[i].classID != entity->classID) continue;
-		if (EnemyDefs[i].hitbox_func) {
-			Hitbox* ret = EnemyDefs[i].hitbox_func((Entity*)e);
-			if (ret) return ret;
-		}
-		for (int32 l = 0; l != 8; ++l) {
-			if (!EnemyDefs[i].states[l].func) {
-				// special weird hacky shit for Rattlekiller
-				if (l == 0) return EnemyDefs[i].states[0].hitbox;
-				break;
-			}
-			if (EnemyDefs[i].states[l].func == entity->state) {
-				return EnemyDefs[i].states[l].hitbox;
-			}
-		}
-	}
-
-	return NULL;
-}
-
-bool32 IsEnemyOnScreen(void* e) {
-	EntityEnemy* entity = (EntityEnemy*)e;
-	Hitbox* hitbox = GetEnemyHitbox(entity);
-	if (!hitbox) return false;
-	Vector2 range = {
-		MAX(abs(hitbox->left), abs(hitbox->right)),
-		MAX(abs(hitbox->top), abs(hitbox->bottom))
-	};
-	return RSDK.CheckOnScreen(entity, &range);
 }
 
 void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnimals) {
@@ -230,8 +165,7 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnima
 	badnik->active = ACTIVE_DISABLED;
 }
 
-// hotaru lol
-// and rexon!
+// hotaru and rexon lol
 void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32 spawnAnimals) {
 	if (spawnAnimals) CREATE_ENTITY(Animals, INT_TO_VOID((Animals->animalTypes[(RSDK.Rand(0, 32) >> 4)]) + 1), position.x, position.y);
 	EntityExplosion *explosion = CREATE_ENTITY(Explosion, INT_TO_VOID(EXPLOSION_ENEMY), position.x, position.y);
@@ -275,17 +209,4 @@ void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32
 		default: break;
 	}
 	if (player->scoreBonus < 15) player->scoreBonus++;
-}
-
-void HitEnemy(EntityPlayer* player, void* e) {
-	Entity* entity = (Entity*)e;
-	for (int32 i = 0; i != EnemyInfoSlot; ++i) {
-		if (EnemyDefs[i].classID == entity->classID) {
-			if (EnemyDefs[i].destroy_func) {
-				EnemyDefs[i].destroy_func(player, entity);
-			} else if (!EnemyDefs[i].boss) {
-				Generic_BadnikBreak(player, entity, EnemyDefs[i].animal);
-			}
-		}
-	}
 }

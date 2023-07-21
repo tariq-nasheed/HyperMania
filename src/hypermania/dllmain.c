@@ -129,10 +129,6 @@ void StageCleanup(void* data) {
 	AttackableClasses_startidx = ENTATTACK_INVALID;
 	memset(AttackableClasses, 0, sizeof(AttackableClasses));
 
-	// enemy callback shit idk ---------------------------------------------
-	EnemyInfoSlot = 0;
-	memset(EnemyDefs, 0, sizeof(EnemyInfo) * 16);
-
 	// ext vars ------------------------------------------------------------
 	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
 		if (ExtMemory[i].mem) free(ExtMemory[i].mem);
@@ -201,7 +197,6 @@ void InitModAPI(void) {
 	MOD_REGISTER_OBJECT_HOOK(ScoreBonus);
 	MOD_REGISTER_OBJECT_HOOK(Zone);
 	HOOK_ENEMY_OBJECTS;
-	IMPORT_ENEMY_FUNCTIONS;
 
 	// zone specific stuff
 	MOD_REGISTER_OBJECT_HOOK(FarPlane);

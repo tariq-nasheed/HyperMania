@@ -27,6 +27,7 @@ typedef struct {
 #endif
 } SaveRAM;
 extern SaveRAM* GetSaveRAM_Safe(); // this really shouldnt be here but whatever
+
 // =============================================================================
 
 // Helper macros ---------------------------------------------------------------
