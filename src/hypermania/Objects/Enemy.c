@@ -86,7 +86,6 @@
 #include "Boilerplate/GHZ/Motobug.c"
 #include "Boilerplate/GHZ/BuzzBomber.c"
 
-int8 EntAttackIndex[ENTITY_COUNT];
 attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
 uint32       AttackableClasses_size;
 int32        AttackableClasses_startidx;
@@ -113,7 +112,8 @@ Hitbox* Generic_GetHitbox(Entity* self) {
 }
 
 void Generic_OnHit(EntityPlayer* player, Entity* self) {
-	uint8 flags = EntAttackIndex[RSDK.GetEntitySlot(self)];
+	const uint32 index = self->classID - AttackableClasses_startidx;
+	uint8 flags = AttackableClasses[index].flags;
 	Generic_BadnikBreak(player, self, (flags & ATKFLAG_NOANIMAL) ? false : true);
 }
 

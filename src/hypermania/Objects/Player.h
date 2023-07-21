@@ -540,5 +540,4 @@ extern int32        AttackableClasses_startidx;
 bool32 IsAttackableEntity(Entity* self, uint8 blacklist_mask);
 
 
-
 #endif //! OBJ_PLAYER_H
