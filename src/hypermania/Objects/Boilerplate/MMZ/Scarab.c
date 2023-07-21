@@ -1,11 +1,19 @@
 #include "Scarab.h"
 
-ObjectScarab *Scarab;
+ObjectScarab* Scarab;
+void (*Scarab_HandlePlayerRelease)();
 
-void Scarab_EnemyInfoHook(void) {
+Hitbox* Scarab_GetHitbox(Entity* self) { return &(Scarab->hitboxBadnik); }
+
+void Scarab_OnHit(EntityPlayer* player, Entity* self) {
+	Entity* old_entity = SceneInfo->entity;
+	SceneInfo->entity = self;
+	Scarab_HandlePlayerRelease();
+	SceneInfo->entity = old_entity;
+	Generic_BadnikBreak(player, self, true);
+}
+
+void Scarab_EnemyInfoHook() {
 	Mod.Super(Scarab->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = Scarab->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &Scarab->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(Scarab->classID, Generic_CheckVulnerable, Scarab_GetHitbox, Scarab_OnHit, NULL, ATKFLAG_NONE);
 }

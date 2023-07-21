@@ -26,7 +26,6 @@ typedef struct {
 
 extern ObjectToxomister* Toxomister;
 
-void Toxomister_DestroyCloud(EntityPlayer* player, Entity* e);
 extern void (*Toxomister_State_CreateClouds)();
 
 void Toxomister_EnemyInfoHook();

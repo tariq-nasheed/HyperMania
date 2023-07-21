@@ -1,27 +1,22 @@
 #include "MechaBu.h"
 
-ObjectMechaBu *MechaBu;
-void (*MechaBu_State_Moving)(void);
-void (*MechaBu_State_Stopped)(void);
-void (*MechaBu_State_Falling)(void);
+ObjectMechaBu* MechaBu;
+void (*MechaBu_State_Moving)();
+void (*MechaBu_State_Stopped)();
+void (*MechaBu_State_Falling)();
 
-void MechaBu_EnemyInfoHook(void) {
-	Mod.Super(MechaBu->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = MechaBu->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = MechaBu_State_Moving;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &MechaBu->hitboxSaw;
-	EnemyDefs[EnemyInfoSlot].states[1].func = MechaBu_State_Stopped;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &MechaBu->hitboxSaw;
-	EnemyDefs[EnemyInfoSlot].states[2].func = MechaBu_State_Falling;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &MechaBu->hitboxSaw;
-	EnemyDefs[EnemyInfoSlot].destroy_func = MechaBu_DropSaw;
-	++EnemyInfoSlot;
+bool32 MechaBu_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntityMechaBu*)self)->state == MechaBu_State_Moving
+	 || ((EntityMechaBu*)self)->state == MechaBu_State_Stopped
+	 || ((EntityMechaBu*)self)->state == MechaBu_State_Falling
+	);
 }
 
-void MechaBu_DropSaw(EntityPlayer* player, Entity* e) {
-	EntityMechaBu* self = (EntityMechaBu*)e;
-	EntityDebris *debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, self->sawPos.x, self->sawPos.y);
+Hitbox* MechaBu_GetHitbox(Entity* self) { return &(MechaBu->hitboxSaw); }
+
+void MechaBu_OnHit(EntityPlayer* player, Entity* self) {
+	EntityDebris* debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, ((EntityMechaBu*)self)->sawPos.x, ((EntityMechaBu*)self)->sawPos.y);
 	RSDK.SetSpriteAnimation(MechaBu->aniFrames, 7, &debris->animator, false, 0);
 	debris->velocity.x      = RSDK.Rand(-2, 3) << 16;
 	debris->velocity.y      = RSDK.Rand(-4, -1) << 16;
@@ -29,5 +24,10 @@ void MechaBu_DropSaw(EntityPlayer* player, Entity* e) {
 	debris->drawGroup       = self->drawGroup;
 	debris->updateRange.x   = 0x200000;
 	debris->updateRange.y   = 0x200000;
-	BreakBadnik(player, e);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void MechaBu_EnemyInfoHook() {
+	Mod.Super(MechaBu->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(MechaBu->classID, MechaBu_CheckVulnerable, MechaBu_GetHitbox, MechaBu_OnHit, NULL, ATKFLAG_NONE);
 }

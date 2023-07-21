@@ -20,14 +20,11 @@ typedef struct {
     Animator animator;
 } EntityFlasherMKII;
 
-extern ObjectFlasherMKII *FlasherMKII;
+extern ObjectFlasherMKII* FlasherMKII;
 
-void FlasherMKII_EnemyInfoHook(void);
-void FlasherMKII_StopSound(EntityPlayer* player, Entity* e);
-extern void (*FlasherMKII_State_Idle)(void);
-extern void (*FlasherMKII_State_Moving)(void);
-extern void (*FlasherMKII_State_WeakFlash)(void);
-extern void (*FlasherMKII_State_StrongFlash)(void);
-extern void (*FlasherMKII_State_FinishedFlashing)(void);
+void FlasherMKII_EnemyInfoHook();
+
+#define OBJ_FLASHERMKII_SETUP \
+  REGISTER_ENEMY(FlasherMKII)
 
 #endif //! OBJ_FLASHERMKII_H

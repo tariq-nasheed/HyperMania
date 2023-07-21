@@ -28,10 +28,12 @@ typedef struct {
 
 extern ObjectBallHog *BallHog;
 
-void BallHog_EnemyInfoHook(void);
-extern void (*BallHog_State_Idle)(void);
-extern void (*BallHog_State_Jump)(void);
-extern void (*BallHog_State_Land)(void);
-extern void (*BallHog_State_DropBomb)(void);
+extern void (*BallHog_State_Bomb)();
+
+void BallHog_EnemyInfoHook();
+
+#define OBJ_BALLHOG_SETUP \
+  IMPORT_PUBLIC_FUNC(BallHog_State_Bomb); \
+  REGISTER_ENEMY(BallHog)
 
 #endif //! OBJ_BALLHOG_H

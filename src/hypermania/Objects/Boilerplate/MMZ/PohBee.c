@@ -1,20 +1,19 @@
 #include "PohBee.h"
 
-ObjectPohBee *PohBee;
+ObjectPohBee* PohBee;
 
-void PohBee_EnemyInfoHook(void) {
-	Mod.Super(PohBee->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = PohBee->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &PohBee->hitbox;
-	EnemyDefs[EnemyInfoSlot].destroy_func = PohBee_Destroy;
-	++EnemyInfoSlot;
-}
+Hitbox* PohBee_GetHitbox(Entity* self) { return &(PohBee->hitbox); }
 
-void PohBee_Destroy(EntityPlayer* player, Entity* e) {
-	EntityPohBee* self = (EntityPohBee*)e;
+void PohBee_OnHit(EntityPlayer* player, Entity* self) {
 	if (self->drawGroup == 1) {
 		CREATE_ENTITY(Explosion, INT_TO_VOID(EXPLOSION_ENEMY), self->position.x, self->position.y)->drawGroup = 1;
+		destroyEntity(self);
+	} else {
+		Generic_BadnikBreak(player, self, true);
 	}
-	BreakBadnik(player, e);
+}
+
+void PohBee_EnemyInfoHook() {
+	Mod.Super(PohBee->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(PohBee->classID, Generic_CheckVulnerable, PohBee_GetHitbox, PohBee_OnHit, NULL, ATKFLAG_NONE);
 }

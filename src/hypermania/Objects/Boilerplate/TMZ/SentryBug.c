@@ -1,35 +1,32 @@
 #include "SentryBug.h"
 
-ObjectSentryBug *SentryBug;
-void (*SentryBug_State_AwaitPlayer)(void);
-void (*SentryBug_State_DropOrbs)(void);
-void (*SentryBug_State_NetAppear)(void);
-void (*SentryBug_State_NetShrink)(void);
-void (*SentryBug_State_NetFlash)(void);
-void (*SentryBug_State_ReturnToSlots)(void);
+ObjectSentryBug* SentryBug;
+void (*SentryBug_State_AwaitPlayer)();
+void (*SentryBug_State_DropOrbs)();
+void (*SentryBug_State_NetAppear)();
+void (*SentryBug_State_NetShrink)();
+void (*SentryBug_State_NetFlash)();
+void (*SentryBug_State_ReturnToSlots)();
 
-void SentryBug_EnemyInfoHook(void) {
-	Mod.Super(SentryBug->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = SentryBug->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].func = SentryBug_State_AwaitPlayer;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &SentryBug->hitbox;
-	EnemyDefs[EnemyInfoSlot].states[1].func = SentryBug_State_DropOrbs;
-	EnemyDefs[EnemyInfoSlot].states[1].hitbox = &SentryBug->hitbox;
-	EnemyDefs[EnemyInfoSlot].states[2].func = SentryBug_State_NetAppear;
-	EnemyDefs[EnemyInfoSlot].states[2].hitbox = &SentryBug->hitbox;
-	EnemyDefs[EnemyInfoSlot].states[3].func = SentryBug_State_NetShrink;
-	EnemyDefs[EnemyInfoSlot].states[3].hitbox = &SentryBug->hitbox;
-	EnemyDefs[EnemyInfoSlot].states[4].func = SentryBug_State_NetFlash;
-	EnemyDefs[EnemyInfoSlot].states[4].hitbox = &SentryBug->hitbox;
-	EnemyDefs[EnemyInfoSlot].states[5].func = SentryBug_State_ReturnToSlots;
-	EnemyDefs[EnemyInfoSlot].states[5].hitbox = &SentryBug->hitbox;
-	EnemyDefs[EnemyInfoSlot].destroy_func = SentryBug_StopSound;
-	++EnemyInfoSlot;
+bool32 SentryBug_CheckVulnerable(Entity* self) {
+	return (
+	    ((EntitySentryBug*)self)->state == SentryBug_State_AwaitPlayer
+	 || ((EntitySentryBug*)self)->state == SentryBug_State_DropOrbs
+	 || ((EntitySentryBug*)self)->state == SentryBug_State_NetAppear
+	 || ((EntitySentryBug*)self)->state == SentryBug_State_NetShrink
+	 || ((EntitySentryBug*)self)->state == SentryBug_State_NetFlash
+	 || ((EntitySentryBug*)self)->state == SentryBug_State_ReturnToSlots
+	);
 }
 
-void SentryBug_StopSound(EntityPlayer* player, Entity* e) {
-	EntitySentryBug* self = (EntitySentryBug*)e;
+Hitbox* SentryBug_GetHitbox(Entity* self) { return &(SentryBug->hitbox); }
+
+void SentryBug_OnHit(EntityPlayer* player, Entity* self) {
 	RSDK.StopSfx(SentryBug->sfxSwarm);
-	Generic_BadnikBreak(player, e, true);
+	Generic_BadnikBreak(player, self, true);
+}
+
+void SentryBug_EnemyInfoHook() {
+	Mod.Super(SentryBug->classID, SUPER_STAGELOAD, NULL);
+	ADD_ATTACKABLE_CLASS(SentryBug->classID, SentryBug_CheckVulnerable, SentryBug_GetHitbox, SentryBug_OnHit, NULL, ATKFLAG_NONE);
 }

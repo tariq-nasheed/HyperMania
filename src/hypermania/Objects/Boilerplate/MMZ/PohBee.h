@@ -4,33 +4,35 @@
 #include "GameAPI/Game.h"
 
 typedef struct {
-    RSDK_OBJECT
-    Hitbox hitbox;
-    uint16 aniFrames;
+	RSDK_OBJECT
+	Hitbox hitbox;
+	uint16 aniFrames;
 } ObjectPohBee;
 
 typedef struct {
-    RSDK_ENTITY
-    StateMachine(state);
-    Vector2 startPos;
-    uint8 startDir;
-    int32 chainPos[2];
-    int32 chainAngle[2];
-    int32 unused;
-    bool32 isTurning;
-    Animator bodyAnimator;
-    Animator wingsAnimator;
-    Animator chainAnimator;
-    Animator spikeAnimator;
-    Hitbox hitboxes[2];
-    uint8 spikeCount;
-    Vector2 amplitude;
-    ManiaPlaneFilterTypes planeFilter;
+	RSDK_ENTITY
+	StateMachine(state);
+	Vector2 startPos;
+	uint8 startDir;
+	int32 chainPos[2];
+	int32 chainAngle[2];
+	int32 unused;
+	bool32 isTurning;
+	Animator bodyAnimator;
+	Animator wingsAnimator;
+	Animator chainAnimator;
+	Animator spikeAnimator;
+	Hitbox hitboxes[2];
+	uint8 spikeCount;
+	Vector2 amplitude;
+	ManiaPlaneFilterTypes planeFilter;
 } EntityPohBee;
 
-extern ObjectPohBee *PohBee;
+extern ObjectPohBee* PohBee;
 
-void PohBee_EnemyInfoHook(void);
-void PohBee_Destroy(EntityPlayer* player, Entity* e);
+void PohBee_EnemyInfoHook();
+
+#define OBJ_POHBEE_SETUP \
+  REGISTER_ENEMY(PohBee)
 
 #endif //! OBJ_POHBEE_H

@@ -43,7 +43,6 @@ typedef struct {
 
 extern ObjectRexon* Rexon;
 
-void Rexon_Destroy(EntityPlayer* player, Entity* e);
 extern void (*Rexon_State_Hidden)();
 extern void (*Rexon_State_Rising)();
 extern void (*Rexon_State_Shooting)();

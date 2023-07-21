@@ -156,13 +156,13 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   OBJ_DDWRECKER_SETUP; \
   \
   \
-  REGISTER_ENEMY(FlasherMKII); \
-  REGISTER_ENEMY(TurboTurtle); \
-  REGISTER_ENEMY(SentryBug); \
-  REGISTER_ENEMY(BallHog); \
-  REGISTER_ENEMY(PohBee); \
-  REGISTER_ENEMY(Scarab); \
-  REGISTER_ENEMY(MechaBu); \
+  OBJ_FLASHERMKII_SETUP; \
+  OBJ_TURBOTURTLE_SETUP; \
+  OBJ_SENTRYBUG_SETUP; \
+  OBJ_BALLHOG_SETUP; \
+  OBJ_POHBEE_SETUP; \
+  OBJ_SCARAB_SETUP; \
+  OBJ_MECHABU_SETUP; \
   OBJ_FIREWORM_SETUP; \
   OBJ_REXON_SETUP; \
   OBJ_TOXOMISTER_SETUP; \
@@ -213,22 +213,4 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   OBJ_BUZZBOMBER_SETUP
 
 // function imports start after the following line (pattern match
-#define IMPORT_ENEMY_FUNCTIONS \
-  GET_MANIA_FUNC(FlasherMKII_State_Idle); \
-  GET_MANIA_FUNC(FlasherMKII_State_Moving); \
-  GET_MANIA_FUNC(FlasherMKII_State_WeakFlash); \
-  GET_MANIA_FUNC(FlasherMKII_State_StrongFlash); \
-  GET_MANIA_FUNC(FlasherMKII_State_FinishedFlashing); \
-  GET_MANIA_FUNC(SentryBug_State_ReturnToSlots); \
-  GET_MANIA_FUNC(SentryBug_State_NetFlash); \
-  GET_MANIA_FUNC(SentryBug_State_NetShrink); \
-  GET_MANIA_FUNC(SentryBug_State_NetAppear); \
-  GET_MANIA_FUNC(SentryBug_State_DropOrbs); \
-  GET_MANIA_FUNC(SentryBug_State_AwaitPlayer); \
-  GET_MANIA_FUNC(BallHog_State_DropBomb); \
-  GET_MANIA_FUNC(BallHog_State_Land); \
-  GET_MANIA_FUNC(BallHog_State_Jump); \
-  GET_MANIA_FUNC(BallHog_State_Idle); \
-  GET_MANIA_FUNC(MechaBu_State_Falling); \
-  GET_MANIA_FUNC(MechaBu_State_Stopped); \
-  GET_MANIA_FUNC(MechaBu_State_Moving)
+#define IMPORT_ENEMY_FUNCTIONS

@@ -1,11 +1,10 @@
 #include "TurboTurtle.h"
 
-ObjectTurboTurtle *TurboTurtle;
+ObjectTurboTurtle* TurboTurtle;
 
-void TurboTurtle_EnemyInfoHook(void) {
+Hitbox* TurboTurtle_GetHitbox(Entity* self) { return &(TurboTurtle->hitboxBadnik); }
+
+void TurboTurtle_EnemyInfoHook() {
 	Mod.Super(TurboTurtle->classID, SUPER_STAGELOAD, NULL);
-	EnemyDefs[EnemyInfoSlot].classID = TurboTurtle->classID;
-	EnemyDefs[EnemyInfoSlot].animal = true;
-	EnemyDefs[EnemyInfoSlot].states[0].hitbox = &TurboTurtle->hitboxBadnik;
-	++EnemyInfoSlot;
+	ADD_ATTACKABLE_CLASS(TurboTurtle->classID, Generic_CheckVulnerable, TurboTurtle_GetHitbox, Generic_OnHit, NULL, ATKFLAG_NONE);
 }
