@@ -22,6 +22,7 @@ typedef struct {
 	Vector2 emeraldOffset[7];
 	Animator animatorEmeralds[7];
 	bool32 flying_off;
+	bool32 player_up;
 } EntityHPZIntro;
 
 

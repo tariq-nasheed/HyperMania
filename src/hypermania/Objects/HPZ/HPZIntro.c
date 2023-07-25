@@ -8,8 +8,8 @@ Entity* SortedSuperEmeralds[8];
 
 color idk1[36];
 color idk2[36] = { 0xA00000, 0xB01820, 0xC03040, 0xD04860, 0xE06080, 0x4040C8, 0x5858C8, 0xE060E0, 0x7070C8, 0x8888C8, 0xA0A0C8, 0xC048C8,
-            0xA030B0, 0x801898, 0x600080, 0x88B8E0, 0x80E0,   0x2890E0, 0x58A8E0, 0xB8D0E0, 0x208000, 0x409800, 0x60B000, 0x80C800,
-            0xA0E000, 0xE0E0A0, 0xD0C878, 0xC0B050, 0xB09828, 0xA08000, 0x808080, 0x909090, 0xA0A0A0, 0xC0C0C0, 0xB0B0B0, 0xE8E8E8 };
+                   0xA030B0, 0x801898, 0x600080, 0x88B8E0, 0x80E0,   0x2890E0, 0x58A8E0, 0xB8D0E0, 0x208000, 0x409800, 0x60B000, 0x80C800,
+                   0xA0E000, 0xE0E0A0, 0xD0C878, 0xC0B050, 0xB09828, 0xA08000, 0x808080, 0x909090, 0xA0A0A0, 0xC0C0C0, 0xB0B0B0, 0xE8E8E8 };
 int32 emeraldStopAngle[7] = { 0x80, 0x86, 0x7a, 0x8c, 0x74, 0x92, 0x6e };
 Vector2 emeraldFlyVector[7] = {
 	{ 0,    -1024 },
@@ -25,31 +25,74 @@ Vector2 emeraldFlyVector[7] = {
 void HPZIntro_Update(void) {
 	RSDK_THIS(HPZIntro);
 
-	if (HM_global.currentSave->transferedEmeralds == 0b01111111) {
-		self->timer = 544;
-		self->beams = 8;
-	}
-
 	++self->timer;
 	if (self->timer == HPZ_TRANSFER_DELAY) {
 		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
 	}
 
+	if (self->beams != 8) {
+		foreach_active(Player, player) { player->state = Player_State_Static; }
+	}
 	if (self->timer >= 543 && self->beams != 8) {
 		const int32 target_beams = (self->timer - 543) / 31 + 1;
+
+		if (target_beams != 8) {
+			if (target_beams < 5) {
+				foreach_active(Player, player) { player->direction = FLIP_X; }
+			} else {
+				foreach_active(Player, player) { player->direction = FLIP_NONE; }
+			}
+
+			if (target_beams & 1) {
+				self->player_up = false;
+			} else {
+				self->player_up = true;
+			}
+		}
+
 		if (self->beams != target_beams) {
 			self->beams = target_beams;
 			if (self->beams < 8) {
-				EntityPlayer* player = (EntityPlayer*)RSDK_GET_ENTITY_GEN(0);
-				int32 spawn_y = Zone->playerBoundsT[0] - 0x8000;
-				EntityHPZBeam* beam = CREATE_ENTITY(HPZBeam, NULL, SortedSuperEmeralds[self->beams - 1]->position.x, spawn_y);
-				beam->target_y = SortedSuperEmeralds[self->beams - 1]->position.y;
+				EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+				const int32 diff = camera->position.x - SortedSuperEmeralds[self->beams - 1]->position.x;
+				if (abs(diff) >= TO_FIXED(16)) {
+					--self->timer;
+					--self->beams;
+					if (diff < 0) {
+						camera->position.x += TO_FIXED(16);
+					} else {
+						camera->position.x -= TO_FIXED(16);
+					}
+				} else {
+					EntityPlayer* player = (EntityPlayer*)RSDK_GET_ENTITY_GEN(0);
+					int32 spawn_y = Zone->playerBoundsT[0] - 0x8000;
+					EntityHPZBeam* beam = CREATE_ENTITY(HPZBeam, NULL, SortedSuperEmeralds[self->beams - 1]->position.x, spawn_y);
+					beam->target_y = SortedSuperEmeralds[self->beams - 1]->position.y;
+				}
 
 				//RSDK_GET_ENTITY_GEN(0)->position.x = SortedSuperEmeralds[self->beams - 1]->position.x;
 			}
 		}
 		if (self->beams == 8) {
+			foreach_active(Player, player) { player->state = Player_State_Ground; }
+			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+			camera->state = Camera_State_FollowXY;
 			printf("done :)\n");
+			destroyEntity(self);
+		}
+	}
+
+	if (self->player_up) {
+		foreach_active(Player, player) {
+			RSDK.SetSpriteAnimation(player->aniFrames, ANI_LOOK_UP, &player->animator, false, 1);
+			if (player->animator.frameID == 5) player->animator.speed = 0;
+		}
+	} else {
+		foreach_active(Player, player) { 
+			if (player->animator.animationID == ANI_LOOK_UP) {
+				player->animator.speed = 64;
+				if (player->animator.frameID == 0) RSDK.SetSpriteAnimation(player->aniFrames, ANI_IDLE, &player->animator, false, 1);
+			}
 		}
 	}
 }
@@ -71,7 +114,7 @@ void HPZIntro_Draw(void) {
 		const int32 height = MIN(lifetime * 0x8000, 0x3F8000); // 127 frames
 		bool32 all_stopped = true;
 		Vector2 pos;
-		
+
 		for (int32 i = 0; i != 7; ++i) {
 			if (lifetime >= 384 && emeraldStopAngle[i] - (self->emeraldAngle[i] % 0xff) < 4 && emeraldStopAngle[i] - ((self->emeraldAngle[i] - 4) % 0xff) >= 4) {
 				self->emeraldAngle[i] = emeraldStopAngle[i];
@@ -87,6 +130,12 @@ void HPZIntro_Draw(void) {
 				self->emeraldOffset[i].y += emeraldFlyVector[i].y << 8;
 			}
 			if (lifetime & 1) RSDK.DrawSprite(&self->animatorEmeralds[i], &pos, false);
+		}
+
+		if (self->timer < 543 && height == 0x3F8000) {
+			self->player_up = true;
+		} else {
+			self->player_up = false;
 		}
 
 		if (all_stopped && !self->flying_off) {
@@ -114,6 +163,8 @@ void HPZIntro_Create(void *data) {
 			self->emeraldAngle[i] = i * 0x24;
 			RSDK.SetSpriteAnimation(HPZIntro->aniFramesEmerald, 0, &self->animatorEmeralds[i], true, i);
 		}
+		EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+		camera->state = StateMachine_None;
 	}
 }
 

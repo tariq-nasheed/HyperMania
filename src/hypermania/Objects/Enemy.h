@@ -1,6 +1,5 @@
-// WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "GameAPI/Game.h"
-// .h includes start on line 3
+
 #include "Boilerplate/ERZ/PhantomMystic.h"
 #include "Boilerplate/ERZ/PhantomShinobi.h"
 #include "Boilerplate/ERZ/PhantomEgg.h"
@@ -28,7 +27,6 @@
 #include "Boilerplate/CPZ/AmoebaDroid.h"
 #include "Boilerplate/GHZ/DERobot.h"
 #include "Boilerplate/GHZ/DDWrecker.h"
-
 
 #include "Boilerplate/TMZ/FlasherMKII.h"
 #include "Boilerplate/TMZ/TurboTurtle.h"
@@ -129,7 +127,6 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
   OBJ_AMOEBADROID_SETUP; \
   OBJ_DEROBOT_SETUP; \
   OBJ_DDWRECKER_SETUP; \
-  \
   \
   OBJ_FLASHERMKII_SETUP; \
   OBJ_TURBOTURTLE_SETUP; \

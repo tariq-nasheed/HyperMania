@@ -15,7 +15,9 @@ void HPZSetup_StageLoad(void) {
 	Zone->cameraBoundsR[0] = 3200;
 
 	Entity* player = RSDK_GET_ENTITY_GEN(0);
-	CREATE_ENTITY(HPZIntro, NULL, player->position.x, player->position.y);
+	if (HM_global.currentSave->transferedEmeralds != 0b01111111) {
+		CREATE_ENTITY(HPZIntro, NULL, player->position.x, player->position.y);
+	}
 	SceneInfo->timeEnabled = false;
 
 #if MANIA_USE_PLUS

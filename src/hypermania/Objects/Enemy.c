@@ -1,6 +1,5 @@
-// WARNING: this file is heavily auto-generated, only modify if you know what you are doing
 #include "Enemy.h"
-// .c includes start on line 3
+
 #include "Boilerplate/ERZ/PhantomMystic.c"
 #include "Boilerplate/ERZ/PhantomShinobi.c"
 #include "Boilerplate/ERZ/PhantomEgg.c"
@@ -28,7 +27,6 @@
 #include "Boilerplate/CPZ/AmoebaDroid.c"
 #include "Boilerplate/GHZ/DERobot.c"
 #include "Boilerplate/GHZ/DDWrecker.c"
-
 
 #include "Boilerplate/TMZ/FlasherMKII.c"
 #include "Boilerplate/TMZ/TurboTurtle.c"

@@ -29,6 +29,7 @@ void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
 void (*Player_State_Static)();
 void (*Player_State_Transform)();
+void (*Player_State_Ground)();
 bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
 
 // -----------------------------------------------------------------------------

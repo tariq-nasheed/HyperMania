@@ -175,6 +175,7 @@ void InitModAPI(void) {
 	OBJ_RING_SETUP;
 	OBJ_UFO_SETUP_SETUP;
 	OBJ_PAUSEMENU_SETUP;
+	Camera_State_FollowXY = Mod.GetPublicFunction(NULL, "Camera_State_FollowXY");
 	Camera_State_FollowY = Mod.GetPublicFunction(NULL, "Camera_State_FollowY");
 	Camera_ShakeScreen = Mod.GetPublicFunction(NULL, "Camera_ShakeScreen");
 	IMPORT_PUBLIC_FUNC(Camera_SetupLerp);
