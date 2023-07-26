@@ -51,4 +51,4 @@ See [SETTINGS](SETTINGS.md)
 + jubbalub + Hydropper - Super Emerald sprites, emerald cave map
 + Tee Lopes - Sonic Forces Theme Unofficial Remix (Hyper theme)
 + Axanery - GameConfig.bin used in legacy builds
-+ KiaraGale - Underwater Hyper palettes
++ KiaraGale - Underwater Hyper palettes, inactive Super Emerald sprite
