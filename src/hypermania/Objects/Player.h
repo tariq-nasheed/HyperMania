@@ -448,6 +448,7 @@ typedef struct {
 	int32 prev_ID, prev_xvel;
 	void* prev_state;
 	struct { int16 state; int16 amount; } blend;
+	int32 glide_timer;
 	bool32 can_dash;
 	bool32 is_hyper;
 } PlayerExt;
@@ -476,6 +477,9 @@ bool32 Player_State_Ground_HOOK(bool32);
 bool32 Player_JumpAbility_Sonic_HOOK(bool32);
 bool32 Player_JumpAbility_Mighty_HOOK(bool32);
 bool32 Player_State_MightyHammerDrop_HOOK(bool32);
+bool32 Player_State_RayGlide_HOOK(bool32);
+
+void Ring_UnconditionalAttract(); //dskfasjudf
 
 void Player_StageLoad_OVERLOAD();
 void Player_Draw_OVERLOAD();
@@ -498,6 +502,7 @@ void Player_Update_OVERLOAD();
   HOOK_STATE(Player_JumpAbility_Sonic, 1); \
   HOOK_STATE(Player_JumpAbility_Mighty, 0); \
   HOOK_STATE(Player_State_MightyHammerDrop, 0); \
+  HOOK_STATE(Player_State_RayGlide, 1); \
   MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_OVERLOAD, NULL, NULL, Player_Draw_OVERLOAD, Player_Create_OVERLOAD, Player_StageLoad_OVERLOAD, NULL, NULL, NULL)
 
 void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t* info);

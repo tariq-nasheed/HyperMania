@@ -248,7 +248,6 @@ void Player_Update_OVERLOAD() {
 	if (ext->prev_ID != self->characterID) {
 		PlayerExt* sidekick_ext = (PlayerExt*)GetExtMem(SLOT_PLAYER2);
 		if (sidekick_ext && ext->prev_ID == RSDK_GET_ENTITY(SLOT_PLAYER2, Player)->characterID) {
-			printf("player swap\n");
 			sidekick_ext->is_hyper = true;
 			sidekick_ext->blend.amount = ext->blend.amount;
 			sidekick_ext->blend.state = ext->blend.state;
@@ -298,31 +297,6 @@ void Player_Update_OVERLOAD() {
 	// extra abilities -----------------------------------------------------
 	if (self->superState == SUPERSTATE_SUPER) {
 		self->drownTimer = 0;
-
-		// sparkles :)
-		// not done yet :(
-		/*if (!(Zone->timer & 7)) {
-			int32 sin = RSDK.Sin256(Zone->timer * 5 * 1.5) * RSDK.Sin256(Zone->timer * 5);
-			int32 cos = RSDK.Cos256(Zone->timer * 5 * 3) * RSDK.Sin256(Zone->timer * 5);
-			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, sin * 12 + self->position.x, cos * 18 + self->position.y);
-			sparkle->velocity.x = sin * 5 + self->velocity.x;
-			sparkle->velocity.y = cos * 5 + self->velocity.y;
-			sparkle->state        = Debris_State_Move;
-			sparkle->timer        = 12;
-			sparkle->inkEffect    = INK_ADD;
-			sparkle->alpha        = 0x100;
-			sparkle->drawGroup    = Zone->objectDrawGroup[1];
-			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
-			sparkle = CREATE_ENTITY(Debris, NULL, -sin * 12 + self->position.x, -cos * 18 + self->position.y);
-			sparkle->velocity.x = -sin * 5 + self->velocity.x;
-			sparkle->velocity.y = -cos * 5 + self->velocity.y;
-			sparkle->state        = Debris_State_Move;
-			sparkle->timer        = 12;
-			sparkle->inkEffect    = INK_ADD;
-			sparkle->alpha        = 0x100;
-			sparkle->drawGroup    = Zone->objectDrawGroup[1];
-			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
-		}*/
 
 		if (self->characterID == ID_SONIC && ext->can_dash && self->jumpPress && self->state == Player_State_Air) {
 			Player_HyperSonicDash();
@@ -385,6 +359,7 @@ bool32 Player_State_Ground_HOOK(bool32 skippedState) {
 #if MANIA_USE_PLUS
 	if (self->characterID == ID_MIGHTY) ext->can_dash = true;
 	if (self->characterID == ID_SONIC) ext->can_dash = false;
+	ext->glide_timer = 0;
 #endif
 	return false;
 }
@@ -471,6 +446,139 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 		self->jumpAbilityState = 1;
 	}
 	return false;
+}
+
+bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
+	RSDK_THIS(Player);
+	if (!Player_IsHyper(self)) return false;
+	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+
+	if (ext->can_dash && Player->raySwoopTimer) {
+		ext->can_dash = false;
+
+		const int32 vel = TO_FIXED(4);
+		for (int32 i = 0; i != 4; ++i) {
+			EntityDebris* debris = CREATE_ENTITY(Debris, Debris_State_Move, self->position.x, self->position.y);
+			debris->timer = 17;
+			debris->velocity.x = vel - vel * (2 * (i & 1));
+			debris->velocity.y = vel - vel * (i & 2);
+			debris->drawGroup = Zone->playerDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
+			if (self->drawFX & FX_SCALE) {
+				debris->drawFX |= FX_SCALE;
+				debris->scale.x = self->scale.x;
+				debris->scale.y = self->scale.y;
+			}
+		}
+
+		Hitbox hitbox;
+		hitbox.left   = -80;
+		hitbox.top    = -80;
+		hitbox.right  = 80;
+		hitbox.bottom = 80;
+
+		foreach_all(Ring, ring) {
+			if (ring->state != Ring_State_Sparkle
+			 && RSDK.CheckObjectCollisionTouchBox(self, &hitbox, ring, &Ring->hitbox)) {
+				ring->state = Ring_UnconditionalAttract;
+				ring->storedPlayer = self;
+			}
+		}
+
+		for (int16 i = 0; i != ENTITY_COUNT; ++i) {
+			Entity* entity = RSDK_GET_ENTITY_GEN(i);
+			if (!IsAttackableEntity(entity, ATKFLAG_ISBOSS)) continue;
+			const uint32 index = entity->classID - AttackableClasses_startidx;
+
+			const Vector2 old_pos = entity->position;
+			if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
+			if (RSDK.CheckObjectCollisionTouchBox(self, &hitbox, entity, AttackableClasses[index].getHitbox(entity))) AttackableClasses[index].onHit(self, entity);
+			entity->position = old_pos;
+		}
+		ext->glide_timer = 0;
+
+		RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
+		RSDK.SetChannelAttributes(RSDK.PlaySfx(ItemBox->sfxHyperRing, false, 0xFF), 0.4, 0.0, 1.0);
+	}
+	if (!Player->raySwoopTimer) {
+		ext->can_dash = true;
+	}
+
+	if (((self->direction == FLIP_X && self->right)
+	 || (self->direction == FLIP_NONE && self->left))
+	 && self->rotation == true && ext->glide_timer < 60) {
+		if (!self->abilitySpeed) {
+			self->velocity.y -= (self->gravityStrength * RSDK.Cos512(self->abilityValue)) >> 9;
+		}
+	 	if (self->direction) {
+			self->velocity.x += (22 * RSDK.Sin256(0x50 - self->abilityValue)) >> (uint8)(self->underwater != false);
+		} else  {
+			self->velocity.x -= (22 * RSDK.Sin256(0x50 - self->abilityValue)) >> (uint8)(self->underwater != false);
+		}
+
+		if (!(Zone->timer % 2)) {
+			int32 sin = RSDK.Sin256(Zone->timer * 3) * 0xFF;
+			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, sin * 20 + self->position.x, self->position.y);
+			sparkle->state        = Debris_State_Move;
+			sparkle->timer        = 12;
+			sparkle->inkEffect    = INK_ADD;
+			sparkle->alpha        = 0x100;
+			sparkle->drawGroup    = Zone->objectDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
+			sparkle = CREATE_ENTITY(Debris, NULL, -sin * 20 + self->position.x, self->position.y);
+			sparkle->state        = Debris_State_Move;
+			sparkle->timer        = 12;
+			sparkle->inkEffect    = INK_ADD;
+			sparkle->alpha        = 0x100;
+			sparkle->drawGroup    = Zone->objectDrawGroup[1];
+			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
+		}
+		++ext->glide_timer;
+	}
+
+	if ((self->direction == FLIP_X && !self->right) || (self->direction == FLIP_NONE && !self->left)) {
+		ext->glide_timer = 60;
+	}
+
+	return false;
+}
+
+void Ring_UnconditionalAttract() {
+	RSDK_THIS(Ring);
+
+	EntityPlayer* player = self->storedPlayer;
+	int32 startX = self->position.x;
+	int32 startY = self->position.y;
+
+	if (self->position.x <= player->position.x) {
+		if (self->velocity.x >= 0)
+			self->velocity.x += 0x3000;
+		else
+			self->velocity.x += 0xC000;
+	} else {
+		if (self->velocity.x <= 0)
+			self->velocity.x -= 0x3000;
+		else
+			self->velocity.x -= 0xC000;
+	}
+
+	if (startY <= player->position.y) {
+		if (self->velocity.y >= 0)
+			self->velocity.y += 0x3000;
+		else
+			self->velocity.y += 0xC000;
+	} else {
+		if (self->velocity.y <= 0)
+			self->velocity.y -= 0x3000;
+		else
+			self->velocity.y -= 0xC000;
+	}
+
+	self->position.x = startX + self->velocity.x;
+	self->position.y = startY + self->velocity.y;
+	Ring_Collect();
+
+	self->animator.frameID = Zone->ringFrame;
 }
 
 void Player_HyperSonicDash() {

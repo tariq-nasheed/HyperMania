@@ -10,8 +10,7 @@ Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game, f
 
 Press transform + up in debug mode while super or collect all Super Emeralds to transform into your Hyper form.
 # Status
-- Hyper abilities - Sonic, Tails, Knuckles, and Mighty are feature complete,
-Ray does not have an ability yet.
+- Hyper abilities - All 5 characters have hyper abilities, Mighty's and Ray's are kinda buggy and need some extra work.
 - Hidden Palace Zone - Can be accessed when touching a Super Ring with all Chaos Emeralds collected, features transfer animation and ability to collect Super Emeralds.
 Encore special stages are being used as placeholders until new maps are created.
 
@@ -44,7 +43,6 @@ or you can use `./build.sh` to automate this process if you don't mind running C
 See [SETTINGS](SETTINGS.md)
 
 # Planned features
-+ Hyper ability for Ray
 + Extra GFX/SFX
 + New mechanic(s) for new special stages(?)
 + mayyyybe an API for custom characters + enemies

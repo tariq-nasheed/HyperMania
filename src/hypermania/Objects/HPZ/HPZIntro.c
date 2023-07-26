@@ -69,8 +69,6 @@ void HPZIntro_Update(void) {
 					EntityHPZBeam* beam = CREATE_ENTITY(HPZBeam, NULL, SortedSuperEmeralds[self->beams - 1]->position.x, spawn_y);
 					beam->target_y = SortedSuperEmeralds[self->beams - 1]->position.y;
 				}
-
-				//RSDK_GET_ENTITY_GEN(0)->position.x = SortedSuperEmeralds[self->beams - 1]->position.x;
 			}
 		}
 		if (self->beams == 8) {
