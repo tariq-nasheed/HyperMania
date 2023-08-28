@@ -141,24 +141,6 @@ void Player_StageLoad_OVERLOAD() {
 	PlayerStaticExt.sfxEarthquake2 = RSDK.GetSfx("Stage/Impact2.wav");
 }
 
-void Player_Draw_OVERLOAD() {
-	Mod.Super(Player->classID, SUPER_DRAW, NULL);
-	/*RSDK_THIS(Player);
-
-	if (Player_IsHyper(self)) {
-		int32 old_alpha = self->alpha;
-		InkEffects old_ink = self->inkEffect;
-		self->alpha = self->superBlendAmount / 2;
-		self->inkEffect = INK_SUB;
-		RSDK.DrawSprite(&self->animator, NULL, false);
-		self->alpha /= 1.5;
-		self->inkEffect = INK_ADD;
-		RSDK.DrawSprite(&self->animator, NULL, false);
-		self->alpha = old_alpha;
-		self->inkEffect = old_ink;
-	}*/
-}
-
 void Player_Create_OVERLOAD(void* data) {
 	Mod.Super(Player->classID, SUPER_CREATE, data);
 	RSDK_THIS(Player);
@@ -196,8 +178,7 @@ void Player_Update_OVERLOAD() {
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
 	if (!ext->is_hyper
 	&& (HM_global.currentSave->superEmeralds == 0b01111111 || SceneInfo->debugMode)
-	&& ((!ModConfig.twoHeavensMode && HM_global.currentSave->superEmeralds == 0b01111111) || (self->up && controller->keyY.press))) {
-		if (ModConfig.enableHyperMusic && !ERZStart) Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
+	&& ((!ModConfig.twoHeavensMode && HM_global.currentSave->superEmeralds == 0b01111111) || (self->superState == SUPERSTATE_SUPER && self->up && controller->keyY.press))) {
 		ext->blend.state = HYPERBLEND_FADEIN;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
@@ -215,7 +196,7 @@ void Player_Update_OVERLOAD() {
 	}
 	if (!ext->is_hyper) return;
 
-	if (ModConfig.twoHeavensMode && !ERZStart && Zone->timer & 1) {
+	if (!ERZStart && ModConfig.twoHeavensMode && Zone->timer & 1) {
 		--self->superRingLossTimer;
 	}
 
@@ -342,9 +323,10 @@ void Player_Update_OVERLOAD() {
 	}
 
 	// music handling ------------------------------------------------------
-	if (ModConfig.enableHyperMusic && !ERZStart && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
+	if (!ERZStart && ModConfig.enableHyperMusic && Music->activeTrack == TRACK_SUPER && Music->trackLoops[TRACK_SUPER] != 423801) {
 #if MANIA_USE_PLUS
 		Music_JingleFadeOut(TRACK_SUPER, false);
+		Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
 		Music_PlayJingle(TRACK_SUPER);
 #else
 		//Music_TransitionTrack(TRACK_HYPER, 1.0);

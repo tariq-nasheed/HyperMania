@@ -21,76 +21,21 @@ Vector2 emeraldFlyVector[7] = {
 	{ 684,  -756 }
 };
 
-
 void HPZIntro_Update(void) {
 	RSDK_THIS(HPZIntro);
 
 	++self->timer;
-	if (self->timer == HPZ_TRANSFER_DELAY) {
-		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
-	}
-
-	if (self->beams != 8) {
-		foreach_active(Player, player) { player->state = Player_State_Static; }
-	}
-	if (self->timer >= 543 && self->beams != 8) {
-		const int32 target_beams = (self->timer - 543) / 31 + 1;
-
-		if (target_beams != 8) {
-			if (target_beams < 5) {
-				foreach_active(Player, player) { player->direction = FLIP_X; }
-			} else {
-				foreach_active(Player, player) { player->direction = FLIP_NONE; }
-			}
-
-			if (target_beams & 1) {
-				self->player_up = false;
-			} else {
-				self->player_up = true;
-			}
-		}
-
-		if (self->beams != target_beams) {
-			self->beams = target_beams;
-			if (self->beams < 8) {
-				EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
-				const int32 diff = camera->position.x - SortedSuperEmeralds[self->beams - 1]->position.x;
-				if (abs(diff) >= TO_FIXED(16)) {
-					--self->timer;
-					--self->beams;
-					if (diff < 0) {
-						camera->position.x += TO_FIXED(16);
-					} else {
-						camera->position.x -= TO_FIXED(16);
-					}
-				} else {
-					EntityPlayer* player = (EntityPlayer*)RSDK_GET_ENTITY_GEN(0);
-					int32 spawn_y = Zone->playerBoundsT[0] - 0x8000;
-					EntityHPZBeam* beam = CREATE_ENTITY(HPZBeam, NULL, SortedSuperEmeralds[self->beams - 1]->position.x, spawn_y);
-					beam->target_y = SortedSuperEmeralds[self->beams - 1]->position.y;
-				}
-			}
-		}
-		if (self->beams == 8) {
-			foreach_active(Player, player) { player->state = Player_State_Ground; }
-			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
-			camera->state = Camera_State_FollowXY;
-			printf("done :)\n");
-			destroyEntity(self);
-		}
-	}
-
-	if (self->player_up) {
-		foreach_active(Player, player) {
+	StateMachine_Run(self->state);
+	if (!self) return;
+	foreach_active(Player, player) {
+		player->state = Player_State_Static;
+		player->direction = (self->drawFlags & HPZI_PLAYER_LEFT) ? FLIP_X : FLIP_NONE;
+		if (self->drawFlags & HPZI_PLAYER_UP) {
 			RSDK.SetSpriteAnimation(player->aniFrames, ANI_LOOK_UP, &player->animator, false, 1);
 			if (player->animator.frameID == 5) player->animator.speed = 0;
-		}
-	} else {
-		foreach_active(Player, player) { 
-			if (player->animator.animationID == ANI_LOOK_UP) {
-				player->animator.speed = 64;
-				if (player->animator.frameID == 0) RSDK.SetSpriteAnimation(player->aniFrames, ANI_IDLE, &player->animator, false, 1);
-			}
+		} else if (player->animator.animationID == ANI_LOOK_UP) {
+			player->animator.speed = 64;
+			if (player->animator.frameID == 0) RSDK.SetSpriteAnimation(player->aniFrames, ANI_IDLE, &player->animator, false, 1);
 		}
 	}
 }
@@ -100,53 +45,22 @@ void HPZIntro_StaticUpdate(void) {}
 
 void HPZIntro_Draw(void) {
 	RSDK_THIS(HPZIntro);
-	if (self->beams == 8) return;
-	if (self->timer >= HPZ_TRANSFER_DELAY) {
+
+	if (self->drawFlags & HPZI_EMERALDS) {
+		const int32 sparsity = MIN(self->timer * 16, 6144); // 384 frames
+		const int32 height = MIN(self->timer * 0x8000, 0x3F8000); // 127 frames
+
 		for (int32 c = 0; c < 36; ++c) {
 			idk1[c] = RSDK.GetPaletteEntry(0, c + 128);
 			RSDK.SetPaletteEntry(0, c + 128, idk2[c]);
 		}
-
-		const int32 lifetime = (self->timer - HPZ_TRANSFER_DELAY);
-		const int32 sparsity = MIN(lifetime * 16, 6144); // 384 frames
-		const int32 height = MIN(lifetime * 0x8000, 0x3F8000); // 127 frames
-		bool32 all_stopped = true;
 		Vector2 pos;
-
 		for (int32 i = 0; i != 7; ++i) {
-			if (lifetime >= 384 && emeraldStopAngle[i] - (self->emeraldAngle[i] % 0xff) < 4 && emeraldStopAngle[i] - ((self->emeraldAngle[i] - 4) % 0xff) >= 4) {
-				self->emeraldAngle[i] = emeraldStopAngle[i];
-				// blegh
-			} else {
-				self->emeraldAngle[i] += 4;
-				all_stopped = false;
-			}
 			pos.x = self->position.x + RSDK.Sin256(self->emeraldAngle[i]) * sparsity + self->emeraldOffset[i].x;
 			pos.y = self->position.y + RSDK.Cos256(self->emeraldAngle[i]) * sparsity - height + self->emeraldOffset[i].y;
-			if (self->flying_off) {
-				self->emeraldOffset[i].x += emeraldFlyVector[i].x << 8;
-				self->emeraldOffset[i].y += emeraldFlyVector[i].y << 8;
-			}
-			if (lifetime & 1) RSDK.DrawSprite(&self->animatorEmeralds[i], &pos, false);
+			if (Zone->timer & 1) RSDK.DrawSprite(&self->animatorEmeralds[i], &pos, false);
 		}
-
-		if (self->timer < 543 && height == 0x3F8000) {
-			self->player_up = true;
-		} else {
-			self->player_up = false;
-		}
-
-		if (all_stopped && !self->flying_off) {
-			self->flying_off = true;
-			RSDK.PlaySfx(HPZIntro->sfxEmeraldFlying, false, 0xFF);
-			for (int32 i = 0; i != 7; ++i) {
-				self->velocity = emeraldFlyVector[i];
-			}
-		}
-
-		for (int32 c = 0; c < 36; ++c) {
-			RSDK.SetPaletteEntry(0, c + 0x80, idk1[c]);
-		}
+		for (int32 c = 0; c < 36; ++c) { RSDK.SetPaletteEntry(0, c + 0x80, idk1[c]); }
 	}
 }
 
@@ -157,12 +71,9 @@ void HPZIntro_Create(void *data) {
 		self->active        = ACTIVE_NORMAL;
 		self->visible       = true;
 		self->drawGroup     = Zone->objectDrawGroup[0];
-		for (int32 i = 0; i != 7; ++i) {
-			self->emeraldAngle[i] = i * 0x24;
-			RSDK.SetSpriteAnimation(HPZIntro->aniFramesEmerald, 0, &self->animatorEmeralds[i], true, i);
-		}
 		EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
 		camera->state = StateMachine_None;
+		self->state = HPZIntro_State_WaitForStart;
 	}
 }
 
@@ -170,6 +81,108 @@ void HPZIntro_StageLoad(void) {
 	HPZIntro->sfxTwinkle = RSDK.GetSfx("Global/Twinkle.wav");
 	HPZIntro->sfxEmeraldFlying = RSDK.GetSfx("LRZ/LittlePlanet.wav");
 	HPZIntro->aniFramesEmerald = RSDK.LoadSpriteAnimation("Cutscene/Emeralds.bin", SCOPE_STAGE);
+}
+
+void HPZIntro_State_WaitForStart() {
+	RSDK_THIS(HPZIntro);
+
+	if (self->timer >= 30) {
+		RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
+		for (int32 i = 0; i != 7; ++i) {
+			self->emeraldAngle[i] = i * 0x24;
+			RSDK.SetSpriteAnimation(HPZIntro->aniFramesEmerald, 0, &self->animatorEmeralds[i], true, i);
+		}
+		self->drawFlags |= HPZI_EMERALDS;
+		self->timer = 0;
+		self->state = HPZIntro_State_RaiseEmeralds;
+	}
+}
+
+void HPZIntro_State_RaiseEmeralds() {
+	RSDK_THIS(HPZIntro);
+
+	if (self->timer >= 127) {
+		self->drawFlags |= HPZI_PLAYER_UP;
+	} else {
+		self->drawFlags &= ~HPZI_PLAYER_UP;
+	}
+
+	bool32 all_stopped = true;
+	for (int32 i = 0; i != 7; ++i) {
+		if (self->timer >= 354 && emeraldStopAngle[i] - (self->emeraldAngle[i] % 0xff) < 4 && emeraldStopAngle[i] - ((self->emeraldAngle[i] - 4) % 0xff) >= 4) {
+			self->emeraldAngle[i] = emeraldStopAngle[i];
+		} else {
+			self->emeraldAngle[i] += 4;
+			all_stopped = false;
+		}
+	}
+	if (all_stopped) {
+		RSDK.PlaySfx(HPZIntro->sfxEmeraldFlying, false, 0xFF);
+		for (int32 i = 0; i != 7; ++i) { self->velocity = emeraldFlyVector[i]; }
+		self->state = HPZIntro_State_EmeraldsFlyOff;
+	}
+}
+
+void HPZIntro_State_EmeraldsFlyOff() {
+	RSDK_THIS(HPZIntro);
+
+	for (int32 i = 0; i != 7; ++i) {
+		self->emeraldOffset[i].x += emeraldFlyVector[i].x << 8;
+		self->emeraldOffset[i].y += emeraldFlyVector[i].y << 8;
+	}
+	if (self->timer >= 513) {
+		self->drawFlags &= ~HPZI_EMERALDS;
+		self->timer = 0;
+		self->state = HPZIntro_State_ActivateSuperEmeralds;
+	}
+}
+
+void HPZIntro_State_ActivateSuperEmeralds() {
+	RSDK_THIS(HPZIntro);
+
+	const int32 target_beams = self->timer / 31 + 1;
+
+	if (target_beams != 8) {
+		if (target_beams < 5) {
+			self->drawFlags |= HPZI_PLAYER_LEFT;
+		} else {
+			self->drawFlags &= ~HPZI_PLAYER_LEFT;
+		}
+		if (target_beams & 1) {
+			self->drawFlags &= ~HPZI_PLAYER_UP;
+		} else {
+			self->drawFlags |= HPZI_PLAYER_UP;
+		}
+
+	}
+
+	if (self->beams != target_beams) {
+		self->beams = target_beams;
+		if (self->beams < 8) {
+			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+			const int32 diff = camera->position.x - SortedSuperEmeralds[self->beams - 1]->position.x;
+			if (abs(diff) >= TO_FIXED(16)) {
+				--self->timer;
+				--self->beams;
+				if (diff < 0) {
+					camera->position.x += TO_FIXED(16);
+				} else {
+					camera->position.x -= TO_FIXED(16);
+				}
+			} else {
+				EntityPlayer* player = (EntityPlayer*)RSDK_GET_ENTITY_GEN(0);
+				int32 spawn_y = Zone->playerBoundsT[0] - 0x8000;
+				EntityHPZBeam* beam = CREATE_ENTITY(HPZBeam, NULL, SortedSuperEmeralds[self->beams - 1]->position.x, spawn_y);
+				beam->target_y = SortedSuperEmeralds[self->beams - 1]->position.y;
+			}
+		}
+	}
+	if (self->beams == 8) {
+		foreach_active(Player, player) { player->state = Player_State_Ground; }
+		EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
+		camera->state = Camera_State_FollowXY;
+		destroyEntity(self);
+	}
 }
 
 #if RETRO_INCLUDE_EDITOR

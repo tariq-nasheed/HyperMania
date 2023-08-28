@@ -482,7 +482,6 @@ bool32 Player_State_RayGlide_HOOK(bool32);
 void Ring_UnconditionalAttract(); //dskfasjudf
 
 void Player_StageLoad_OVERLOAD();
-void Player_Draw_OVERLOAD();
 void Player_Create_OVERLOAD(void* data);
 void Player_Update_OVERLOAD();
 
@@ -503,7 +502,7 @@ void Player_Update_OVERLOAD();
   HOOK_STATE(Player_JumpAbility_Mighty, 0); \
   HOOK_STATE(Player_State_MightyHammerDrop, 0); \
   HOOK_STATE(Player_State_RayGlide, 1); \
-  MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_OVERLOAD, NULL, NULL, Player_Draw_OVERLOAD, Player_Create_OVERLOAD, Player_StageLoad_OVERLOAD, NULL, NULL, NULL)
+  MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_OVERLOAD, NULL, NULL, NULL, Player_Create_OVERLOAD, Player_StageLoad_OVERLOAD, NULL, NULL, NULL)
 
 void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t* info);
 bool32 Player_IsHyper(EntityPlayer* player);
