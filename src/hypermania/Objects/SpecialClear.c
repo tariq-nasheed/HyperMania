@@ -17,7 +17,7 @@ bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
 	RSDK_THIS(SpecialClear);
 
 	if (!UFO_Setup) {
-		if (!SpecialClearStaticExt.startFadingBackground) {
+		if (!UFO_HPZbuffer.timedOut && !SpecialClearStaticExt.startFadingBackground) {
 			SpecialClearStaticExt.startFadingBackground = true;
 			Entity* emerald = SortedSuperEmeralds[super_emerald_revlookup[UFO_HPZbuffer.specialStageID]];
 			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
@@ -41,7 +41,7 @@ bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
 bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 	RSDK_THIS(SpecialClear);
 
-	if (!UFO_Setup && self->timer == 179) {
+	if (!UFO_Setup && self->timer == ((!UFO_HPZbuffer.timedOut || HM_global.currentSave->superEmeralds == 0b01111111) ? 179 : 359)) {
 		self->timer = 0;
 		SpecialClearStaticExt.drawContinue = true;
 
@@ -56,7 +56,14 @@ bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 		saveRAM->stock          = globals->stock;
 		saveRAM->playerID       = globals->playerID;
 #endif
-		self->state = SpecialClear_State_WaitToRevealSuperEmerald;
+		if (!UFO_HPZbuffer.timedOut || HM_global.currentSave->superEmeralds == 0b01111111) {
+			self->state = SpecialClear_State_WaitToRevealSuperEmerald;
+		} else {
+			self->timer    = 0;
+			self->showFade = true;
+			RSDK.PlaySfx(SpecialClear->sfxSpecialWarp, false, 0xFF);
+			self->state = SpecialClear_State_ExitResults;
+		}
 	}
 
 	return false;
@@ -79,7 +86,14 @@ bool32 SpecialClear_State_ShowTotalScore_NoContinues_HOOK(bool32 skippedState) {
 		saveRAM->stock          = globals->stock;
 		saveRAM->playerID       = globals->playerID;
 #endif
-		self->state = SpecialClear_State_WaitToRevealSuperEmerald;
+		if (!UFO_HPZbuffer.timedOut || HM_global.currentSave->superEmeralds == 0b01111111) {
+			self->state = SpecialClear_State_WaitToRevealSuperEmerald;
+		} else {
+			self->timer    = 0;
+			self->showFade = true;
+			RSDK.PlaySfx(SpecialClear->sfxSpecialWarp, false, 0xFF);
+			self->state = SpecialClear_State_ExitResults;
+		}
 	}
 
 	return false;

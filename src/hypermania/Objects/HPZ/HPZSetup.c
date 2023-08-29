@@ -14,11 +14,11 @@ void HPZSetup_StageLoad(void) {
 	Zone->cameraBoundsL[0] = 2560;
 	Zone->cameraBoundsR[0] = 3200;
 
-	Entity* player = RSDK_GET_ENTITY_GEN(0);
-	if (HM_global.currentSave->transferedEmeralds != 0b01111111) {
+	if (!HPZ_results) {
+		Entity* player = RSDK_GET_ENTITY_GEN(0);
 		CREATE_ENTITY(HPZIntro, NULL, player->position.x, player->position.y);
+		SceneInfo->timeEnabled = false;
 	}
-	SceneInfo->timeEnabled = false;
 
 #if MANIA_USE_PLUS
 	if (globals->gameMode == MODE_ENCORE) {

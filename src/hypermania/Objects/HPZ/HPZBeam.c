@@ -8,7 +8,7 @@ void HPZBeam_Update(void) {
 	RSDK_THIS(HPZBeam);
 
 	if (!self->hit_timer) {
-		self->position.y += 0x100000;
+		self->position.y += TO_FIXED(16);
 		if (self->target_y <= self->position.y) {
 			self->hit_timer = 1;
 			Camera_ShakeScreen(RSDK.GetEntitySlot(0), 0, 8);
@@ -17,7 +17,7 @@ void HPZBeam_Update(void) {
 			// FUCKING STUPID
 			for (int32 i = 0; i != 7; ++i) {
 				Entity* emerald = SortedSuperEmeralds[i];
-				if (emerald && emerald->position.x == self->position.x) {
+				if (emerald && emerald->position.x == self->position.x && emerald->position.y > self->position.y - TO_FIXED(16)) {
 					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 					ext->type = i;
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);

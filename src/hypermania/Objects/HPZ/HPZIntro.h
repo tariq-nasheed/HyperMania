@@ -4,10 +4,11 @@
 #include "GameAPI/Game.h"
 
 enum HPZIntroDrawFlags {
-	HPZI_NONE        = 0x00,
-	HPZI_PLAYER_UP   = 0x01,
-	HPZI_PLAYER_LEFT = 0x02,
-	HPZI_EMERALDS    = 0x04
+	HPZI_NONE         = 0x00,
+	HPZI_PLAYER_UP    = 0x01,
+	HPZI_PLAYER_LEFT  = 0x02,
+	HPZI_PLAYER_INVIS = 0x04,
+	HPZI_EMERALDS     = 0x08
 };
 
 // Object Class
@@ -28,7 +29,7 @@ typedef struct {
 	int32 emeraldAngle[7];
 	Vector2 emeraldOffset[7];
 	Animator animatorEmeralds[7];
-	Entity* tele_beam;
+	Entity* teleBeam;
 } EntityHPZIntro;
 
 
@@ -52,7 +53,7 @@ void HPZIntro_EditorLoad();
 void HPZIntro_Serialize();
 
 // States
-void HPZIntro_State_WaitForStart();
+void HPZIntro_State_TeleportPlayer();
 void HPZIntro_State_RaiseEmeralds();
 void HPZIntro_State_EmeraldsFlyOff();
 void HPZIntro_State_ActivateSuperEmeralds();
