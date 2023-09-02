@@ -5,7 +5,11 @@ ObjectHPZSetup* HPZSetup;
 
 void HPZSetup_Update(void) {}
 void HPZSetup_LateUpdate(void) {}
-void HPZSetup_StaticUpdate(void) {}
+
+void HPZSetup_StaticUpdate(void) {
+	SceneInfo->timeEnabled = false;
+}
+
 void HPZSetup_Draw(void) {}
 void HPZSetup_Create(void *data) {}
 
@@ -17,7 +21,6 @@ void HPZSetup_StageLoad(void) {
 	if (!HPZ_results) {
 		Entity* player = RSDK_GET_ENTITY_GEN(0);
 		CREATE_ENTITY(HPZIntro, NULL, player->position.x, player->position.y);
-		SceneInfo->timeEnabled = false;
 	}
 
 #if MANIA_USE_PLUS
