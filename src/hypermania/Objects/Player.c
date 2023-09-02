@@ -31,6 +31,7 @@ void (*Player_State_Static)();
 void (*Player_State_Transform)();
 void (*Player_State_Ground)();
 bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
+bool32 (*Player_CheckCollisionPlatform)(EntityPlayer *player, void *entity, Hitbox *entityHitbox);
 
 // -----------------------------------------------------------------------------
 static bool32 (*formerCanSuperCB)(bool32);

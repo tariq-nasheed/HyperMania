@@ -463,6 +463,7 @@ extern PlayerStaticExt_t PlayerStaticExt;
 extern void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 extern void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
 extern bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
+extern bool32 (*Player_CheckCollisionPlatform)(EntityPlayer *player, void *entity, Hitbox *entityHitbox);
 extern void (*Player_State_Air)();
 extern void (*Player_State_KnuxGlideLeft)();
 extern void (*Player_State_KnuxGlideRight)();
@@ -489,6 +490,7 @@ void Player_Update_OVERLOAD();
   IMPORT_PUBLIC_FUNC(Player_GiveScore); \
   IMPORT_PUBLIC_FUNC(Player_GiveRings); \
   IMPORT_PUBLIC_FUNC(Player_CheckCollisionTouch); \
+  IMPORT_PUBLIC_FUNC(Player_CheckCollisionPlatform); \
   IMPORT_PUBLIC_FUNC(Player_State_Air); \
   IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideLeft); \
   IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideRight); \

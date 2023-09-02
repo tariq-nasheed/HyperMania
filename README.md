@@ -52,3 +52,4 @@ See [SETTINGS](SETTINGS.md)
 + Tee Lopes - Sonic Forces Theme Unofficial Remix (Hyper theme)
 + Axanery - GameConfig.bin used in legacy builds
 + KiaraGale - Underwater Hyper palettes, inactive Super Emerald sprite
++ Braven - yellow + red super emerald palettes
