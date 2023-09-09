@@ -215,7 +215,7 @@ void Player_Update_OVERLOAD() {
 			debris->timer = 17;
 			debris->velocity.x = vel - vel * (2 * (i & 1));
 			debris->velocity.y = vel - vel * (i & 2);
-			debris->drawGroup = Zone->playerDrawGroup[1];
+			debris->drawGroup = self->drawGroup;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
 			if (self->drawFX & FX_SCALE) {
 				debris->drawFX |= FX_SCALE;
@@ -445,7 +445,7 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 			debris->timer = 17;
 			debris->velocity.x = vel - vel * (2 * (i & 1));
 			debris->velocity.y = vel - vel * (i & 2);
-			debris->drawGroup = Zone->playerDrawGroup[1];
+			debris->drawGroup = self->drawGroup;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
 			if (self->drawFX & FX_SCALE) {
 				debris->drawFX |= FX_SCALE;
@@ -506,14 +506,14 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 			sparkle->timer        = 12;
 			sparkle->inkEffect    = INK_ADD;
 			sparkle->alpha        = 0x100;
-			sparkle->drawGroup    = Zone->objectDrawGroup[1];
+			sparkle->drawGroup    = self->drawGroup;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
 			sparkle = CREATE_ENTITY(Debris, NULL, -sin * 20 + self->position.x, self->position.y);
 			sparkle->state        = Debris_State_Move;
 			sparkle->timer        = 12;
 			sparkle->inkEffect    = INK_ADD;
 			sparkle->alpha        = 0x100;
-			sparkle->drawGroup    = Zone->objectDrawGroup[1];
+			sparkle->drawGroup    = self->drawGroup;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
 		}
 		++ext->glide_timer;
@@ -608,7 +608,7 @@ void Player_HyperSonicDash() {
 		debris->timer = 17;
 		debris->velocity.x = vel - vel * (2 * (i & 1));
 		debris->velocity.y = vel - vel * (i & 2);
-		debris->drawGroup = Zone->playerDrawGroup[1];
+		debris->drawGroup = self->drawGroup;
 		RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
 		if (self->drawFX & FX_SCALE) {
 			debris->drawFX |= FX_SCALE;
@@ -672,7 +672,12 @@ void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
 
 		const Vector2 old_pos = entity->position;
 		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
-		if (RSDK.CheckOnScreen(entity, NULL)) AttackableClasses[index].onHit(player, entity);
+		Vector2 checkPos = entity->position;
+		if (FarPlane && entity->drawGroup < 3) {
+			checkPos.x = FarPlane->worldPos.x + ((entity->position.x - FarPlane->originPos.x) >> 1);
+			checkPos.y = FarPlane->worldPos.y + ((entity->position.y - FarPlane->originPos.y) >> 1);
+		}
+		if (RSDK.CheckPosOnScreen(&checkPos, &entity->updateRange)) AttackableClasses[index].onHit(player, entity);
 		entity->position = old_pos;
 	}
 }

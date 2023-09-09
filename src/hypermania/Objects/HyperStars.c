@@ -35,6 +35,8 @@ void HyperStars_Update(void) {
 		self->instancePos[i].y = self->player->position.y + self->instanceVel[i].y;
 		self->instanceOsc[i] -= 0x10;
 	}
+
+	self->drawGroup = self->player->drawGroup;
 }
 
 void HyperStars_LateUpdate(void) {}
@@ -42,7 +44,20 @@ void HyperStars_StaticUpdate(void) {}
 
 void HyperStars_Draw(void) {
 	RSDK_THIS(HyperStars);
-	if (!self->player->visible) return;
+	if (!self->player || !self->player->visible) return;
+
+	if (self->player->isChibi) {
+		self->drawFX |= FX_SCALE;
+		self->scale.x = 0x100;
+		self->scale.y = 0x100;
+	} else {
+		if (self->player->drawFX & FX_SCALE)
+			self->drawFX |= FX_SCALE;
+		else
+			self->drawFX &= ~FX_SCALE;
+		self->scale.x = self->player->scale.x;
+		self->scale.y = self->player->scale.y;
+	}
 
 	for (int32 i = 0; i != HYPERSTARS_COUNT; ++i) {
 		if (self->instanceTimer[i] < 0) continue;
@@ -64,7 +79,6 @@ void HyperStars_Create(void* data) {
 		self->position.x = self->player->position.x;
 		self->position.y = self->player->position.y;
 	}
-	self->drawGroup = self->player->drawGroup;
 
 	const int32 osc_add = 0x100 / HYPERSTARS_COUNT;
 	for (int32 i = 0; i != HYPERSTARS_COUNT; ++i) {

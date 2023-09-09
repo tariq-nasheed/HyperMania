@@ -175,6 +175,7 @@ void InitModAPI(void) {
 	OBJ_RING_SETUP;
 	OBJ_UFO_SETUP_SETUP;
 	OBJ_PAUSEMENU_SETUP;
+	OBJ_FARPLANE_SETUP;
 	Camera_State_FollowXY = Mod.GetPublicFunction(NULL, "Camera_State_FollowXY");
 	Camera_State_FollowY = Mod.GetPublicFunction(NULL, "Camera_State_FollowY");
 	Camera_ShakeScreen = Mod.GetPublicFunction(NULL, "Camera_ShakeScreen");
@@ -200,7 +201,6 @@ void InitModAPI(void) {
 	HOOK_ENEMY_OBJECTS;
 
 	// zone specific stuff
-	MOD_REGISTER_OBJECT_HOOK(FarPlane);
 	MOD_REGISTER_OBJECT_HOOK(CPZSetup);
 	MOD_REGISTER_OBJECT_HOOK(HCZSetup);
 	MOD_REGISTER_OBJECT_HOOK(OOZSetup);

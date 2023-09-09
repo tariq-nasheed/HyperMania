@@ -2,6 +2,7 @@
 #include "Debris.h"
 #include "Player.h"
 #include "Zone.h"
+#include "MMZ/FarPlane.h"
 
 ObjectSuperFlicky* SuperFlicky;
 
@@ -12,6 +13,7 @@ void SuperFlicky_Update(void) {
 	 && self->blend.state != 1) {
 		RSDK.PlaySfx(SuperFlicky->sfxFlee, false, 0xFF);
 	}
+
 	bool32 all_offscreen = true;
 	for (int32 i = 0; i != SUPERFLICKY_COUNT; ++i) {
 		self->instanceOsc[i] += 2;
@@ -93,7 +95,7 @@ void SuperFlicky_Update(void) {
 			sparkle->timer      = 14 - (Zone->timer & 1);
 			sparkle->inkEffect  = INK_ADD;
 			sparkle->alpha      = 0x100;
-			sparkle->drawGroup  = Zone->objectDrawGroup[1];
+			sparkle->drawGroup  = self->drawGroup;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, Zone->timer & 1);
 		}
 		RSDK.ProcessAnimation(&self->instanceAnimator[i]);
@@ -105,6 +107,8 @@ void SuperFlicky_Update(void) {
 	if ((self->player->characterID != ID_TAILS || !Player_IsHyper(self->player)) && all_offscreen) {
 		destroyEntity(self);
 	}
+
+	self->drawGroup = self->player->drawGroup;
 }
 
 void SuperFlicky_LateUpdate(void) {
@@ -116,6 +120,18 @@ void SuperFlicky_StaticUpdate(void) {
 void SuperFlicky_Draw(void) {
 	RSDK_THIS(SuperFlicky);
 	bool32 is_hyper = self->player->characterID == ID_TAILS && Player_IsHyper(self->player);
+
+	if (self->player->isChibi) {
+		self->scale.x = 0x200;
+		self->scale.y = 0x200;
+	} else {
+		if (self->player->drawFX & FX_SCALE)
+			self->drawFX |= FX_SCALE;
+		else
+			self->drawFX &= ~FX_SCALE;
+		self->scale.x = self->player->scale.x;
+		self->scale.y = self->player->scale.y;
+	}
 
 	// handling blend variables
 	if (is_hyper && self->blend.state == 1) {
@@ -177,7 +193,6 @@ void SuperFlicky_Create(void* data) {
 	RSDK_THIS(SuperFlicky);
 	self->visible   = true;
 	self->drawFX    = FX_FLIP;
-	self->drawGroup = Zone->objectDrawGroup[1];
 	self->active    = ACTIVE_NORMAL;
 
 	if (data && ((Entity*)data)->classID == Player->classID) {
@@ -242,7 +257,15 @@ void SuperFlicky_TryFindValidTarget(int32 slot) {
 		const uint32 index = entity->classID - AttackableClasses_startidx;
 		const Vector2 old_pos = entity->position;
 		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
-		const bool32 visible = RSDK.CheckOnScreen(entity, NULL);
+		
+		bool32 visible = false;
+		if (!FarPlane || (self->drawGroup < 3 && entity->drawGroup < 3) || (self->drawGroup >= 3 && entity->drawGroup >= 3)) {
+			if (FarPlane && entity->drawGroup < 3) {
+				entity->position.y = FarPlane->worldPos.y + ((entity->position.y - FarPlane->originPos.y) >> 1);
+				entity->position.x = FarPlane->worldPos.x + ((entity->position.x - FarPlane->originPos.x) >> 1);
+			}
+			visible = RSDK.CheckOnScreen(entity, NULL);
+		}
 		entity->position = old_pos;
 		if (!visible) continue;
 
