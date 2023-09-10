@@ -36,6 +36,7 @@
 #include "Objects/HUD.h"
 #include "Objects/UISaveSlot.h"
 #include "Objects/HPZ/HPZEmerald.h"
+#include "Objects/PlaneSeeSaw.h"
 
 // new classes
 #include "Objects/SuperFlicky.h"
@@ -215,6 +216,7 @@ void InitModAPI(void) {
 	OBJ_SPECIALCLEAR_SETUP;
 	OBJ_UISAVESLOT_SETUP;
 	OBJ_HUD_SETUP;
+	OBJ_PLANESEESAW_SETUP;
 
 
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, ImageTrail_LateUpdate_OVERLOAD, NULL, ImageTrail_Draw_OVERLOAD, ImageTrail_Create_OVERLOAD, NULL, NULL, NULL, NULL);

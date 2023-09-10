@@ -42,6 +42,7 @@ uint32 sonic3_emerald_lookup[7] = { 0, 1, 3, 2, 4, 6, 5 };
 #include "UFO_Player.c"
 #include "HUD.c"
 #include "UISaveSlot.c"
+#include "PlaneSeeSaw.c"
 
 #include "SuperFlicky.c"
 #include "HyperStars.c"
