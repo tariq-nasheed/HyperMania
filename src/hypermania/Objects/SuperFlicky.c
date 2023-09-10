@@ -2,6 +2,10 @@
 #include "Debris.h"
 #include "Player.h"
 #include "Zone.h"
+
+#include "CPZ/CPZSetup.h"
+#include "OOZ/OOZSetup.h"
+#include "HCZ/HCZSetup.h"
 #include "MMZ/FarPlane.h"
 
 ObjectSuperFlicky* SuperFlicky;
@@ -109,6 +113,30 @@ void SuperFlicky_Update(void) {
 	}
 
 	self->drawGroup = self->player->drawGroup;
+
+	// handling blend variables
+	bool32 is_hyper = self->player->characterID == ID_TAILS && Player_IsHyper(self->player);
+	if (is_hyper && self->blend.state == 1) {
+		self->blend.state = 0;
+		self->blend.amount = 0;
+	}
+	if (!is_hyper && self->blend.state != 1) {
+		self->blend.state = 1;
+		self->blend.amount = 0x100;
+	}
+	if (is_hyper || self->blend.state) {
+		if (self->blend.state & 1) {
+			if (self->blend.amount <= 0) {
+				if (is_hyper) self->blend.state &= 2;
+			} else {
+				self->blend.amount -= 16;
+			}
+		} else {
+			self->blend.amount += 16;
+			if (self->blend.amount >= 256) self->blend.state |= 1;
+			if (self->blend.state == 1) self->blend.state = 2;
+		}
+	}
 }
 
 void SuperFlicky_LateUpdate(void) {
@@ -133,46 +161,34 @@ void SuperFlicky_Draw(void) {
 		self->scale.y = self->player->scale.y;
 	}
 
-	// handling blend variables
-	if (is_hyper && self->blend.state == 1) {
-		self->blend.state = 0;
-		self->blend.amount = 0;
-	}
-	if (!is_hyper && self->blend.state != 1) {
-		self->blend.state = 1;
-		self->blend.amount = 0x100;
-	}
-	if (is_hyper || self->blend.state) {
-		if (self->blend.state & 1) {
-			if (self->blend.amount <= 0) {
-				if (is_hyper) self->blend.state &= 2;
-			} else {
-				self->blend.amount -= 16;
-			}
-		} else {
-			self->blend.amount += 16;
-			if (self->blend.amount >= 256) self->blend.state |= 1;
-			if (self->blend.state == 1) self->blend.state = 2;
-		}
-	}
-
 	// loading up palettes into banks
-	color colorStore[3];
+	color colorStore[9];
+
 	if (self->blend.state || self->blend.amount) {
 		for (int32 i = 0; i != 3; ++i) {
+			if (HCZSetup) colorStore[3 + i] = RSDK.GetPaletteEntry(1, i + 2);
+			if (CPZSetup) colorStore[6 + i] = RSDK.GetPaletteEntry(2, i + 2);
 			colorStore[i] = RSDK.GetPaletteEntry(0, i + 2);
+		}
+
+		if (HCZSetup) {
+			for (int32 i = 0; i != 3; ++i) {
+				RSDK.SetPaletteEntry(6, i + 2, Player->superPalette_Sonic_HCZ[i * 2 + 6]);
+				if (self->blend.state & 2) RSDK.SetPaletteEntry(7, i + 2, Player->superPalette_Sonic_HCZ[i * 2 + 12]);
+			}
+			SuperFlicky_BlendSuperPalette(1);
+		} else if (CPZSetup) {
+			for (int32 i = 0; i != 3; ++i) {
+				RSDK.SetPaletteEntry(6, i + 2, Player->superPalette_Sonic_CPZ[i * 2 + 6]);
+				if (self->blend.state & 2) RSDK.SetPaletteEntry(7, i + 2, Player->superPalette_Sonic_CPZ[i * 2 + 12]);
+			}
+			SuperFlicky_BlendSuperPalette(2);
+		}
+		for (int32 i = 0; i != 3; ++i) {
 			RSDK.SetPaletteEntry(6, i + 2, Player->superPalette_Sonic[i * 2 + 6]);
 			if (self->blend.state & 2) RSDK.SetPaletteEntry(7, i + 2, Player->superPalette_Sonic[i * 2 + 12]);
 		}
-	}
-
-	// fading palettes
-	if (self->blend.state || self->blend.amount) {
-		if (self->blend.state & 2) {
-			RSDK.SetLimitedFade(0, 6, 7, self->blend.amount, 2, 4);
-		} else {
-			RSDK.SetLimitedFade(0, 0, 6, self->blend.amount, 2, 4);
-		}
+		SuperFlicky_BlendSuperPalette(0);
 	}
 
 	// drawing
@@ -184,9 +200,12 @@ void SuperFlicky_Draw(void) {
 	// reverting to original palette
 	if (self->blend.state || self->blend.amount) {
 		for (int32 i = 0; i != 3; ++i) {
+			if (HCZSetup) RSDK.SetPaletteEntry(1, i + 2, colorStore[i + 3]);
+			if (CPZSetup) RSDK.SetPaletteEntry(2, i + 2, colorStore[i + 6]);
 			RSDK.SetPaletteEntry(0, i + 2, colorStore[i]);
 		}
 	}
+	
 }
 
 void SuperFlicky_Create(void* data) {
@@ -282,5 +301,14 @@ void SuperFlicky_TryFindValidTarget(int32 slot) {
 
 		self->instanceTarget[slot] = entity;
 		break;
+	}
+}
+
+void SuperFlicky_BlendSuperPalette(int32 bankID) {
+	RSDK_THIS(SuperFlicky);
+	if (self->blend.state & 2) {
+		RSDK.SetLimitedFade(bankID, 6, 7, self->blend.amount, 2, 4);
+	} else {
+		RSDK.SetLimitedFade(bankID, bankID, 6, self->blend.amount, 2, 4);
 	}
 }

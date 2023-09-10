@@ -45,7 +45,11 @@ target_include_directories(hypermania PRIVATE
 	GameAPI/C/
 )
 
-set_target_properties(hypermania PROPERTIES OUTPUT_NAME lib${MOD_NAME})
+if(ANDROID)
+	set_target_properties(hypermania PROPERTIES OUTPUT_NAME lib${MOD_NAME})
+else()
+	set_target_properties(hypermania PROPERTIES OUTPUT_NAME ${MOD_NAME})
+endif()
 set_target_properties(hypermania PROPERTIES PREFIX "")
 if(WINDOWS_BUILD)
 	set_target_properties(hypermania PROPERTIES SUFFIX ".dll")

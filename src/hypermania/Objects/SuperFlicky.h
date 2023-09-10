@@ -46,6 +46,7 @@ void SuperFlicky_Serialize(void);
 // Extra Entity Functions
 void SuperFlicky_HandleAttack(int32 slot);
 void SuperFlicky_TryFindValidTarget(int32 slot);
+void SuperFlicky_BlendSuperPalette(int32 bankID);
 
 // Reserved Slot
 extern int16 SuperFlickySlot;
