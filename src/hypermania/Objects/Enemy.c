@@ -84,6 +84,9 @@
 #include "Boilerplate/GHZ/Motobug.c"
 #include "Boilerplate/GHZ/BuzzBomber.c"
 
+void (*APICallback_TrackEnemyDefeat)(uint8 zoneID, uint8 actID, uint8 playerID, int32 x, int32 y);
+void (*TimeAttackData_TrackEnemyDefeat)(StatInfo* stat, uint8 zoneID, uint8 actID, uint8 characterID, bool32 encore, int32 x, int32 y);
+
 attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
 uint32       AttackableClasses_size;
 int32        AttackableClasses_startidx;
@@ -135,12 +138,12 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnima
 		}
 
 #if MANIA_USE_PLUS
-		//StatInfo info;
-		/*TimeAttackData_TrackEnemyDefeat(&info, Zone_GetZoneID(), Zone->actID, characterID, SceneInfo->filter == (FILTER_BOTH | FILTER_ENCORE),
-		                                FROM_FIXED(badnik->position.x), FROM_FIXED(badnik->position.y)); // TODO import*/
-		//API.TryTrackStat(&info);
+		StatInfo info;
+		TimeAttackData_TrackEnemyDefeat(&info, Zone_GetZoneID(), Zone->actID, characterID, SceneInfo->filter == (FILTER_BOTH | FILTER_ENCORE),
+		                                FROM_FIXED(badnik->position.x), FROM_FIXED(badnik->position.y));
+		API.TryTrackStat(&info);
 #else
-		//APICallback_TrackEnemyDefeat(Zone_GetZoneID(), Zone->actID, characterID, FROM_FIXED(badnik->position.x), FROM_FIXED(badnik->position.y)); // TODO import
+		APICallback_TrackEnemyDefeat(Zone_GetZoneID(), Zone->actID, characterID, FROM_FIXED(badnik->position.x), FROM_FIXED(badnik->position.y));
 #endif
 	}
 
@@ -184,12 +187,12 @@ void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32
 		}
 
 #if MANIA_USE_PLUS
-		//StatInfo info;
-		/*TimeAttackData_TrackEnemyDefeat(&info, Zone_GetZoneID(), Zone->actID, characterID, SceneInfo->filter == (FILTER_BOTH | FILTER_ENCORE),
-		                                FROM_FIXED(position.x), FROM_FIXED(position.y)); // TODO import*/
-		//API.TryTrackStat(&info);
+		StatInfo info;
+		TimeAttackData_TrackEnemyDefeat(&info, Zone_GetZoneID(), Zone->actID, characterID, SceneInfo->filter == (FILTER_BOTH | FILTER_ENCORE),
+		                                FROM_FIXED(position.x), FROM_FIXED(position.y));
+		API.TryTrackStat(&info);
 #else
-		//APICallback_TrackEnemyDefeat(Zone_GetZoneID(), Zone->actID, characterID, FROM_FIXED(position.x), FROM_FIXED(position.y)); // TODO import
+		APICallback_TrackEnemyDefeat(Zone_GetZoneID(), Zone->actID, characterID, FROM_FIXED(position.x), FROM_FIXED(position.y));
 #endif
 	}
 

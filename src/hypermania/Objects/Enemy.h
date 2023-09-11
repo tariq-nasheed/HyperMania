@@ -84,6 +84,9 @@
 #include "Boilerplate/GHZ/Motobug.h"
 #include "Boilerplate/GHZ/BuzzBomber.h"
 
+extern void (*APICallback_TrackEnemyDefeat)(uint8 zoneID, uint8 actID, uint8 playerID, int32 x, int32 y);
+extern void (*TimeAttackData_TrackEnemyDefeat)(StatInfo* stat, uint8 zoneID, uint8 actID, uint8 characterID, bool32 encore, int32 x, int32 y);
+
 extern int32 AttackableClasses_startidx;
 bool32 Generic_CheckVulnerable(Entity* self);
 Hitbox* Generic_GetHitbox(Entity* self);
@@ -100,6 +103,9 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* entity, bool32 spawnAnima
 #define REGISTER_ENEMY(name) MOD_REGISTER_OBJ_OVERLOAD(name, NULL, NULL, NULL, NULL, NULL, name##_EnemyInfoHook, NULL, NULL, NULL)
 
 #define HOOK_ENEMY_OBJECTS \
+  IMPORT_PUBLIC_FUNC(APICallback_TrackEnemyDefeat); \
+  IMPORT_PUBLIC_FUNC(TimeAttackData_TrackEnemyDefeat); \
+  \
   OBJ_PHANTOMMYSTIC_SETUP; \
   OBJ_PHANTOMSHINOBI_SETUP; \
   OBJ_PHANTOMEGG_SETUP; \
