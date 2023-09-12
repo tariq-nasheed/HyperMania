@@ -36,7 +36,6 @@ or you can use `./build.sh` to automate this process if you don't mind running C
 
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary
-- `WINDOWS_BUILD` - Set to enable cross-compiling to Windows on Unix systems
 - `LEGACY` - Set to use version 1 of the mod loader
 
 # Settings

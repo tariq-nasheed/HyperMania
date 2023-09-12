@@ -20,6 +20,9 @@
 
 // -----------------------------------------------------------------------------
 ObjectPlayer* Player;
+void (*Player_Gravity_True)();
+void (*Player_HandleAirMovement)();
+void (*Player_HandleAirFriction)();
 void (*Player_State_Air)(void);
 void (*Player_State_KnuxGlideLeft)(void);
 void (*Player_State_KnuxGlideRight)(void);
@@ -27,6 +30,7 @@ void (*Player_State_KnuxWallClimb)(void);
 void (*Player_Input_P2_AI)();
 void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
+void (*Player_SpawnMightyHammerdropDust)(int32 speed, Hitbox *hitbox);
 void (*Player_State_Static)();
 void (*Player_State_Transform)();
 void (*Player_State_Ground)();
@@ -257,7 +261,7 @@ void Player_Update_OVERLOAD() {
 				}
 			} else {
 				ext->blend.amount += (ext->blend.state < 0) ? 8
-					                                    : 16 + 24 * (ext->blend.state & 1);
+				                                            : 16 + 24 * (ext->blend.state & 1);
 			}
 
 			// paletteSlot and bankID are usually the same value but theyre seperate arguments just in case
@@ -383,52 +387,87 @@ bool32 Player_JumpAbility_Mighty_HOOK(bool32 skippedState) {
 bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 	if (skippedState) return true;
 	RSDK_THIS(Player);
-	if (!Player_IsHyper(self)) return false;
-	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 
-	if (self->jumpAbilityState == 3) {
-		if (ext->can_dash) {
-			ext->can_dash = false;
-			Camera_ShakeScreen(RSDK.GetEntitySlot(self), 4, 12);
-			RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
-			int32 dropForce = self->gravityStrength + (self->underwater == 1 ? 0x10000 : 0x20000);
-			int32 groundVel = self->groundVel - (self->groundVel >> 2);
+	if (self->onGround) {
+		self->controlLock = 0;
+		self->onGround    = false;
 
-			/*self->velocity.x = ((groundVel * RSDK.Cos256(self->angle) + dropForce * RSDK.Sin256(self->angle)) >> 8);// * 3.5;
-			self->velocity.y = ((groundVel * RSDK.Sin256(self->angle) - dropForce * RSDK.Cos256(self->angle)) >> 8);// * 3.5;*/
-			self->velocity.x *= 3;
-			self->velocity.y *= 3;
-			foreach_all(Ring, ring) {
-				if (((ring->position.y + TO_FIXED(8) > self->position.y - TO_FIXED(512) && ring->position.x > self->position.x - TO_FIXED(256) && ring->position.x < self->position.x + TO_FIXED(256))
-				    || RSDK.CheckObjectCollisionTouchCircle(self, TO_FIXED(256), ring, TO_FIXED(16)))
-				&& !ring->storedPlayer && ring->state != Ring_State_Sparkle && ring->state != Ring_State_Lost) {
-					ring->state = Ring_State_Lost;
-					ring->timer = 0x3F + 1;
-					ring->velocity.x = RSDK.Rand(-0x20000, 0x20000);// + CLAMP(self->position.x - ring->position.x, -0x20000, 0x20000);
-					ring->velocity.y = RSDK.Rand(-0x5000, 0x50000);
-					ring->animator.speed = 0x200;
-					ring->active = ACTIVE_NORMAL;
+		PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
+		int32 dropForce = self->gravityStrength + (self->underwater == 1 ? 0x10000 : 0x20000);
+		if (Player_IsHyper(self)) {
+			if (ext->can_dash) {
+				dropForce *= 3;
+				RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
+
+				Player_ClearEnemiesOnScreen(self);
+				if (ModConfig.screenFlashFactor > 0.0) {
+					EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
+					if (ModConfig.screenFlashFactor < 1.3333) {
+						fade->timer = 0x180 * ModConfig.screenFlashFactor;
+						fade->state = FXFade_State_FadeIn;
+					} else {
+						fade->speedIn = 0x180 * ModConfig.screenFlashFactor;
+						fade->state = FXFade_State_FadeOut;
+					}
+					fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
 				}
+			} else {
+				dropForce *= 2;
 			}
-			Player_ClearEnemiesOnScreen(self);
-			if (ModConfig.screenFlashFactor > 0.0) {
-				EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-				if (ModConfig.screenFlashFactor < 1.3333) {
-					fade->timer = 0x180 * ModConfig.screenFlashFactor;
-					fade->state = FXFade_State_FadeIn;
-				} else {
-					fade->speedIn = 0x180 * ModConfig.screenFlashFactor;
-					fade->state = FXFade_State_FadeOut;
-				}
-				fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
-			}
-		} else {
-			self->velocity.x *= 2;
-			self->velocity.y *= 2;
 		}
-		self->jumpAbilityState = 1;
+		int32 groundVel = self->groundVel - (self->groundVel >> 2);
+
+		self->velocity.x = (groundVel * RSDK.Cos256(self->angle) + dropForce * RSDK.Sin256(self->angle)) >> 8;
+		self->velocity.y = (groundVel * RSDK.Sin256(self->angle) - dropForce * RSDK.Cos256(self->angle)) >> 8;
+
+		Player_Gravity_True();
+
+		RSDK.SetSpriteAnimation(self->aniFrames, ANI_JUMP, &self->animator, false, 0);
+
+		self->animator.speed = MIN((abs(self->groundVel) >> 12) + 0x30, 0xF0);
+
+		RSDK.StopSfx(Player->sfxMightyDrill);
+		RSDK.PlaySfx(Player->sfxMightyLand, false, 0xFF);
+		if (Player_IsHyper(self) && ext->can_dash) {
+			Camera_ShakeScreen(RSDK.GetEntitySlot(self), 4, 12);
+		} else {
+			Camera_ShakeScreen(RSDK.GetEntitySlot(self), 0, 4);
+		}
+		ext->can_dash = false;
+
+		Hitbox *hitbox = RSDK.GetHitbox(&self->animator, 0);
+		Player_SpawnMightyHammerdropDust(0x10000, hitbox);
+		Player_SpawnMightyHammerdropDust(-0x10000, hitbox);
+		Player_SpawnMightyHammerdropDust(0x18000, hitbox);
+		Player_SpawnMightyHammerdropDust(-0x18000, hitbox);
+		Player_SpawnMightyHammerdropDust(0x20000, hitbox);
+		Player_SpawnMightyHammerdropDust(-0x20000, hitbox);
+
+		self->angle            = 0;
+		self->collisionMode    = CMODE_FLOOR;
+		self->applyJumpCap     = false;
+		self->jumpAbilityState = (Player_IsHyper(self)) ? 1 : 3;
+
+		if (self->invincibleTimer > 0) {
+			if (self->invincibleTimer < 8)
+				self->invincibleTimer = 8;
+			self->state = Player_State_Air;
+		}
+		else {
+			self->invincibleTimer = -8;
+			self->state           = Player_State_Air;
+		}
 	}
-	return false;
+	else {
+		Player_HandleAirFriction();
+		Player_HandleAirMovement();
+
+		if (self->velocity.y <= 0x10000) {
+			self->state = Player_State_Air;
+			RSDK.SetSpriteAnimation(self->aniFrames, ANI_JUMP, &self->animator, false, 0);
+		}
+	}
+	return true;
 }
 
 bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {

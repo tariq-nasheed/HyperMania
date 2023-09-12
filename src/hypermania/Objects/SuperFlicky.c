@@ -150,8 +150,8 @@ void SuperFlicky_Draw(void) {
 	bool32 is_hyper = self->player->characterID == ID_TAILS && Player_IsHyper(self->player);
 
 	if (self->player->isChibi) {
-		self->scale.x = 0x200;
-		self->scale.y = 0x200;
+		self->scale.x = 0x100;
+		self->scale.y = 0x100;
 	} else {
 		if (self->player->drawFX & FX_SCALE)
 			self->drawFX |= FX_SCALE;

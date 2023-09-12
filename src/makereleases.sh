@@ -19,7 +19,7 @@ tar czf src/$modname-linux.tar.gz $filelist -C src/release-files modSettings.ini
 cd src
 # windows
 cd build
-cmake -DWINDOWS_BUILD=true ..
+cmake -DCMAKE_SYSTEM_NAME=Windows ..
 make
 cd ../..
 zip -r src/$modname-windows.zip $filelist

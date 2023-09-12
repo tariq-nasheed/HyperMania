@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.7)
+set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
 project(hypermania)
 
-if(WINDOWS_BUILD)
+if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	message(STATUS "Cross compiling: Unix->Windows")
 	set(CMAKE_C_COMPILER  x86_64-w64-mingw32-gcc)
 	set(CMAKE_CXX_COMPILER  x86_64-w64-mingw32-g++)
@@ -46,12 +47,12 @@ target_include_directories(hypermania PRIVATE
 )
 
 if(ANDROID)
-	set_target_properties(hypermania PROPERTIES OUTPUT_NAME lib${MOD_NAME})
+	set_target_properties(hypermania PROPERTIES PREFIX "lib")
 else()
-	set_target_properties(hypermania PROPERTIES OUTPUT_NAME ${MOD_NAME})
+	set_target_properties(hypermania PROPERTIES PREFIX "")
 endif()
-set_target_properties(hypermania PROPERTIES PREFIX "")
-if(WINDOWS_BUILD)
+set_target_properties(hypermania PROPERTIES OUTPUT_NAME ${MOD_NAME})
+if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Windows")
 	set_target_properties(hypermania PROPERTIES SUFFIX ".dll")
 endif()
 

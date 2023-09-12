@@ -109,9 +109,14 @@ void* AllocExtMem(int32 owner_id, uint32 bytes) {
 	}
 
 	int32 id = 0;
-	while (ExtMemoryRevIndex[id] != EXTMEM_FREE_ID) ++id;
-	ExtMemoryRevIndex[id] = owner_id;
-	ExtMemoryIndex[owner_id] = id;
+	if (ExtMemoryIndex[owner_id] == EXTMEM_FREE_ID) {
+		while (ExtMemoryRevIndex[id] != EXTMEM_FREE_ID) ++id;
+		ExtMemoryRevIndex[id] = owner_id;
+		ExtMemoryIndex[owner_id] = id;
+		++ExtMemory_size;
+	} else {
+		id = ExtMemoryIndex[owner_id];
+	}
 
 	if (!ExtMemory[id].mem) {
 		ExtMemory[id].mem = malloc(bytes);
@@ -119,7 +124,6 @@ void* AllocExtMem(int32 owner_id, uint32 bytes) {
 		ExtMemory[id].mem = realloc(ExtMemory[id].mem, bytes);
 	}
 	ExtMemory[id].size = bytes;
-	++ExtMemory_size;
 	return ExtMemory[id].mem;
 }
 

@@ -462,8 +462,12 @@ extern PlayerStaticExt_t PlayerStaticExt;
 // =============================================================================
 extern void (*Player_GiveScore)(EntityPlayer *player, int32 score);
 extern void (*Player_GiveRings)(EntityPlayer *player, int32 amount, bool32 playSfx);
+extern void (*Player_SpawnMightyHammerdropDust)(int32 speed, Hitbox *hitbox);
 extern bool32 (*Player_CheckCollisionTouch)(EntityPlayer* player, void* e, Hitbox* entityHitbox);
 extern bool32 (*Player_CheckCollisionPlatform)(EntityPlayer *player, void *entity, Hitbox *entityHitbox);
+extern void (*Player_Gravity_True)();
+extern void (*Player_HandleAirMovement)();
+extern void (*Player_HandleAirFriction)();
 extern void (*Player_State_Air)();
 extern void (*Player_State_KnuxGlideLeft)();
 extern void (*Player_State_KnuxGlideRight)();
@@ -489,8 +493,12 @@ void Player_Update_OVERLOAD();
 #define OBJ_PLAYER_SETUP \
   IMPORT_PUBLIC_FUNC(Player_GiveScore); \
   IMPORT_PUBLIC_FUNC(Player_GiveRings); \
+  IMPORT_PUBLIC_FUNC(Player_SpawnMightyHammerdropDust); \
   IMPORT_PUBLIC_FUNC(Player_CheckCollisionTouch); \
   IMPORT_PUBLIC_FUNC(Player_CheckCollisionPlatform); \
+  IMPORT_PUBLIC_FUNC(Player_Gravity_True); \
+  IMPORT_PUBLIC_FUNC(Player_HandleAirMovement); \
+  IMPORT_PUBLIC_FUNC(Player_HandleAirFriction); \
   IMPORT_PUBLIC_FUNC(Player_State_Air); \
   IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideLeft); \
   IMPORT_PUBLIC_FUNC(Player_State_KnuxGlideRight); \
@@ -502,7 +510,7 @@ void Player_Update_OVERLOAD();
   HOOK_IMPORTED_STATE(Player_State_Ground, 1); \
   HOOK_STATE(Player_JumpAbility_Sonic, 1); \
   HOOK_STATE(Player_JumpAbility_Mighty, 0); \
-  HOOK_STATE(Player_State_MightyHammerDrop, 0); \
+  HOOK_STATE(Player_State_MightyHammerDrop, 1); \
   HOOK_STATE(Player_State_RayGlide, 1); \
   MOD_REGISTER_OBJ_OVERLOAD(Player, Player_Update_OVERLOAD, NULL, NULL, NULL, Player_Create_OVERLOAD, Player_StageLoad_OVERLOAD, NULL, NULL, NULL)
 
