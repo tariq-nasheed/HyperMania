@@ -79,17 +79,21 @@ void SuperFlicky_Update(void) {
 		self->position.y = self->instancePos[i].y;
 
 		if (self->instanceTarget[i]) {
-			const Vector2 old_pos = self->instanceTarget[i]->position;
-			const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
-			if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
-
-			if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], AttackableClasses[index].getHitbox(self->instanceTarget[i]))) {
-				AttackableClasses[index].onHit(self->player, self->instanceTarget[i]);
-				self->instanceTarget[i]->position = old_pos;
+			if (self->instanceTarget[i]->classID == TYPE_BLANK) {
 				self->instanceTarget[i] = NULL;
-				self->instanceCooldown[i] = 120;
+			} else {
+				const Vector2 old_pos = self->instanceTarget[i]->position;
+				const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
+				if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
+
+				if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], AttackableClasses[index].getHitbox(self->instanceTarget[i]))) {
+					AttackableClasses[index].onHit(self->player, self->instanceTarget[i]);
+					self->instanceTarget[i]->position = old_pos;
+					self->instanceTarget[i] = NULL;
+					self->instanceCooldown[i] = 120;
+				}
+				if (self->instanceTarget[i]) self->instanceTarget[i]->position = old_pos;
 			}
-			if (self->instanceTarget[i]) self->instanceTarget[i]->position = old_pos;
 		}
 
 		if (self->player->characterID == ID_TAILS && Player_IsHyper(self->player) && !(Zone->timer & 7)) {

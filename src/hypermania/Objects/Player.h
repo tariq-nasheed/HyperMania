@@ -522,17 +522,21 @@ int32 Player_GetIndexFromID(int32 ID);
 
 // shhhhhhhhhhhhh --------------------------------------------------------------
 #define BreakBadnik(player, e) Generic_BadnikBreak(player, e, true)
-#define MAX_ATTACKABLE_CLASSES 32
+#define MAX_ATTACKABLE_CLASSES 48
 #define ENTATTACK_INVALID -1
 #define ADD_ATTACKABLE_CLASS(id, vulnerable_func, hitbox_func, hit_func, pos_func, flags_) { \
   if (AttackableClasses_startidx == ENTATTACK_INVALID) AttackableClasses_startidx = id; \
   const uint32 index = id - AttackableClasses_startidx; \
-  AttackableClasses[index].checkVulnerable = vulnerable_func; \
-  AttackableClasses[index].getHitbox = hitbox_func; \
-  AttackableClasses[index].onHit = hit_func; \
-  AttackableClasses[index].adjustPos = pos_func; \
-  AttackableClasses[index].flags = flags_; \
-  ++AttackableClasses_size; \
+  if (index >= MAX_ATTACKABLE_CLASSES) { \
+      HYPERMANIA_PRINT(PRINT_ERROR, "Attackable class %d has a index (%d) that exceeds max difference from epoch", id, index); \
+  } else { \
+      AttackableClasses[index].checkVulnerable = vulnerable_func; \
+      AttackableClasses[index].getHitbox = hitbox_func; \
+      AttackableClasses[index].onHit = hit_func; \
+      AttackableClasses[index].adjustPos = pos_func; \
+      AttackableClasses[index].flags = flags_; \
+      ++AttackableClasses_size; \
+  } \
 }
 
 enum AttackableFlags {
