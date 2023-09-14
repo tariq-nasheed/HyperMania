@@ -143,6 +143,7 @@ void Player_StageLoad_OVERLOAD() {
 	PlayerPaletteDefs[4].colors[5] = &Player->superPalette_Ray_CPZ[6];
 #endif
 
+	PlayerStaticExt.shockwaveFrames = RSDK.LoadSpriteAnimation("Global/Shockwave.bin", SCOPE_STAGE);
 	PlayerStaticExt.sfxEarthquake = RSDK.GetSfx("Stage/Impact5.wav");
 	PlayerStaticExt.sfxEarthquake2 = RSDK.GetSfx("Stage/Impact2.wav");
 	PlayerStaticExt.sfxJetGlide = RSDK.GetSfx("Global/JetGlide.wav");
@@ -307,7 +308,31 @@ void Player_Update_OVERLOAD() {
 		|| ((void*)self->state == (void*)Player_State_KnuxGlideRight && self->right)) {
 			// gliding momentum retention
 			if (prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
-				//self->velocity.x = 0x80000 * (self->direction ? -1 : 1);
+				EntityCamera* camera = self->camera;
+				if (camera && !Zone->autoScrollSpeed) {
+					self->scrollDelay = 8;
+					camera->state     = Camera_State_FollowY;
+				}
+
+				EntityDebris* shockwave = CREATE_ENTITY(Debris, Debris_State_Move, self->position.x, self->position.y);
+				shockwave->timer      = 11;
+				shockwave->inkEffect  = INK_ADD;
+				shockwave->alpha      = 0x100;
+				shockwave->drawGroup  = self->drawGroup + 1;
+				shockwave->drawFX    |= FX_FLIP;
+				shockwave->direction  = self->direction;
+				RSDK.SetSpriteAnimation(PlayerStaticExt.shockwaveFrames, 0, &shockwave->animator, true, 0);
+				// its doing that thing where it corrupts when it scales and i have no idea what's causing it and it makes me want to scream at the top of my fucking lungs until my voice box bursts
+				/*if (self->drawFX & FX_SCALE) {
+					shockwave->drawFX |= FX_SCALE;
+					shockwave->scale.x = self->scale.x >> 1;
+					shockwave->scale.y = self->scale.y >> 1;
+				}*/
+
+				RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 0.65);
+				RSDK.SetChannelAttributes(RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake2, false, 0xFF), 1.0, 0.0, 1.6);
+
+				self->velocity.x = 0x80000 * (self->direction ? -1 : 1);
 				if (self->velocity.x > 0 && ext->prev_xvel > self->velocity.x) self->velocity.x = ext->prev_xvel;
 				if (self->velocity.x < 0 && ext->prev_xvel < self->velocity.x) self->velocity.x = ext->prev_xvel;
 				self->abilitySpeed = self->velocity.x / RSDK.Cos512(self->timer) << 9;
@@ -480,22 +505,8 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 	if (ext->can_dash && Player->raySwoopTimer) {
 		ext->can_dash = false;
 
-		/*const int32 vel = TO_FIXED(4);
-		for (int32 i = 0; i != 4; ++i) {
-			EntityDebris* debris = CREATE_ENTITY(Debris, Debris_State_Move, self->position.x, self->position.y);
-			debris->timer = 17;
-			debris->velocity.x = vel - vel * (2 * (i & 1));
-			debris->velocity.y = vel - vel * (i & 2);
-			debris->drawGroup = self->drawGroup;
-			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 0, &debris->animator, true, 3);
-			if (self->drawFX & FX_SCALE) {
-				debris->drawFX |= FX_SCALE;
-				debris->scale.x = self->scale.x;
-				debris->scale.y = self->scale.y;
-			}
-		}*/
 		EntityJetGlideEffect* effect = CREATE_ENTITY(JetGlideEffect, NULL, self->position.x, self->position.y);
-		effect->drawGroup = self->drawGroup;
+		effect->drawGroup = self->drawGroup + 1;
 
 		Hitbox hitbox;
 		hitbox.left   = -100;
@@ -545,15 +556,13 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 
 		if (!(Zone->timer % 2)) {
 			int32 sin = RSDK.Sin256(Zone->timer * 3) * 0xFF;
-			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, sin * 20 + self->position.x, self->position.y);
-			sparkle->state        = Debris_State_Move;
+			EntityDebris* sparkle = CREATE_ENTITY(Debris, Debris_State_Move, sin * 20 + self->position.x, self->position.y);
 			sparkle->timer        = 12;
 			sparkle->inkEffect    = INK_ADD;
 			sparkle->alpha        = 0x100;
 			sparkle->drawGroup    = self->drawGroup;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, 0);
-			sparkle = CREATE_ENTITY(Debris, NULL, -sin * 20 + self->position.x, self->position.y);
-			sparkle->state        = Debris_State_Move;
+			sparkle = CREATE_ENTITY(Debris, Debris_State_Move, -sin * 20 + self->position.x, self->position.y);
 			sparkle->timer        = 12;
 			sparkle->inkEffect    = INK_ADD;
 			sparkle->alpha        = 0x100;

@@ -440,6 +440,7 @@ typedef struct {
 } hyperpal_t;
 
 typedef struct {
+	uint16 shockwaveFrames;
 	int32 sfxEarthquake;
 	int32 sfxEarthquake2;
 	int32 sfxJetGlide;

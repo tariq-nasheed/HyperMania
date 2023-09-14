@@ -39,8 +39,6 @@ void JetGlideEffect_Draw() {
 
 	rndIndex = self->rndOffset;
 	if (self->timer <= 16) {
-		RSDK.SetSpriteAnimation(JetGlideEffect->aniFrames, 4, &self->animator, true, 0);
-		self->animator.frameID = 0;
 		for (int32 i = 0; i != self->dustCount; ++i) {
 			Vector2 pos = self->position;
 			int32 vel = self->rndTable[rndIndex] * 8;
@@ -60,7 +58,7 @@ void JetGlideEffect_Draw() {
 			}
 			pos.y += offset;
 			rndIndex = (rndIndex + 1) % 256;
-			RSDK.DrawSprite(&self->animator, &pos, false);
+			RSDK.DrawLine(pos.x, pos.y, pos.x + 1, pos.y + 1, 0xFFFFFFFF, 0xFF, INK_NONE, false);
 		}
 	}
 }

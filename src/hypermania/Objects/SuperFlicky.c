@@ -103,7 +103,7 @@ void SuperFlicky_Update(void) {
 			sparkle->timer      = 14 - (Zone->timer & 1);
 			sparkle->inkEffect  = INK_ADD;
 			sparkle->alpha      = 0x100;
-			sparkle->drawGroup  = self->drawGroup;
+			sparkle->drawGroup  = self->drawGroup + 1;
 			RSDK.SetSpriteAnimation(HyperStars->aniFrames, 1, &sparkle->animator, true, Zone->timer & 1);
 		}
 		RSDK.ProcessAnimation(&self->instanceAnimator[i]);
