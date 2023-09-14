@@ -4,9 +4,11 @@
 		<object name="FXFade" />
 		<object name="HyperStars" />
 		<object name="SuperFlicky" />
+		<object name="JetGlideEffect" />
 	</objects>
 	<sounds>
 		<soundfx path="Global/FlickyFlee.wav" />
+		<soundfx path="Global/JetGlide.wav" />
 		<soundfx path="Stage/Impact2.wav" />
 		<soundfx path="Stage/Impact5.wav" />
 	</sounds>

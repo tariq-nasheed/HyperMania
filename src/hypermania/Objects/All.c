@@ -46,6 +46,7 @@ uint32 sonic3_emerald_lookup[7] = { 0, 1, 3, 2, 4, 6, 5 };
 
 #include "SuperFlicky.c"
 #include "HyperStars.c"
+#include "JetGlideEffect.c"
 
 struct {
 	uint16 aniFrames;

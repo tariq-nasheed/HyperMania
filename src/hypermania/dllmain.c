@@ -41,6 +41,7 @@
 // new classes
 #include "Objects/SuperFlicky.h"
 #include "Objects/HyperStars.h"
+#include "Objects/JetGlideEffect.h"
 #include "Objects/HPZ/HPZSetup.h"
 #include "Objects/HPZ/HPZIntro.h"
 #include "Objects/HPZ/HPZBeam.h"
@@ -225,6 +226,7 @@ void InitModAPI(void) {
 	// New --------------------------------------------------------------------
 	RSDK_REGISTER_OBJECT(SuperFlicky);
 	RSDK_REGISTER_OBJECT(HyperStars);
+	RSDK_REGISTER_OBJECT(JetGlideEffect);
 	RSDK_REGISTER_OBJECT(HPZSetup);
 	RSDK_REGISTER_OBJECT(HPZIntro);
 	RSDK_REGISTER_OBJECT(HPZBeam);

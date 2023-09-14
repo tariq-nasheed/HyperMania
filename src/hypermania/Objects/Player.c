@@ -9,6 +9,7 @@
 #include "ImageTrail.h"
 #include "SuperFlicky.h"
 #include "HyperStars.h"
+#include "JetGlideEffect.h"
 #include "Zone.h"
 
 #include "CPZ/CPZSetup.h"
@@ -144,6 +145,7 @@ void Player_StageLoad_OVERLOAD() {
 
 	PlayerStaticExt.sfxEarthquake = RSDK.GetSfx("Stage/Impact5.wav");
 	PlayerStaticExt.sfxEarthquake2 = RSDK.GetSfx("Stage/Impact2.wav");
+	PlayerStaticExt.sfxJetGlide = RSDK.GetSfx("Global/JetGlide.wav");
 }
 
 void Player_Create_OVERLOAD(void* data) {
@@ -478,7 +480,7 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 	if (ext->can_dash && Player->raySwoopTimer) {
 		ext->can_dash = false;
 
-		const int32 vel = TO_FIXED(4);
+		/*const int32 vel = TO_FIXED(4);
 		for (int32 i = 0; i != 4; ++i) {
 			EntityDebris* debris = CREATE_ENTITY(Debris, Debris_State_Move, self->position.x, self->position.y);
 			debris->timer = 17;
@@ -491,13 +493,15 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 				debris->scale.x = self->scale.x;
 				debris->scale.y = self->scale.y;
 			}
-		}
+		}*/
+		EntityJetGlideEffect* effect = CREATE_ENTITY(JetGlideEffect, NULL, self->position.x, self->position.y);
+		effect->drawGroup = self->drawGroup;
 
 		Hitbox hitbox;
-		hitbox.left   = -80;
-		hitbox.top    = -80;
-		hitbox.right  = 80;
-		hitbox.bottom = 80;
+		hitbox.left   = -100;
+		hitbox.top    = -100;
+		hitbox.right  = 100;
+		hitbox.bottom = 100;
 
 		foreach_all(Ring, ring) {
 			if (ring->state != Ring_State_Sparkle
@@ -519,6 +523,7 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 		}
 		ext->glide_timer = 0;
 
+		RSDK.SetChannelAttributes(RSDK.PlaySfx(PlayerStaticExt.sfxJetGlide, false, 0xFF), 1.5, 0.0, 1.0);
 		RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
 		RSDK.SetChannelAttributes(RSDK.PlaySfx(ItemBox->sfxHyperRing, false, 0xFF), 0.4, 0.0, 1.0);
 	}

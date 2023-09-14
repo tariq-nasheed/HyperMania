@@ -442,6 +442,7 @@ typedef struct {
 typedef struct {
 	int32 sfxEarthquake;
 	int32 sfxEarthquake2;
+	int32 sfxJetGlide;
 } PlayerStaticExt_t;
 
 typedef struct {
