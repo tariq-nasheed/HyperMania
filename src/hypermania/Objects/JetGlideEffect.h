@@ -21,7 +21,7 @@ typedef struct {
 	int32 rndTable[256];
 } EntityJetGlideEffect;
 
-// Standard Entity Events
+// Object Struct
 extern ObjectJetGlideEffect* JetGlideEffect;
 
 // Standard Entity Events
