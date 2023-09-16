@@ -17,7 +17,7 @@ Encore special stages are being used as placeholders until new maps are created.
 # How to build
 
 ## Unix-like
-Initialize GameAPI with `git submodule update --init` then run these commands in the `src` directory
+Initialize GameAPI with `git submodule update --init` then run these commands
 
 ```
 mkdir build
@@ -26,13 +26,13 @@ cmake .. .
 make
 mv hypermania.so ../../
 ```
-or you can use `./build.sh` to automate this process if you don't mind running CMake every time you compile
+or you can use `./build.sh` in `src/` to automate this process if you don't mind running CMake every time you compile
 
 ## Windows (Visual Studio)
 - Make sure to have the "Desktop Development with C++" workload installed so you have access to CMake
-- When Visual Studio prompts you to enable CMake Integration, pick "Enable and set source directory" and select `src/CMakeLists.txt`
+- When Visual Studio prompts you to enable CMake Integration, pick "Enable and set source directory" and select `CMakeLists.txt`
 - Build the project
-- move `hypermania.dll` from `src\out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is)
+- move `hypermania.dll` from `out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is)
 
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary

@@ -33,17 +33,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(MOD_NAME hypermania CACHE STRING "Used as root directory for mod source + logic file name")
 
 add_library(hypermania SHARED
-	GameAPI/C/GameAPI/Game.c
-	${MOD_NAME}/util.c
-	${MOD_NAME}/dllmain.c
-	${MOD_NAME}/Objects/All.c
+	src/GameAPI/C/GameAPI/Game.c
+	src/${MOD_NAME}/util.c
+	src/${MOD_NAME}/dllmain.c
+	src/${MOD_NAME}/Objects/All.c
 )
 
 target_include_directories(hypermania PRIVATE
-	${MOD_NAME}/
-	${MOD_NAME}/Objects/
-	${MOD_NAME}/Objects/Boilerplate
-	GameAPI/C/
+	src/${MOD_NAME}/
+	src/${MOD_NAME}/Objects/
+	src/${MOD_NAME}/Objects/Boilerplate
+	src/GameAPI/C/
 )
 
 if(ANDROID)

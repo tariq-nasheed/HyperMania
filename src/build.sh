@@ -4,6 +4,6 @@ if [ ! -d build ]; then
 	mkdir build
 fi
 cd build
-cmake .. .
+cmake ../.. .
 make
 mv hypermania.so ../../

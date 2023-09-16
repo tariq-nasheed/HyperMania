@@ -12,14 +12,14 @@ fi
 # UP-TO-DATE MOD LOADER VERSIONS ###############################################
 # linux
 cd build
-cmake ..
+cmake ../..
 make
 cd ../..
 tar czf src/$modname-linux.tar.gz $filelist -C src/release-files modSettings.ini -C ../build $logicname.so
 cd src
 # windows
 cd build
-cmake -DCMAKE_SYSTEM_NAME=Windows ..
+cmake -DCMAKE_SYSTEM_NAME=Windows ../..
 make
 cd ../..
 zip -r src/$modname-windows.zip $filelist
@@ -29,14 +29,14 @@ cd src
 # LEGACY MOD LOADER VERSIONS ###################################################
 # linux
 cd build
-cmake -DLEGACY=true ..
+cmake -DLEGACY=true ../..
 make
 cd ../..
 tar czf src/$modname-linux-legacy.tar.gz $filelist -C src/release-files Data modSettings.ini -C ../build $logicname.so
 cd src
 # windows
 cd build
-cmake -DLEGACY=true -DWINDOWS_BUILD=true ..
+cmake -DLEGACY=true -DWINDOWS_BUILD=true ../..
 make
 cd ../..
 zip -r src/$modname-windows-legacy.zip $filelist
