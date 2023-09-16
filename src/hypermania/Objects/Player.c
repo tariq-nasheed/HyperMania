@@ -268,17 +268,16 @@ void Player_Update_OVERLOAD() {
 			}
 
 			// paletteSlot and bankID are usually the same value but theyre seperate arguments just in case
-			if (HCZSetup) {
-				Player_BlendHyperPalette(1, 1, info);
-			} else if (CPZSetup) {
-				Player_BlendHyperPalette(2, 2, info);
-			}
 			Player_BlendHyperPalette(0, 0, info);
 			if (FarPlane) {
 				RSDK.CopyPalette(0, info->startIndex, 3, info->startIndex, 6);
 			} else if (OOZSetup) {
 				RSDK.CopyPalette(0, info->startIndex, 1, info->startIndex, 6);
 				RSDK.CopyPalette(0, info->startIndex, 2, info->startIndex, 6);
+			} else if (HCZSetup) {
+				Player_BlendHyperPalette(1, 1, info);
+			} else if (CPZSetup) {
+				Player_BlendHyperPalette(2, 2, info);
 			}
 		}
 	}
@@ -307,7 +306,7 @@ void Player_Update_OVERLOAD() {
 		if (((void*)self->state == (void*)Player_State_KnuxGlideLeft && self->left)
 		|| ((void*)self->state == (void*)Player_State_KnuxGlideRight && self->right)) {
 			// gliding momentum retention
-			if (prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
+			if (ModConfig.GSWburst && prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
 				EntityCamera* camera = self->camera;
 				if (camera && !Zone->autoScrollSpeed) {
 					self->scrollDelay = 8;
@@ -345,9 +344,11 @@ void Player_Update_OVERLOAD() {
 				RSDK.StopSfx(Player->sfxGrab);
 				RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
 				RSDK.SetChannelAttributes(RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake2, false, 0xFF), 0.6, 0.0, 1.0);
-				foreach_all(ItemBox, box) {
-					if (RSDK.CheckOnScreen(box, NULL) && (void*)box->state != (void*)ItemBox_State_Broken) {
-						ItemBox_Break(box, self);
+				if (ModConfig.GSWitemBoxes) {
+					foreach_all(ItemBox, box) {
+						if (RSDK.CheckOnScreen(box, NULL) && (void*)box->state != (void*)ItemBox_State_Broken) {
+							ItemBox_Break(box, self);
+						}
 					}
 				}
 			}
@@ -422,8 +423,8 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 		PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 		int32 dropForce = self->gravityStrength + (self->underwater == 1 ? 0x10000 : 0x20000);
 		if (Player_IsHyper(self)) {
+			if (!ModConfig.JEAjank) dropForce *= 3;
 			if (ext->can_dash) {
-				dropForce *= 3;
 				RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
 
 				Player_ClearEnemiesOnScreen(self);
@@ -438,14 +439,21 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 					}
 					fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
 				}
-			} else {
-				dropForce *= 2;
 			}
 		}
 		int32 groundVel = self->groundVel - (self->groundVel >> 2);
 
 		self->velocity.x = (groundVel * RSDK.Cos256(self->angle) + dropForce * RSDK.Sin256(self->angle)) >> 8;
 		self->velocity.y = (groundVel * RSDK.Sin256(self->angle) - dropForce * RSDK.Cos256(self->angle)) >> 8;
+		if (ModConfig.JEAjank) {
+			if (ext->can_dash) {
+				self->velocity.x *= 3;
+				self->velocity.y *= 3;
+			} else {
+				self->velocity.x *= 2;
+				self->velocity.y *= 2;
+			}
+		}
 
 		Player_Gravity_True();
 

@@ -167,12 +167,18 @@ void InitModAPI(void) {
 	ModConfig.screenFlashFactor = Mod.GetSettingsFloat("", "Config:screenFlashFactor", 1.0);
 	ModConfig.twoHeavensMode = Mod.GetSettingsBool("", "Config:twoHeavensMode", false);
 	ModConfig.enableHyperMusic = Mod.GetSettingsBool("", "Config:enableHyperMusic", true);
+	ModConfig.GSWburst = Mod.GetSettingsBool("", "Config:GSWburst", true);
+	ModConfig.GSWitemBoxes = Mod.GetSettingsBool("", "Config:GSWitemBoxes", true);
+	ModConfig.JEAjank = Mod.GetSettingsBool("", "Config:JEAjank", false);
 	Mod.SetSettingsInteger("Config:hyperStyle", ModConfig.hyperStyle);
 	Mod.SetSettingsBool("Config:hyperFlashDropDash", ModConfig.hyperFlashDropDash);
 	Mod.SetSettingsBool("Config:hyperFlashForwarding", ModConfig.hyperFlashForwarding);
 	Mod.SetSettingsFloat("Config:screenFlashFactor", ModConfig.screenFlashFactor);
 	Mod.SetSettingsBool("Config:twoHeavensMode", ModConfig.twoHeavensMode);
 	Mod.SetSettingsBool("Config:enableHyperMusic", ModConfig.enableHyperMusic);
+	Mod.SetSettingsBool("Config:GSWburst", ModConfig.GSWburst);
+	Mod.SetSettingsBool("Config:GSWitemBoxes", ModConfig.GSWitemBoxes);
+	Mod.SetSettingsBool("Config:JEAjank", ModConfig.JEAjank);
 	Mod.SaveSettings();
 
 	// Boilerplate ---------------------------------------------------------

@@ -2,7 +2,7 @@
 
 modname="HyperMania"
 logicname="hypermania"
-filelist="Data mod.ini SETTINGS.md src/release-files/modSettings.ini"
+filelist="Data mod.ini SETTINGS.md MANUAL.md src/release-files/modSettings.ini"
 releasedir="HyperMania"
 
 if [ ! -d build ]; then
