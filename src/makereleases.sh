@@ -4,43 +4,57 @@ modname="HyperMania"
 logicname="hypermania"
 filelist="Data mod.ini"
 srclist="LICENSE *.sh CMakeLists.txt hypermania GameAPI release-files"
+releasedir="HyperMania"
 
 if [ ! -d build ]; then
 	mkdir build
 fi
 
+if [ ! -d $releasedir ]; then
+	mkdir $releasedir
+fi
+
+cd ..
+cp -R --target-directory=src/$releasedir $filelist src/release-files/modSettings.ini
+cd src
+
 # UP-TO-DATE MOD LOADER VERSIONS ###############################################
 # linux
 cd build
-cmake ../..
-make
-cd ../..
-tar czf src/$modname-linux.tar.gz $filelist -C src/release-files modSettings.ini -C ../build $logicname.so
-cd src
+cmake ../.. --fresh
+make -j8
+cd ..
+cp -R build/$logicname.so $releasedir
+tar czf $modname-linux.tar.gz $releasedir
+rm $releasedir/$logicname.so
 # windows
 cd build
-cmake -DCMAKE_SYSTEM_NAME=Windows ../..
-make
-cd ../..
-zip -r src/$modname-windows.zip $filelist
-zip -r src/$modname-windows.zip --junk-paths src/release-files/modSettings.ini src/build/$logicname.dll
-cd src
+cmake -DCMAKE_SYSTEM_NAME=Windows ../.. --fresh
+make -j8
+cd ..
+cp -R build/$logicname.dll $releasedir
+zip -r $modname-windows.zip $releasedir
+rm $releasedir/$logicname.dll
 
 # LEGACY MOD LOADER VERSIONS ###################################################
+cp -R release-files/Data $releasedir
 # linux
 cd build
-cmake -DLEGACY=true ../..
-make
-cd ../..
-tar czf src/$modname-linux-legacy.tar.gz $filelist -C src/release-files Data modSettings.ini -C ../build $logicname.so
-cd src
+cmake -DLEGACY=true ../.. --fresh
+make -j8
+cd ..
+cp -R build/$logicname.so $releasedir
+tar czf $modname-linux-legacy.tar.gz $releasedir
+rm $releasedir/$logicname.so
 # windows
 cd build
-cmake -DLEGACY=true -DWINDOWS_BUILD=true ../..
-make
-cd ../..
-zip -r src/$modname-windows-legacy.zip $filelist
-zip -r src/$modname-windows-legacy.zip --junk-paths src/release-files/modSettings.ini src/build/$logicname.dll
-cd src/release-files
-zip -r ../$modname-windows-legacy.zip Data
+cmake -DCMAKE_SYSTEM_NAME=Windows -DLEGACY=true ../.. --fresh
+make -j8
 cd ..
+cp -R build/$logicname.dll $releasedir
+zip -r $modname-windows-legacy.zip $releasedir
+rm $releasedir/$logicname.dll
+
+
+# CLEANUP ######################################################################
+echo "i'm too afraid to put rm here so CLEAN IT YOURSELF BUM"

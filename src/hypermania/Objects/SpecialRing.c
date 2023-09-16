@@ -14,10 +14,6 @@ static color ColorCycle[6] = { 0xF0F000, 0xfCD8FC,  0xB4D8FC, 0x90FC90,  0xD8fC6
 
 
 // -----------------------------------------------------------------------------
-bool32 IsHPZStage() {
-	return GetSaveRAM_Safe()->chaosEmeralds == 0b01111111;
-}
-
 void SpecialRing_StageLoad_OVERLOAD() {
 	Mod.Super(SpecialRing->classID, SUPER_STAGELOAD, NULL);
 	// SpecialRing_StageLoad gets called in HPZ map -> globals->specialRingID gets set to 0 -> have to do this to fix it
@@ -58,9 +54,9 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 				if (Player_CheckCollisionTouch(player, self, &SpecialRing->hitbox) && SceneInfo->timeEnabled) {
 					self->sparkleRadius = TO_FIXED(16);
 					self->state         = SpecialRing_State_Flash;
-					SaveRAM *saveRAM = GetSaveRAM_Safe();
+					SaveRAM* saveRAM = GetSaveRAM_Safe();
 #if GAME_VERSION != VER_100
-					if ((saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
+					if ((saveRAM->chaosEmeralds == 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
 #else
 					if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) {
 #endif
@@ -117,8 +113,8 @@ bool32 SpecialRing_State_Flash_HOOK(bool32 skippedState) {
 		self->sparkleRadius -= TO_FIXED(8);
 	}
 
+	SaveRAM* saveRAM = GetSaveRAM_Safe();
 #if GAME_VERSION != VER_100
-	SaveRAM *saveRAM = GetSaveRAM_Safe();
 	if ((saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) || !self->id) {
 #else
 	if (saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) {
@@ -144,7 +140,8 @@ void SpecialRing_Draw_OVERLOAD() {
 		RSDK.Prepare3DScene(SpecialRing->sceneIndex);
 		if (self->enabled) {
 			uint32 index = (Zone->timer / 4) % 6;
-			if (IsHPZStage()) {
+			SaveRAM* saveRAM = GetSaveRAM_Safe();
+			if (saveRAM->chaosEmeralds == 0b01111111) {
 				RSDK.AddModelTo3DScene(SpecialRing->modelIndex, SpecialRing->sceneIndex, S3D_SOLIDCOLOR_SHADED_BLENDED, &self->matWorld, &self->matNormal, ColorCycle[index]);
 			} else {
 				RSDK.AddModelTo3DScene(SpecialRing->modelIndex, SpecialRing->sceneIndex, S3D_SOLIDCOLOR_SHADED_BLENDED, &self->matWorld, &self->matNormal, 0xF0F000);
@@ -164,7 +161,7 @@ void SpecialRing_State_HPZ_Warp() {
 		RSDK.PlaySfx(SpecialRing->sfxSpecialWarp, false, 0xFE);
 		destroyEntity(self);
 
-		SaveRAM *saveRAM       = GetSaveRAM_Safe();
+		SaveRAM* saveRAM       = GetSaveRAM_Safe();
 		saveRAM->storedStageID = SceneInfo->listPos;
 		RSDK.SetScene("HyperMania", "Hidden Palace");
 #if MANIA_USE_PLUS

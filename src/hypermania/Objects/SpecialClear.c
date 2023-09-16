@@ -45,7 +45,7 @@ bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 		self->timer = 0;
 		SpecialClearStaticExt.drawContinue = true;
 
-		SaveRAM *saveRAM      = SaveGame_GetSaveRAM();
+		SaveRAM *saveRAM      = GetSaveRAM_Safe();
 		saveRAM->score        = self->score;
 		globals->restartScore = self->score;
 		saveRAM->score1UP     = self->score1UP;
@@ -75,7 +75,7 @@ bool32 SpecialClear_State_ShowTotalScore_NoContinues_HOOK(bool32 skippedState) {
 	if (!UFO_Setup && self->timer == 59) {
 		self->timer = 0;
 
-		SaveRAM *saveRAM      = SaveGame_GetSaveRAM();
+		SaveRAM *saveRAM      = GetSaveRAM_Safe();
 		saveRAM->score        = self->score;
 		globals->restartScore = self->score;
 		saveRAM->score1UP     = self->score1UP;
