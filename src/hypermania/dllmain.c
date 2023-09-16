@@ -18,6 +18,7 @@
 #include "Objects/Boilerplate/Zone.h"
 #include "Boilerplate/Music.h"
 #include "Boilerplate/Global/PauseMenu.h"
+#include "Boilerplate/Global/InvincibleStars.h"
 #include "LogoSetup.h"
 
 #include "Objects/Boilerplate/CPZ/CPZSetup.h"
@@ -204,6 +205,7 @@ void InitModAPI(void) {
 	MOD_REGISTER_OBJECT_HOOK(Zone);
 	OBJ_LOGOSETUP_SETUP;
 	HOOK_ENEMY_OBJECTS;
+	MOD_REGISTER_OBJECT_HOOK(InvincibleStars);
 
 	// zone specific stuff
 	MOD_REGISTER_OBJECT_HOOK(CPZSetup);
@@ -221,8 +223,6 @@ void InitModAPI(void) {
 	OBJ_UISAVESLOT_SETUP;
 	OBJ_HUD_SETUP;
 	OBJ_PLANESEESAW_SETUP;
-
-
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, ImageTrail_LateUpdate_OVERLOAD, NULL, ImageTrail_Draw_OVERLOAD, ImageTrail_Create_OVERLOAD, NULL, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(HPZEmerald, HPZEmerald_Update_Hook, NULL, NULL, HPZEmerald_Draw_Hook, HPZEmerald_Create_Hook, HPZEmerald_StageLoad_Hook, NULL, NULL, NULL);
 

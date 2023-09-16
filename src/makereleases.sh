@@ -2,8 +2,7 @@
 
 modname="HyperMania"
 logicname="hypermania"
-filelist="Data mod.ini"
-srclist="LICENSE *.sh CMakeLists.txt hypermania GameAPI release-files"
+filelist="Data mod.ini SETTINGS.md src/release-files/modSettings.ini"
 releasedir="HyperMania"
 
 if [ ! -d build ]; then
@@ -15,7 +14,7 @@ if [ ! -d $releasedir ]; then
 fi
 
 cd ..
-cp -R --target-directory=src/$releasedir $filelist src/release-files/modSettings.ini
+cp -R --target-directory=src/$releasedir $filelist
 cd src
 
 # UP-TO-DATE MOD LOADER VERSIONS ###############################################

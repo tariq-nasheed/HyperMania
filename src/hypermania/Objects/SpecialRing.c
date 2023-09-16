@@ -56,7 +56,7 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 					self->state         = SpecialRing_State_Flash;
 					SaveRAM* saveRAM = GetSaveRAM_Safe();
 #if GAME_VERSION != VER_100
-					if ((saveRAM->chaosEmeralds == 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
+					if ((saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
 #else
 					if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) {
 #endif

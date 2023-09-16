@@ -12,6 +12,7 @@
 #include "Boilerplate/Zone.c"
 #include "Boilerplate/Music.c"
 #include "Boilerplate/Global/PauseMenu.c"
+#include "Boilerplate/Global/InvincibleStars.c"
 #include "LogoSetup.c"
 
 #include "Boilerplate/CPZ/CPZSetup.c"

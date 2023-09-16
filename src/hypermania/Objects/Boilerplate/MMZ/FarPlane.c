@@ -2,6 +2,7 @@
 #include "HyperStars.h"
 #include "SuperFlicky.h"
 #include "ImageTrail.h"
+#include "Global/InvincibleStars.h"
 
 ObjectFarPlane* FarPlane;
 void (*FarPlane_SetupEntities)();
@@ -71,7 +72,7 @@ void FarPlane_DrawHook_ApplyFarPlane() {
 		id++;
 	}
 
-	/*foreach_active(InvincibleStars, invincibleStars) {
+	foreach_active(InvincibleStars, invincibleStars) {
 		if (invincibleStars->drawGroup < 3 && id < 0x200) {
 			invincibleStars->starOffset = 10;
 			invincibleStars->drawFX     = FX_SCALE;
@@ -88,7 +89,7 @@ void FarPlane_DrawHook_ApplyFarPlane() {
 				id++;
 			}
 		}
-	}*/
+	}
 
 	foreach_active(ImageTrail, imageTrail) {
 		if (imageTrail->drawGroup < 3 && id < 0x200) {
