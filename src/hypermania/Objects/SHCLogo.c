@@ -11,24 +11,13 @@ void SHCLogo_Draw() {
 	RSDK_THIS(SHCLogo);
 
 	RSDK.DrawSprite(&self->animator, &self->position, false);
-
-	--self->timer;
-	if (!self->timer) {
-		++self->animator.frameID;
-		if (self->animator.frameID == self->animator.frameCount) {
-			self->animator.frameID = self->animator.loopIndex;
-		}
-		RSDK.SetSpriteAnimation(SHCLogo->aniFrames, 0, &self->animator, true, self->animator.frameID);
-		self->timer = self->animator.frameDuration;
-	}
-	//RSDK.ProcessAnimation(&self->animator);
+	RSDK.ProcessAnimation(&self->animator);
 }
 
 void SHCLogo_Create(void* data) {
 	RSDK_THIS(SHCLogo);
 
 	RSDK.SetSpriteAnimation(SHCLogo->aniFrames, 0, &self->animator, true, 0);
-	self->timer = self->animator.frameDuration;
 	self->visible   = true;
 	self->drawGroup = 2;
 	self->active    = ACTIVE_BOUNDS;
@@ -85,7 +74,10 @@ bool32 LogoSetup_State_NextLogos_HOOK(bool32 skippedState) {
 		}
 	} else {
 		if (ScreenInfo->position.y == SCREEN_YSIZE) {
-			foreach_active(SHCLogo, shcLogo) { shcLogo->animator.frameID = 0; }
+			foreach_active(SHCLogo, shcLogo) {
+				shcLogo->animator.speed   = 0;
+				shcLogo->animator.frameID = 0;
+			}
 		}
 		self->timer += 16;
 	}

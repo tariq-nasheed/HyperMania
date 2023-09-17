@@ -14,7 +14,6 @@ typedef struct {
 typedef struct {
 	RSDK_ENTITY
 	Animator animator;
-	int32 timer;
 } EntitySHCLogo;
 
 // Object Struct

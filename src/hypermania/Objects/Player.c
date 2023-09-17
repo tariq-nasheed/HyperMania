@@ -267,6 +267,12 @@ void Player_Update_OVERLOAD() {
 				                                            : 16 + 24 * (ext->blend.state & 1);
 			}
 
+			color colorStore[12];
+			for (int32 i = 0; i != 6; ++i) {
+				colorStore[i] = RSDK.GetPaletteEntry(6, info->startIndex + i);
+				colorStore[i + 6] = RSDK.GetPaletteEntry(7, info->startIndex + i);
+			}
+
 			// paletteSlot and bankID are usually the same value but theyre seperate arguments just in case
 			Player_BlendHyperPalette(0, 0, info);
 			if (FarPlane) {
@@ -278,6 +284,11 @@ void Player_Update_OVERLOAD() {
 				Player_BlendHyperPalette(1, 1, info);
 			} else if (CPZSetup) {
 				Player_BlendHyperPalette(2, 2, info);
+			}
+
+			for (int32 i = 0; i != 6; ++i) {
+				RSDK.SetPaletteEntry(6, info->startIndex + i, colorStore[i]);
+				RSDK.SetPaletteEntry(7, info->startIndex + i, colorStore[i + 6]);
 			}
 		}
 	}
@@ -445,7 +456,7 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 
 		self->velocity.x = (groundVel * RSDK.Cos256(self->angle) + dropForce * RSDK.Sin256(self->angle)) >> 8;
 		self->velocity.y = (groundVel * RSDK.Sin256(self->angle) - dropForce * RSDK.Cos256(self->angle)) >> 8;
-		if (ModConfig.JEAjank) {
+		if (ModConfig.JEAjank && Player_IsHyper(self)) {
 			if (ext->can_dash) {
 				self->velocity.x *= 3;
 				self->velocity.y *= 3;
