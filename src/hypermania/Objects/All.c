@@ -1,4 +1,5 @@
-#include "util.h"
+#include "ModFunctions.h"
+
 #include "Boilerplate/SaveGame.c"
 #include "Boilerplate/Animals.c"
 #include "Boilerplate/Camera.c"

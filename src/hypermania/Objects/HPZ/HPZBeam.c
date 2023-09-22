@@ -1,5 +1,5 @@
 #include "HPZBeam.h"
-#include "util.h"
+#include "ModFunctions.h"
 //#include "Boilerplate/Zone.h"
 
 ObjectHPZBeam* HPZBeam;
@@ -21,7 +21,7 @@ void HPZBeam_Update(void) {
 					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 					ext->type = i;
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
-					HM_global.currentSave->transferedEmeralds |= 1 << i;
+					HM_globals->currentSave->transferedEmeralds |= 1 << i;
 					break;
 				}
 			}

@@ -105,7 +105,7 @@ void HPZIntro_State_TeleportPlayer() {
 	}
 
 	if (self->timer > 30 && self->teleBeam->classID == TYPE_BLANK) {
-		if (HM_global.currentSave->transferedEmeralds != 0b01111111) {
+		if (HM_globals->currentSave->transferedEmeralds != 0b01111111) {
 			RSDK.PlaySfx(HPZIntro->sfxTwinkle, false, 0xFF);
 			for (int32 i = 0; i != 7; ++i) {
 				self->emeraldAngle[i] = i * 0x24;

@@ -1,8 +1,7 @@
 #include "../GameAPI/C/GameAPI/Game.h"
 
-#include "util.h"
+#include "ModVariables.h"
 #include "crash.h"
-#include "ModConfig.h"
 
 // game classes litte/no notable modifications
 #include "Objects/Boilerplate/SaveGame.h"
@@ -52,12 +51,13 @@
 // enemy checking file
 #include "Objects/Enemy.h"
 
+#include "ModFunctions.h"
+
 #if RETRO_USE_MOD_LOADER
 DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
 #endif
 
 int16 SuperFlickySlot;
-ModConfig_t ModConfig;
 
 bool32 loaded_already = false;
 void StageSetup(void* data) {
@@ -65,12 +65,12 @@ void StageSetup(void* data) {
 
 	// loading save file ---------------------------------------------------
 	if (globals->saveSlotID == NO_SAVE_SLOT) {
-		HM_global.currentSave = &HM_global.noSaveSlot;
+		HM_globals->currentSave = &HM_globals->noSaveSlot;
 	} else {
 #if MANIA_USE_PLUS
-		HM_global.currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, globals->gameMode == MODE_ENCORE);
+		HM_globals->currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, globals->gameMode == MODE_ENCORE);
 #else
-		HM_global.currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, false);
+		HM_globals->currentSave =  HM_Save_GetDataPtr(globals->saveSlotID, false);
 #endif
 	}
 	// mnmggggggggggggmmmmmmmm
@@ -127,12 +127,12 @@ void StageCleanup(void* data) {
 	}
 
 	// saving save file ----------------------------------------------------
-	if (globals->saveSlotID != NO_SAVE_SLOT && HM_global.currentSave && HM_global.currentSave != &HM_global.noSaveSlot) HM_Save_SaveFile();
+	if (globals->saveSlotID != NO_SAVE_SLOT && HM_globals->currentSave && HM_globals->currentSave != &HM_globals->noSaveSlot) HM_Save_SaveFile();
 
 	// Attackable Classes --------------------------------------------------
-	AttackableClasses_size = 0;
-	AttackableClasses_startidx = ENTATTACK_INVALID;
-	memset(AttackableClasses, 0, sizeof(AttackableClasses));
+	HM_globals->AttackableClasses_size = 0;
+	HM_globals->AttackableClasses_startidx = ENTATTACK_INVALID;
+	memset(HM_globals->AttackableClasses, 0, sizeof(HM_globals->AttackableClasses));
 
 	// ext vars ------------------------------------------------------------
 	for (int32 i = 0; i != MAX_EXTMEM_ENTITIES; ++i) {
@@ -140,7 +140,7 @@ void StageCleanup(void* data) {
 	}
 }
 
-void InitModAPI(void) {
+void InitModAPI() {
 	printf(
 		"\x1b[93mH"
 		"\x1b[91mY"
@@ -157,28 +157,31 @@ void InitModAPI(void) {
 	printf(" loaded\n");
 	CRASH_HANDLING_SETUP;
 
+	AddAPIFunctions();
+	HM_globals = calloc(1, sizeof(HM_global_t));
+
 	Mod.AddModCallback(MODCB_ONSTAGELOAD, StageSetup);
 	Mod.AddModCallback(MODCB_ONSTAGEUNLOAD, StageCleanup);
 
 	// Config --------------------------------------------------------------
-	ModConfig.hyperStyle = Mod.GetSettingsInteger("", "Config:hyperStyle", 0);
-	ModConfig.hyperFlashDropDash = Mod.GetSettingsBool("", "Config:hyperFlashDropDash", true);
-	ModConfig.hyperFlashForwarding = Mod.GetSettingsBool("", "Config:hyperFlashForwarding", false);
-	ModConfig.screenFlashFactor = Mod.GetSettingsFloat("", "Config:screenFlashFactor", 1.0);
-	ModConfig.twoHeavensMode = Mod.GetSettingsBool("", "Config:twoHeavensMode", false);
-	ModConfig.enableHyperMusic = Mod.GetSettingsBool("", "Config:enableHyperMusic", true);
-	ModConfig.GSWburst = Mod.GetSettingsBool("", "Config:GSWburst", true);
-	ModConfig.GSWitemBoxes = Mod.GetSettingsBool("", "Config:GSWitemBoxes", true);
-	ModConfig.JEAjank = Mod.GetSettingsBool("", "Config:JEAjank", false);
-	Mod.SetSettingsInteger("Config:hyperStyle", ModConfig.hyperStyle);
-	Mod.SetSettingsBool("Config:hyperFlashDropDash", ModConfig.hyperFlashDropDash);
-	Mod.SetSettingsBool("Config:hyperFlashForwarding", ModConfig.hyperFlashForwarding);
-	Mod.SetSettingsFloat("Config:screenFlashFactor", ModConfig.screenFlashFactor);
-	Mod.SetSettingsBool("Config:twoHeavensMode", ModConfig.twoHeavensMode);
-	Mod.SetSettingsBool("Config:enableHyperMusic", ModConfig.enableHyperMusic);
-	Mod.SetSettingsBool("Config:GSWburst", ModConfig.GSWburst);
-	Mod.SetSettingsBool("Config:GSWitemBoxes", ModConfig.GSWitemBoxes);
-	Mod.SetSettingsBool("Config:JEAjank", ModConfig.JEAjank);
+	HM_globals->config.hyperStyle = Mod.GetSettingsInteger("", "Config:hyperStyle", 0);
+	HM_globals->config.hyperFlashDropDash = Mod.GetSettingsBool("", "Config:hyperFlashDropDash", true);
+	HM_globals->config.hyperFlashForwarding = Mod.GetSettingsBool("", "Config:hyperFlashForwarding", false);
+	HM_globals->config.screenFlashFactor = Mod.GetSettingsFloat("", "Config:screenFlashFactor", 1.0);
+	HM_globals->config.twoHeavensMode = Mod.GetSettingsBool("", "Config:twoHeavensMode", false);
+	HM_globals->config.enableHyperMusic = Mod.GetSettingsBool("", "Config:enableHyperMusic", true);
+	HM_globals->config.GSWburst = Mod.GetSettingsBool("", "Config:GSWburst", true);
+	HM_globals->config.GSWitemBoxes = Mod.GetSettingsBool("", "Config:GSWitemBoxes", true);
+	HM_globals->config.JEAjank = Mod.GetSettingsBool("", "Config:JEAjank", false);
+	Mod.SetSettingsInteger("Config:hyperStyle", HM_globals->config.hyperStyle);
+	Mod.SetSettingsBool("Config:hyperFlashDropDash", HM_globals->config.hyperFlashDropDash);
+	Mod.SetSettingsBool("Config:hyperFlashForwarding", HM_globals->config.hyperFlashForwarding);
+	Mod.SetSettingsFloat("Config:screenFlashFactor", HM_globals->config.screenFlashFactor);
+	Mod.SetSettingsBool("Config:twoHeavensMode", HM_globals->config.twoHeavensMode);
+	Mod.SetSettingsBool("Config:enableHyperMusic", HM_globals->config.enableHyperMusic);
+	Mod.SetSettingsBool("Config:GSWburst", HM_globals->config.GSWburst);
+	Mod.SetSettingsBool("Config:GSWitemBoxes", HM_globals->config.GSWitemBoxes);
+	Mod.SetSettingsBool("Config:JEAjank", HM_globals->config.JEAjank);
 	Mod.SaveSettings();
 
 	// Boilerplate ---------------------------------------------------------
@@ -246,9 +249,7 @@ void InitModAPI(void) {
 }
 
 #if RETRO_USE_MOD_LOADER
-  #define ADD_PUBLIC_FUNC(func) Mod.AddPublicFunction(#func, (void *)(func))
-
-void InitModAPI(void);
+void InitModAPI();
 
 bool32 LinkModLogic(EngineInfo *info, const char *id) {
   #if MANIA_USE_PLUS

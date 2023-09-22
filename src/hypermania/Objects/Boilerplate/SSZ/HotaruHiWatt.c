@@ -20,10 +20,10 @@ void (*HotaruHiWatt_SpawnPairHotarus)();
 void (*HotaruHiWatt_Hit)();
 
 bool32 HotaruHiWatt_CheckVulnerable(Entity* self) {
-	const uint32 index = self->classID - AttackableClasses_startidx;
-	AttackableClasses[index].flags &= ~ATKFLAG_ISBOSS;
+	const uint32 index = self->classID - HM_globals->AttackableClasses_startidx;
+	HM_globals->AttackableClasses[index].flags &= ~ATKFLAG_ISBOSS;
 	if (((EntityHotaruHiWatt*)self)->type == HHW_BOSS) {
-		AttackableClasses[index].flags |= ATKFLAG_ISBOSS;
+		HM_globals->AttackableClasses[index].flags |= ATKFLAG_ISBOSS;
 	}
 
 	if (((EntityHotaruHiWatt*)self)->invincibilityTimer) return false;

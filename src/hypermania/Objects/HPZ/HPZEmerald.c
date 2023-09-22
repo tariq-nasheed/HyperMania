@@ -21,7 +21,7 @@ void HPZEmerald_Update_Hook(void) {
 
 	if (!HPZSetup || self->type == HPZEMERALD_MASTER) return;
 	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	if (!ext || ext->type == -1 || HM_global.currentSave->superEmeralds & 1 << sonic3_emerald_lookup[super_emerald_lookup[ext->type]]) return;
+	if (!ext || ext->type == -1 || HM_globals->currentSave->superEmeralds & 1 << sonic3_emerald_lookup[super_emerald_lookup[ext->type]]) return;
 
 	foreach_active(Player, player) {
 		if (!player->sidekick && player->onGround == 1) {
@@ -80,7 +80,7 @@ void HPZEmerald_Create_Hook(void* data) {
 
 	if (self->type == HPZEMERALD_MASTER) {
 		HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
-		if (HM_global.currentSave->superEmeralds == 0b01111111) {
+		if (HM_globals->currentSave->superEmeralds == 0b01111111) {
 			ext->type = 0;
 		} else {
 			ext->type = -1;
@@ -95,13 +95,13 @@ void HPZEmerald_Create_Hook(void* data) {
 				ext->owner = (Entity*)self;
 
 				const int32 index = sonic3_emerald_lookup[super_emerald_lookup[i]];
-				if (HM_global.currentSave->transferedEmeralds & 1 << index) {
+				if (HM_globals->currentSave->transferedEmeralds & 1 << index) {
 					ext->type = i;
 				}
 
-				if (HM_global.currentSave->superEmeralds & 1 << index) {
+				if (HM_globals->currentSave->superEmeralds & 1 << index) {
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, index + 1, &ext->animator, true, 0);
-				} else if (HM_global.currentSave->transferedEmeralds & 1 << index) {
+				} else if (HM_globals->currentSave->transferedEmeralds & 1 << index) {
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
 				} else {
 					ext->type = -1;

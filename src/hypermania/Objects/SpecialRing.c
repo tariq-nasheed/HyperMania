@@ -56,9 +56,9 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 					self->state         = SpecialRing_State_Flash;
 					SaveRAM* saveRAM = GetSaveRAM_Safe();
 #if GAME_VERSION != VER_100
-					if ((saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) && self->id) {
+					if ((saveRAM->chaosEmeralds != 0b01111111 || HM_globals->currentSave->superEmeralds != 0b01111111) && self->id) {
 #else
-					if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) {
+					if (saveRAM->chaosEmeralds != 0b01111111 || HM_globals->currentSave->superEmeralds != 0b01111111) {
 #endif
 						player->visible        = false;
 						player->active         = ACTIVE_NEVER;
@@ -68,9 +68,9 @@ bool32 SpecialRing_State_Idle_HOOK(bool32 skippedState) {
 						Player_GiveRings(player, 50, true);
 					}
 					if (self->id > 0) {
-						if (saveRAM->chaosEmeralds != 0b01111111 || HM_global.currentSave->superEmeralds != 0b01111111) {
+						if (saveRAM->chaosEmeralds != 0b01111111 || HM_globals->currentSave->superEmeralds != 0b01111111) {
 							globals->specialRingID = self->id;
-							if (HM_global.currentSave->superEmeralds != 0b01111111) superSpecialRingID = self->id;
+							if (HM_globals->currentSave->superEmeralds != 0b01111111) superSpecialRingID = self->id;
 						}
 						saveRAM->collectedSpecialRings |= 1 << (16 * Zone->actID - 1 + self->id);
 					}
@@ -115,9 +115,9 @@ bool32 SpecialRing_State_Flash_HOOK(bool32 skippedState) {
 
 	SaveRAM* saveRAM = GetSaveRAM_Safe();
 #if GAME_VERSION != VER_100
-	if ((saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) || !self->id) {
+	if ((saveRAM->chaosEmeralds == 0b01111111 && HM_globals->currentSave->superEmeralds == 0b01111111) || !self->id) {
 #else
-	if (saveRAM->chaosEmeralds == 0b01111111 && HM_global.currentSave->superEmeralds == 0b01111111) {
+	if (saveRAM->chaosEmeralds == 0b01111111 && HM_globals->currentSave->superEmeralds == 0b01111111) {
 #endif
 		destroyEntity(self);
 	} else if (self->warpAnimator.frameID == self->warpAnimator.frameCount - 1) {

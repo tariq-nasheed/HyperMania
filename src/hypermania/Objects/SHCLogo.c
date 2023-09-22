@@ -35,6 +35,7 @@ void SHCLogo_EditorLoad() {}
 void SHCLogo_Serialize() {}
 
 bool32 LogoSetup_State_FadeToNextLogos_HOOK(bool32 skippedState) {
+	if (skippedState) return true;
 	RSDK_THIS(LogoSetup);
 
 	const int32 target = (ScreenInfo->position.y == SCREEN_YSIZE) ? 240 : 120;
@@ -47,6 +48,7 @@ bool32 LogoSetup_State_FadeToNextLogos_HOOK(bool32 skippedState) {
 }
 
 bool32 LogoSetup_State_ShowLogos_HOOK(bool32 skippedState) {
+	if (skippedState) return true;
 	RSDK_THIS(LogoSetup);
 
 	 if (self->timer <= 0) {
@@ -61,7 +63,9 @@ bool32 LogoSetup_State_ShowLogos_HOOK(bool32 skippedState) {
 }
 
 bool32 LogoSetup_State_NextLogos_HOOK(bool32 skippedState) {
+	if (skippedState) return true;
 	RSDK_THIS(LogoSetup);
+
 	if (self->timer >= 1024) {
 		if (ScreenInfo->position.y >= SCREEN_YSIZE * 2) {
 			++SceneInfo->listPos;

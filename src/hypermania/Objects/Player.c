@@ -1,5 +1,3 @@
-#include "ModConfig.h"
-
 #include "Player.h"
 #include "Camera.h"
 #include "Debris.h"
@@ -42,7 +40,7 @@ bool32 (*Player_CheckCollisionPlatform)(EntityPlayer *player, void *entity, Hitb
 static bool32 (*formerCanSuperCB)(bool32);
 static bool32 disableSuperPostTransfer(bool32 isHUD) {
 	if (formerCanSuperCB && formerCanSuperCB(isHUD) == false) return false;
-	if (!ERZStart && HM_global.currentSave->transferedEmeralds && HM_global.currentSave->superEmeralds != 0b01111111) {
+	if (!ERZStart && HM_globals->currentSave->transferedEmeralds && HM_globals->currentSave->superEmeralds != 0b01111111) {
 		return false;
 	}
 	return true;
@@ -185,8 +183,8 @@ void Player_Update_OVERLOAD() {
 	// hyper transformation ------------------------------------------------
 	RSDKControllerState* controller = &ControllerInfo[self->controllerID];
 	if (!ext->is_hyper
-	&& (HM_global.currentSave->superEmeralds == 0b01111111 || SceneInfo->debugMode)
-	&& ((!ModConfig.twoHeavensMode && HM_global.currentSave->superEmeralds == 0b01111111) || (self->superState == SUPERSTATE_SUPER && self->up && controller->keyY.press))) {
+	&& (HM_globals->currentSave->superEmeralds == 0b01111111 || SceneInfo->debugMode)
+	&& ((!HM_globals->config.twoHeavensMode && HM_globals->currentSave->superEmeralds == 0b01111111) || (self->superState == SUPERSTATE_SUPER && self->up && controller->keyY.press))) {
 		ext->blend.state = HYPERBLEND_FADEIN;
 		ext->blend.amount = 0;
 		ext->is_hyper = true;
@@ -204,7 +202,7 @@ void Player_Update_OVERLOAD() {
 	}
 	if (!ext->is_hyper) return;
 
-	if (!ERZStart && ModConfig.twoHeavensMode && Zone->timer & 1) {
+	if (!ERZStart && HM_globals->config.twoHeavensMode && Zone->timer & 1) {
 		--self->superRingLossTimer;
 	}
 
@@ -214,7 +212,7 @@ void Player_Update_OVERLOAD() {
 #else
 	if (ERZStart->superDashCooldown == 30) {
 #endif
-		Player_ClearEnemiesOnScreen(self);
+		HMAPI_BadnikScreenClear(self);
 		RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
 		const int32 vel = TO_FIXED(2);
 		for (int32 i = 0; i != 4; ++i) {
@@ -252,11 +250,11 @@ void Player_Update_OVERLOAD() {
 	if (index != -1) {
 		const hyperpal_t* info = &PlayerPaletteDefs[index];
 
-		if (ModConfig.hyperStyle != 1 || info->rows != 1) {
+		if (HM_globals->config.hyperStyle != 1 || info->rows != 1) {
 			if (ext->blend.amount >= 0x100) {
 				if (self->superState == SUPERSTATE_SUPER || self->superBlendState != 1) {
 					ext->blend.amount = 0;
-					if (ModConfig.hyperStyle != 2) {
+					if (HM_globals->config.hyperStyle != 2) {
 						ext->blend.state = (ext->blend.state + 1) % (info->rows * 2);
 					} else {
 						ext->blend.state = (ext->blend.state + 1) % (6 * 2);
@@ -304,7 +302,7 @@ void Player_Update_OVERLOAD() {
 
 		Entity* entity = RSDK_GET_ENTITY_GEN(self->playerID + Player->playerCount);
 		if (entity->classID != HyperStars->classID) {
-			if (index != -1 && ModConfig.hyperStyle == 1 && PlayerPaletteDefs[index].rows == 1) {
+			if (index != -1 && HM_globals->config.hyperStyle == 1 && PlayerPaletteDefs[index].rows == 1) {
 				destroyEntity(entity);
 			} else {
 				RSDK.ResetEntity(entity, HyperStars->classID, self);
@@ -317,7 +315,7 @@ void Player_Update_OVERLOAD() {
 		if (((void*)self->state == (void*)Player_State_KnuxGlideLeft && self->left)
 		|| ((void*)self->state == (void*)Player_State_KnuxGlideRight && self->right)) {
 			// gliding momentum retention
-			if (ModConfig.GSWburst && prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
+			if (HM_globals->config.GSWburst && prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
 				EntityCamera* camera = self->camera;
 				if (camera && !Zone->autoScrollSpeed) {
 					self->scrollDelay = 8;
@@ -350,25 +348,19 @@ void Player_Update_OVERLOAD() {
 
 			// earthquake
 			if (abs(ext->prev_xvel) >= 0x48000 && self->velocity.x == 0 && self->abilitySpeed != 0) {
-				Player_ClearEnemiesOnScreen(self);
 				Camera_ShakeScreen(RSDK.GetEntitySlot(self), 6, 0);
 				RSDK.StopSfx(Player->sfxGrab);
 				RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
 				RSDK.SetChannelAttributes(RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake2, false, 0xFF), 0.6, 0.0, 1.0);
-				if (ModConfig.GSWitemBoxes) {
-					foreach_all(ItemBox, box) {
-						if (RSDK.CheckOnScreen(box, NULL) && (void*)box->state != (void*)ItemBox_State_Broken) {
-							ItemBox_Break(box, self);
-						}
-					}
-				}
+				HMAPI_BadnikScreenClear(self);
+				HMAPI_ItemBoxScreenClear(self, false);
 			}
 		}
 	}
 
 	// music handling ------------------------------------------------------
-	if (!ERZStart && ModConfig.enableHyperMusic && Music->trackLoops[TRACK_SUPER] != 423801 &&
-	(Music->activeTrack == TRACK_SUPER || !ModConfig.twoHeavensMode)) {
+	if (!ERZStart && HM_globals->config.enableHyperMusic && Music->trackLoops[TRACK_SUPER] != 423801 &&
+	(Music->activeTrack == TRACK_SUPER || !HM_globals->config.twoHeavensMode)) {
 #if MANIA_USE_PLUS
 		Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
 		if (Music->activeTrack == TRACK_SUPER) Music_PlayJingle(TRACK_SUPER);
@@ -395,9 +387,7 @@ bool32 Player_JumpAbility_Sonic_HOOK(bool32 skippedState) {
 	if (!Player_IsHyper(self)) return false;
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 
-	if (self->jumpAbilityState == 1 && self->jumpPress) {
-		Player_HyperSonicDash();
-	}
+	if (self->jumpAbilityState == 1 && self->jumpPress) Player_HyperSonicDash();
 	ext->can_dash = false;
 	return false;
 }
@@ -434,29 +424,18 @@ bool32 Player_State_MightyHammerDrop_HOOK(bool32 skippedState) {
 		PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 		int32 dropForce = self->gravityStrength + (self->underwater == 1 ? 0x10000 : 0x20000);
 		if (Player_IsHyper(self)) {
-			if (!ModConfig.JEAjank) dropForce *= 3;
+			if (!HM_globals->config.JEAjank) dropForce *= 3;
 			if (ext->can_dash) {
+				HMAPI_ScreenFlash(self, 0.75);
+				HMAPI_BadnikScreenClear(self);
 				RSDK.PlaySfx(PlayerStaticExt.sfxEarthquake, false, 0xFF);
-
-				Player_ClearEnemiesOnScreen(self);
-				if (ModConfig.screenFlashFactor > 0.0) {
-					EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-					if (ModConfig.screenFlashFactor < 1.3333) {
-						fade->timer = 0x180 * ModConfig.screenFlashFactor;
-						fade->state = FXFade_State_FadeIn;
-					} else {
-						fade->speedIn = 0x180 * ModConfig.screenFlashFactor;
-						fade->state = FXFade_State_FadeOut;
-					}
-					fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
-				}
 			}
 		}
 		int32 groundVel = self->groundVel - (self->groundVel >> 2);
 
 		self->velocity.x = (groundVel * RSDK.Cos256(self->angle) + dropForce * RSDK.Sin256(self->angle)) >> 8;
 		self->velocity.y = (groundVel * RSDK.Sin256(self->angle) - dropForce * RSDK.Cos256(self->angle)) >> 8;
-		if (ModConfig.JEAjank && Player_IsHyper(self)) {
+		if (HM_globals->config.JEAjank && Player_IsHyper(self)) {
 			if (ext->can_dash) {
 				self->velocity.x *= 3;
 				self->velocity.y *= 3;
@@ -543,12 +522,12 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 
 		for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 			Entity* entity = RSDK_GET_ENTITY_GEN(i);
-			if (!IsAttackableEntity(entity, ATKFLAG_ISBOSS)) continue;
-			const uint32 index = entity->classID - AttackableClasses_startidx;
+			const attackinfo_t* info = IsATKEntity(entity, ATKFLAG_ISBOSS, false);
+			if (!info) continue;
 
 			const Vector2 old_pos = entity->position;
-			if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
-			if (RSDK.CheckObjectCollisionTouchBox(self, &hitbox, entity, AttackableClasses[index].getHitbox(entity))) AttackableClasses[index].onHit(self, entity);
+			if (info->adjustPos) info->adjustPos(entity);
+			if (RSDK.CheckObjectCollisionTouchBox(self, &hitbox, entity, info->getHitbox(entity))) info->onHit(self, entity);
 			entity->position = old_pos;
 		}
 		ext->glide_timer = 0;
@@ -640,7 +619,7 @@ void Player_HyperSonicDash() {
 	RSDK_THIS(Player);
 
 	if (!(self->up || self->down || self->left || self->right)) {
-		if (!ModConfig.hyperFlashForwarding) return;
+		if (!HM_globals->config.hyperFlashForwarding) return;
 		self->velocity.x = 0x80000 * (self->direction ? -1 : 1);
 		self->velocity.y = 0;
 	} else {
@@ -650,9 +629,10 @@ void Player_HyperSonicDash() {
 	if (globals->medalMods & MEDAL_NODROPDASH) {
 		self->jumpAbilityState = 0;
 	} else {
-		if (ModConfig.hyperFlashDropDash) self->jumpAbilityState = 22;
+		if (HM_globals->config.hyperFlashDropDash) self->jumpAbilityState = 22;
 	}
-	Player_ClearEnemiesOnScreen(self);
+	HMAPI_ScreenFlash(self, 1.0);
+	HMAPI_BadnikScreenClear(self);
 
 	RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
 	RSDK.SetChannelAttributes(RSDK.PlaySfx(ItemBox->sfxHyperRing, false, 0xFF), 0.4, 0.0, 1.0);
@@ -660,18 +640,6 @@ void Player_HyperSonicDash() {
 	if (camera && !Zone->autoScrollSpeed) {
 		self->scrollDelay = 15;
 		camera->state     = Camera_State_FollowY;
-	}
-
-	if (ModConfig.screenFlashFactor > 0.0) {
-		EntityFXFade* fade = CREATE_ENTITY(FXFade, INT_TO_VOID(0xF0F0F0), self->position.x, self->position.y);
-		if (ModConfig.screenFlashFactor < 1.0) {
-			fade->timer = 0x200 * ModConfig.screenFlashFactor;
-			fade->state = FXFade_State_FadeIn;
-		} else {
-			fade->speedIn = 0x200 * ModConfig.screenFlashFactor;
-			fade->state = FXFade_State_FadeOut;
-		}
-		fade->speedOut = 0x30 * ModConfig.screenFlashFactor;
 	}
 
 	const int32 vel = TO_FIXED(2);
@@ -694,7 +662,7 @@ void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t*
 	RSDK_THIS(Player);
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 	color* palette = info->colors[paletteSlot];
-	if (ModConfig.hyperStyle == 2 && info->rows == 1) palette = PlayerPaletteDefs[0].colors[paletteSlot]; // TODO make sure to recode this to account for underwater palettes later
+	if (HM_globals->config.hyperStyle == 2 && info->rows == 1) palette = PlayerPaletteDefs[0].colors[paletteSlot]; // TODO make sure to recode this to account for underwater palettes later
 
 	if (ext->blend.state == HYPERBLEND_FADEIN) {
 		for (int32 i = 0; i < 6; ++i) {
@@ -734,22 +702,4 @@ int32 Player_GetIndexFromID(int32 ID) {
 #endif
 	}
 	return index;
-}
-
-void Player_ClearEnemiesOnScreen(EntityPlayer* player) {
-	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
-		Entity* entity = RSDK_GET_ENTITY_GEN(i);
-		if (!IsAttackableEntity(entity, ATKFLAG_ISBOSS)) continue;
-		const uint32 index = entity->classID - AttackableClasses_startidx;
-
-		const Vector2 old_pos = entity->position;
-		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
-		Vector2 checkPos = entity->position;
-		if (FarPlane && entity->drawGroup < 3) {
-			checkPos.x = FarPlane->worldPos.x + ((entity->position.x - FarPlane->originPos.x) >> 1);
-			checkPos.y = FarPlane->worldPos.y + ((entity->position.y - FarPlane->originPos.y) >> 1);
-		}
-		if (RSDK.CheckPosOnScreen(&checkPos, &entity->updateRange)) AttackableClasses[index].onHit(player, entity);
-		entity->position = old_pos;
-	}
 }

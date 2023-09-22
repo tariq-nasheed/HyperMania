@@ -41,7 +41,7 @@ bool32 SpecialClear_State_TallyScore_HOOK(bool32 skippedState) {
 bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 	RSDK_THIS(SpecialClear);
 
-	if (!UFO_Setup && self->timer == ((!UFO_HPZbuffer.timedOut || HM_global.currentSave->superEmeralds == 0b01111111) ? 179 : 359)) {
+	if (!UFO_Setup && self->timer == ((!UFO_HPZbuffer.timedOut || HM_globals->currentSave->superEmeralds == 0b01111111) ? 179 : 359)) {
 		self->timer = 0;
 		SpecialClearStaticExt.drawContinue = true;
 
@@ -56,7 +56,7 @@ bool32 SpecialClear_State_ShowTotalScore_Continues_HOOK(bool32 skippedState) {
 		saveRAM->stock          = globals->stock;
 		saveRAM->playerID       = globals->playerID;
 #endif
-		if (!UFO_HPZbuffer.timedOut || HM_global.currentSave->superEmeralds == 0b01111111) {
+		if (!UFO_HPZbuffer.timedOut || HM_globals->currentSave->superEmeralds == 0b01111111) {
 			self->state = SpecialClear_State_WaitToRevealSuperEmerald;
 		} else {
 			self->timer    = 0;
@@ -86,7 +86,7 @@ bool32 SpecialClear_State_ShowTotalScore_NoContinues_HOOK(bool32 skippedState) {
 		saveRAM->stock          = globals->stock;
 		saveRAM->playerID       = globals->playerID;
 #endif
-		if (!UFO_HPZbuffer.timedOut || HM_global.currentSave->superEmeralds == 0b01111111) {
+		if (!UFO_HPZbuffer.timedOut || HM_globals->currentSave->superEmeralds == 0b01111111) {
 			self->state = SpecialClear_State_WaitToRevealSuperEmerald;
 		} else {
 			self->timer    = 0;
@@ -149,7 +149,7 @@ void SpecialClear_Create_OVERLOAD(void* data) {
 			self->score      = saveRAM->score;
 			self->score1UP   = saveRAM->score1UP;
 			self->lives      = saveRAM->lives;
-			if ((UFO_Setup && saveRAM->chaosEmeralds == 0b01111111) || (!UFO_Setup && HM_global.currentSave->superEmeralds == 0b01111111)) {
+			if ((UFO_Setup && saveRAM->chaosEmeralds == 0b01111111) || (!UFO_Setup && HM_globals->currentSave->superEmeralds == 0b01111111)) {
 				self->messageType = SC_MSG_ALLEMERALDS;
 			} else {
 				if (UFO_Setup) {
@@ -235,7 +235,7 @@ void SpecialClear_Update_OVERLOAD() {
 	Mod.Super(SpecialClear->classID, SUPER_UPDATE, NULL);
 	RSDK_THIS(SpecialClear);
 
-	if (self->state == SpecialClear_State_ExitFinishMessage && !UFO_Setup && HM_global.currentSave->superEmeralds != 0b01111111) {
+	if (self->state == SpecialClear_State_ExitFinishMessage && !UFO_Setup && HM_globals->currentSave->superEmeralds != 0b01111111) {
 		self->timer    = 0;
 		self->showFade = true;
 		RSDK.PlaySfx(SpecialClear->sfxSpecialWarp, false, 0xFF);
@@ -563,7 +563,7 @@ void SpecialClear_State_ActivateSuperEmerald() {
 
 	if (self->timer >= 254) {
 		self->timer    = 0;
-		if (HM_global.currentSave->superEmeralds == 0b01111111) {
+		if (HM_globals->currentSave->superEmeralds == 0b01111111) {
 			Entity* emerald = SortedSuperEmeralds[7];
 			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
 			RSDKScreenInfo* screen = &ScreenInfo[camera->screenID];

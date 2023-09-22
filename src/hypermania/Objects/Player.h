@@ -320,7 +320,7 @@ typedef struct {
 #endif
 
 // Entity Class
-typedef struct {
+struct EntityPlayer {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(nextAirState);
@@ -417,7 +417,7 @@ typedef struct {
 #if MANIA_USE_PLUS
 	int32 uncurlTimer;
 #endif
-} EntityPlayer;
+};
 
 extern ObjectPlayer* Player;
 
@@ -432,12 +432,6 @@ typedef enum {
 	HYPERBLEND_FADEIN = -1,
 	HYPERBLEND_FADEOUT // unused for now
 } HyperBlendStates;
-
-typedef struct {
-	int32 startIndex, endIndex;
-	int32 rows;
-	color* colors[6];
-} hyperpal_t;
 
 typedef struct {
 	uint16 shockwaveFrames;
@@ -521,45 +515,5 @@ bool32 Player_IsHyper(EntityPlayer* player);
 void Player_ClearEnemiesOnScreen(EntityPlayer* player);
 void Player_HyperSonicDash();
 int32 Player_GetIndexFromID(int32 ID);
-
-// shhhhhhhhhhhhh --------------------------------------------------------------
-#define BreakBadnik(player, e) Generic_BadnikBreak(player, e, true)
-#define MAX_ATTACKABLE_CLASSES 48
-#define ENTATTACK_INVALID -1
-#define ADD_ATTACKABLE_CLASS(id, vulnerable_func, hitbox_func, hit_func, pos_func, flags_) { \
-  if (AttackableClasses_startidx == ENTATTACK_INVALID) AttackableClasses_startidx = id; \
-  const uint32 index = id - AttackableClasses_startidx; \
-  if (index >= MAX_ATTACKABLE_CLASSES) { \
-      HYPERMANIA_PRINT(PRINT_ERROR, "Attackable class %d has a index (%d) that exceeds max difference from epoch", id, index); \
-  } else { \
-      AttackableClasses[index].checkVulnerable = vulnerable_func; \
-      AttackableClasses[index].getHitbox = hitbox_func; \
-      AttackableClasses[index].onHit = hit_func; \
-      AttackableClasses[index].adjustPos = pos_func; \
-      AttackableClasses[index].flags = flags_; \
-      ++AttackableClasses_size; \
-  } \
-}
-
-enum AttackableFlags {
-	ATKFLAG_NONE     = 0x00,
-	ATKFLAG_NOANIMAL = 0x01,
-	ATKFLAG_ISBOSS   = 0x02
-};
-
-typedef struct {
-	bool32  (*checkVulnerable)(Entity*);
-	Hitbox* (*getHitbox)(Entity*);
-	void    (*onHit)(EntityPlayer*, Entity*);
-	void    (*adjustPos)(Entity*); // optional for "weird" classes (i.e. catterkiller jr.)
-	uint8 flags;
-} attackinfo_t;
-
-extern attackinfo_t AttackableClasses[MAX_ATTACKABLE_CLASSES];
-extern uint32       AttackableClasses_size;
-extern int32        AttackableClasses_startidx;
-
-bool32 IsAttackableEntity(Entity* self, uint8 blacklist_mask);
-
 
 #endif //! OBJ_PLAYER_H

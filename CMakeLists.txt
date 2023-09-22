@@ -34,9 +34,10 @@ set(MOD_NAME hypermania CACHE STRING "Used as root directory for mod source + lo
 
 add_library(hypermania SHARED
 	src/GameAPI/C/GameAPI/Game.c
-	src/${MOD_NAME}/util.c
 	src/${MOD_NAME}/dllmain.c
 	src/${MOD_NAME}/Objects/All.c
+	src/${MOD_NAME}/ModVariables.c
+	src/${MOD_NAME}/ModFunctions.c
 )
 
 target_include_directories(hypermania PRIVATE

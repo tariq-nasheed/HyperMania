@@ -30,10 +30,10 @@ void SuperFlicky_Update(void) {
 					self->player->position.y - 0xC00000 + 0xC00000 * (i & 2)
 				};
 			} else if (self->instanceTarget[i]) {
+				const attackinfo_t* info = GetATKClassInfo(self->instanceTarget[i]->classID);
 				const Vector2 old_pos = self->instanceTarget[i]->position;
-				const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
-				const Hitbox* hitbox = AttackableClasses[index].getHitbox(self->instanceTarget[i]);
-				if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
+				const Hitbox* hitbox = info->getHitbox(self->instanceTarget[i]);
+				if (info->adjustPos) info->adjustPos(self->instanceTarget[i]);
 				target_pos = (Vector2){
 					self->instanceTarget[i]->position.x + (hitbox->right + hitbox->left) * 0xFFFF / 2,
 					self->instanceTarget[i]->position.y + (hitbox->bottom + hitbox->top) * 0xFFFF / 2
@@ -82,12 +82,13 @@ void SuperFlicky_Update(void) {
 			if (self->instanceTarget[i]->classID == TYPE_BLANK) {
 				self->instanceTarget[i] = NULL;
 			} else {
+				const attackinfo_t* info = GetATKClassInfo(self->instanceTarget[i]->classID);
 				const Vector2 old_pos = self->instanceTarget[i]->position;
-				const uint32 index = self->instanceTarget[i]->classID - AttackableClasses_startidx;
-				if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(self->instanceTarget[i]);
+				const uint32 index = self->instanceTarget[i]->classID - HM_globals->AttackableClasses_startidx;
+				if (info->adjustPos) info->adjustPos(self->instanceTarget[i]);
 
-				if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], AttackableClasses[index].getHitbox(self->instanceTarget[i]))) {
-					AttackableClasses[index].onHit(self->player, self->instanceTarget[i]);
+				if (RSDK.CheckObjectCollisionTouchBox(self, &SuperFlicky->hitbox, self->instanceTarget[i], info->getHitbox(self->instanceTarget[i]))) {
+					info->onHit(self->player, self->instanceTarget[i]);
 					self->instanceTarget[i]->position = old_pos;
 					self->instanceTarget[i] = NULL;
 					self->instanceCooldown[i] = 120;
@@ -261,9 +262,8 @@ void SuperFlicky_HandleAttack(int32 slot) {
 		return;
 	}
 
-	if (self->instanceTarget[slot]->active == ACTIVE_DISABLED
-	 || !IsAttackableEntity(self->instanceTarget[slot], 0)
-	 || !AttackableClasses[self->instanceTarget[slot]->classID - AttackableClasses_startidx].checkVulnerable(self->instanceTarget[slot])) {
+	const attackinfo_t* info = IsATKEntity(self->instanceTarget[slot], ATKFLAG_ISBOSS, false);
+	if (self->instanceTarget[slot]->active == ACTIVE_DISABLED || !info || !info->checkVulnerable(self->instanceTarget[slot])) {
 		self->instanceTarget[slot] = NULL;
 		self->instanceCooldown[slot] = 120; // TODO is this even supposed to happen? make sure to check AIR code later
 	}
@@ -274,23 +274,8 @@ void SuperFlicky_TryFindValidTarget(int32 slot) {
 
 	for (int16 i = 0; i != ENTITY_COUNT; ++i) {
 		Entity* entity = RSDK_GET_ENTITY_GEN(i);
-		if (!IsAttackableEntity(entity, 0)) continue;
-
-		// checking if potential victim is visible
-		const uint32 index = entity->classID - AttackableClasses_startidx;
-		const Vector2 old_pos = entity->position;
-		if (AttackableClasses[index].adjustPos) AttackableClasses[index].adjustPos(entity);
-		
-		bool32 visible = false;
-		if (!FarPlane || (self->drawGroup < 3 && entity->drawGroup < 3) || (self->drawGroup >= 3 && entity->drawGroup >= 3)) {
-			if (FarPlane && entity->drawGroup < 3) {
-				entity->position.y = FarPlane->worldPos.y + ((entity->position.y - FarPlane->originPos.y) >> 1);
-				entity->position.x = FarPlane->worldPos.x + ((entity->position.x - FarPlane->originPos.x) >> 1);
-			}
-			visible = RSDK.CheckOnScreen(entity, NULL);
-		}
-		entity->position = old_pos;
-		if (!visible) continue;
+		if (!IsATKEntity(entity, ATKFLAG_NONE, true)) continue;
+		if (FarPlane && ((self->drawGroup >= 3 && entity->drawGroup < 3) || (self->drawGroup < 3 && entity->drawGroup >= 3))) continue;
 
 		// checking if its already being targeted by another flicky
 		bool32 is_victim = false;
