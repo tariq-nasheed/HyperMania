@@ -177,12 +177,11 @@ attackinfo_t* IsATKEntity(Entity* entity, uint8 blacklist_mask, bool32 checkVisi
 
 		const Vector2 old_pos = entity->position;
 		if (info->adjustPos) info->adjustPos(entity);
-		Vector2 checkPos = entity->position;
 		if (FarPlane && entity->drawGroup < 3) {
 			entity->position.x = FarPlane->worldPos.x + ((entity->position.x - FarPlane->originPos.x) >> 1);
 			entity->position.y = FarPlane->worldPos.y + ((entity->position.y - FarPlane->originPos.y) >> 1);
 		}
-		if (RSDK.CheckPosOnScreen(&checkPos, &entity->updateRange)) {
+		if (RSDK.CheckPosOnScreen(&entity->position, &entity->updateRange)) {
 			entity->position = old_pos;
 			return info;
 		}
@@ -376,9 +375,13 @@ void AddAPIFunctions() {
 	ADD_PUBLIC_FUNC(HMAPI_AddCharacter);
 	ADD_PUBLIC_FUNC(HMAPI_BadnikScreenClear);
 	ADD_PUBLIC_FUNC(HMAPI_ItemBoxScreenClear);
+	ADD_PUBLIC_FUNC(HM_Save_SaveFile);
+	ADD_PUBLIC_FUNC(HM_Save_LoadFile);
+	ADD_PUBLIC_FUNC(AllocExtMem);
+	ADD_PUBLIC_FUNC(GetExtMem);
+	ADD_PUBLIC_FUNC(FreeExtMem);
+	ADD_PUBLIC_FUNC(Player_IsHyper);
 	ADD_PUBLIC_FUNC(AddATKClass);
 	ADD_PUBLIC_FUNC(GetATKClassInfo);
 	ADD_PUBLIC_FUNC(IsATKEntity);
-	ADD_PUBLIC_FUNC(HM_Save_SaveFile);
-	ADD_PUBLIC_FUNC(HM_Save_LoadFile);
 }
