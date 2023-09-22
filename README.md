@@ -43,8 +43,8 @@ See [SETTINGS](SETTINGS.md)
 
 # Planned features
 + Extra GFX/SFX
-+ New mechanic(s) for new special stages(?)
-+ mayyyybe an API for custom characters + enemies
++ New special stages
++ New mechanic(s) for new special stages
 
 # Credits
 + jubbalub + Hydropper - Super Emerald sprites, emerald cave map
