@@ -14,7 +14,6 @@
 #include "Boilerplate/Music.c"
 #include "Boilerplate/Global/PauseMenu.c"
 #include "Boilerplate/Global/InvincibleStars.c"
-#include "LogoSetup.c"
 
 #include "Boilerplate/CPZ/CPZSetup.c"
 #include "Boilerplate/OOZ/OOZSetup.c"
@@ -50,8 +49,6 @@ uint32 sonic3_emerald_lookup[7] = { 0, 1, 3, 2, 4, 6, 5 };
 #include "SuperFlicky.c"
 #include "HyperStars.c"
 #include "JetGlideEffect.c"
-
-#include "SHCLogo.c"
 
 struct {
 	uint16 aniFrames;

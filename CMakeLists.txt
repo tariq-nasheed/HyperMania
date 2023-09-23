@@ -25,7 +25,6 @@ if(LEGACY)
 	message(STATUS "Making legacy build")
 	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DRETRO_MOD_LOADER_VER=1")
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DRETRO_MOD_LOADER_VER=1")
-
 endif()
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")

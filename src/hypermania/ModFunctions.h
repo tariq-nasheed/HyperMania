@@ -3,6 +3,7 @@
 
 #include "ModVariables.h"
 
+#include "Objects/Player.h"
 #include "Objects/Boilerplate/SaveGame.h"
 #include "Objects/Boilerplate/Animals.h"
 #include "Objects/Boilerplate/Camera.h"
@@ -17,7 +18,6 @@
 #include "Boilerplate/Music.h"
 #include "Boilerplate/Global/PauseMenu.h"
 #include "Boilerplate/Global/InvincibleStars.h"
-#include "LogoSetup.h"
 
 #include "Objects/Boilerplate/CPZ/CPZSetup.h"
 #include "Objects/Boilerplate/OOZ/OOZSetup.h"

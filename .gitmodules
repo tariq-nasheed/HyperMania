@@ -1,3 +1,6 @@
 [submodule "src/GameAPI"]
         path = src/GameAPI
         url = https://github.com/Rubberduckycooly/GameAPI.git
+[submodule "src/SHCLogo-RSDKv5Decomp"]
+	path = src/SHCLogo-RSDKv5Decomp
+	url = https://github.com/tariq-nasheed/SHCLogo-RSDKv5Decomp

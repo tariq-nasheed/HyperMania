@@ -18,7 +18,6 @@
 #include "Boilerplate/Music.h"
 #include "Boilerplate/Global/PauseMenu.h"
 #include "Boilerplate/Global/InvincibleStars.h"
-#include "LogoSetup.h"
 
 #include "Objects/Boilerplate/CPZ/CPZSetup.h"
 #include "Objects/Boilerplate/OOZ/OOZSetup.h"
@@ -46,7 +45,6 @@
 #include "Objects/HPZ/HPZSetup.h"
 #include "Objects/HPZ/HPZIntro.h"
 #include "Objects/HPZ/HPZBeam.h"
-#include "Objects/SHCLogo.h"
 
 // enemy checking file
 #include "Objects/Enemy.h"
@@ -210,7 +208,6 @@ void InitModAPI() {
 	MOD_REGISTER_OBJECT_HOOK(ItemBox);
 	MOD_REGISTER_OBJECT_HOOK(ScoreBonus);
 	MOD_REGISTER_OBJECT_HOOK(Zone);
-	OBJ_LOGOSETUP_SETUP;
 	HOOK_ENEMY_OBJECTS;
 	MOD_REGISTER_OBJECT_HOOK(InvincibleStars);
 
@@ -224,7 +221,6 @@ void InitModAPI() {
 	// Mod ------------------------------------------------------------
 	OBJ_SAVE_SETUP;
 	OBJ_PLAYER_SETUP;
-	printf("Player_GiveScore: %p\n", Player_GiveScore);
 	OBJ_SPECIALRING_SETUP;
 	OBJ_UFO_PLAYER_SETUP;
 	OBJ_SPECIALCLEAR_SETUP;
@@ -241,10 +237,6 @@ void InitModAPI() {
 	RSDK_REGISTER_OBJECT(HPZSetup);
 	RSDK_REGISTER_OBJECT(HPZIntro);
 	RSDK_REGISTER_OBJECT(HPZBeam);
-	RSDK_REGISTER_OBJECT(SHCLogo);
-	HOOK_STATE(LogoSetup_State_FadeToNextLogos, 1);
-	HOOK_STATE(LogoSetup_State_ShowLogos, 1);
-	HOOK_STATE(LogoSetup_State_NextLogos, 1);
 }
 
 #if RETRO_USE_MOD_LOADER

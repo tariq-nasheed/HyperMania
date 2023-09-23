@@ -3,10 +3,6 @@
 HM_global_t HM_global;
 bool32 HPZ_SuperSpecialStage;
 
-// compiler bitches if these aren't here
-bool32 Player_IsHyper(EntityPlayer* player);
-extern void (*Player_GiveScore)(EntityPlayer *player, int32 score);
-
 // =============================================================================
 
 // -----------------------------------------------------------------------------
