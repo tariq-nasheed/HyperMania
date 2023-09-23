@@ -1,5 +1,7 @@
 #include "HyperManiaLink.h"
 
+HMFuncTable HMAPI;
+
 void LinkHyperManiaAPI() {
 	HMAPI.InitClient         = Mod.GetPublicFunction("HyperMania", "HMAPI_InitClient");
 	HMAPI.GetGlobals         = Mod.GetPublicFunction("HyperMania", "HMAPI_GetGlobals");

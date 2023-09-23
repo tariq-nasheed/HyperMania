@@ -303,6 +303,7 @@ void Generic_BadnikBreak_NoEntity(EntityPlayer* player, Vector2 position, bool32
 clientarray_t clients;
 
 bool32 HMAPI_InitClient(const char* _modID, uint16* clearFrames) {
+	printf("HYPERMANIA client \'%s\' initialized!\n", _modID);
 	clients.mem = realloc(clients.mem, sizeof(clientinfo_t) * (clients.len + 1));
 	clientinfo_t* back = &clients.mem[clients.len];
 	++clients.len;
