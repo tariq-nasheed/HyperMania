@@ -1,5 +1,5 @@
-#ifndef MODLINK_H
-#define MODLINK_H
+#ifndef HYPERMANIALINK_H
+#define HYPERMANIALINK_H
 
 struct {
 	bool32        (InitClient*)(const char* _modID, uint16* clearFrames);
@@ -21,4 +21,4 @@ struct {
 
 void LinkHyperManiaAPI();
 
-#endif //MODLINK_H
+#endif //! HYPERMANIALINK_H
