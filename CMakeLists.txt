@@ -35,7 +35,7 @@ add_library(hypermania SHARED
 	src/GameAPI/C/GameAPI/Game.c
 	src/${MOD_NAME}/dllmain.c
 	src/${MOD_NAME}/Objects/All.c
-	src/${MOD_NAME}/ModVariables.c
+	src/${MOD_NAME}/HyperManiaVariables.c
 	src/${MOD_NAME}/ModFunctions.c
 )
 
