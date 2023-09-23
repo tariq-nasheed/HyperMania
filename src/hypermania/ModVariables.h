@@ -1,32 +1,8 @@
 #ifndef MODVARIABLES_H
 #define MODVARIABLES_H
 
+#include "Mania/All.h"
 #include "GameAPI/Game.h"
-
-typedef struct EntityPlayer EntityPlayer;
-
-// more lol's
-typedef struct {
-	uint8 padding[0x58];
-	int32 saveState;
-	int32 characterID;
-	int32 zoneID;
-	int32 lives;
-	int32 score;
-	int32 score1UP;
-	int32 chaosEmeralds;
-	int32 continues;
-	int32 storedStageID;
-	int32 nextSpecialStage;
-	int32 collectedSpecialRings;
-	int32 medalMods;
-#if MANIA_USE_PLUS
-	int32 zoneTimes[32];
-	int32 characterFlags;
-	int32 stock;
-	int32 playerID;
-#endif
-} SaveRAM;
 
 // =============================================================================
 
@@ -71,7 +47,7 @@ enum AttackableFlags {
 typedef struct {
 	bool32  (*checkVulnerable)(Entity*);
 	Hitbox* (*getHitbox)(Entity*);
-	void    (*onHit)(Entity*, Entity*);
+	void    (*onHit)(EntityPlayer*, Entity*);
 	void    (*adjustPos)(Entity*); // optional for "weird" classes (i.e. catterkiller jr.)
 	uint8 flags;
 } attackinfo_t;
@@ -81,6 +57,11 @@ typedef struct {
 // Misc. + Globals -------------------------------------------------------------
 
 // =============================================================================
+typedef struct {
+	size_t size;
+	void* mem;
+} extmem_t;
+
 typedef struct {
 	int32 startIndex, endIndex;
 	int32 rows;

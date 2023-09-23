@@ -27,7 +27,6 @@
 #include "Objects/Boilerplate/BSS/BSS_Setup.h"
 
 
-
 extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, will be removed later, please understand
 extern SaveRAM* GetSaveRAM_Safe(); // this really shouldnt be here but whatever
 
@@ -43,10 +42,6 @@ void HM_Save_LoadFile();
 #define EXTMEM_FREE_ID -1
 #define MAX_EXTMEM_ENTITIES 64
 
-typedef struct {
-	size_t size;
-	void* mem;
-} extmem_t;
 extern extmem_t ExtMemory[MAX_EXTMEM_ENTITIES];
 extern uint32   ExtMemory_size;
 extern int8 ExtMemoryIndex[ENTITY_COUNT - TEMPENTITY_COUNT];

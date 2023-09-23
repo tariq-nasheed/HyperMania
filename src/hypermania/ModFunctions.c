@@ -3,6 +3,10 @@
 HM_global_t HM_global;
 bool32 HPZ_SuperSpecialStage;
 
+// compiler bitches if these aren't here
+bool32 Player_IsHyper(EntityPlayer* player);
+extern void (*Player_GiveScore)(EntityPlayer *player, int32 score);
+
 // =============================================================================
 
 // -----------------------------------------------------------------------------
@@ -234,14 +238,14 @@ void Generic_BadnikBreak(EntityPlayer* player, Entity* badnik, bool32 spawnAnima
 	scoreBonus->drawGroup        = Zone->objectDrawGroup[1];
 	scoreBonus->animator.frameID = player->scoreBonus;
 
-	switch (player->scoreBonus) {
+	/*switch (player->scoreBonus) {
 		case 0: Player_GiveScore(player, 100); break;
 		case 1: Player_GiveScore(player, 200); break;
 		case 2: Player_GiveScore(player, 500); break;
 		case 14: Player_GiveScore(player, 1000); break;
 		case 15: Player_GiveScore(player, 10000); break;
 		default: break;
-	}
+	}*/
 	if (player->scoreBonus < 15) player->scoreBonus++;
 
 	destroyEntity(badnik);
@@ -359,9 +363,9 @@ void HMAPI_BadnikScreenClear(EntityPlayer* player) {
 
 void HMAPI_ItemBoxScreenClear(EntityPlayer* player, bool32 force) {
 	if (!HM_globals->config.GSWitemBoxes && !force) return;
-	foreach_all(ItemBox, box) {
-		if (RSDK.CheckOnScreen(box, NULL) && (void*)box->state != (void*)ItemBox_State_Broken) {
-			ItemBox_Break(box, player);
+	foreach_all(ItemBox, itemBox) {
+		if (RSDK.CheckOnScreen(itemBox, NULL) && itemBox->state != ItemBox_State_Broken) {
+			ItemBox_Break(itemBox, player);
 		}
 	}
 }

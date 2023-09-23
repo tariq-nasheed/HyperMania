@@ -1,6 +1,6 @@
 #include "../GameAPI/C/GameAPI/Game.h"
 
-#include "ModVariables.h"
+#include "ModFunctions.h"
 #include "crash.h"
 
 // game classes litte/no notable modifications
@@ -50,8 +50,6 @@
 
 // enemy checking file
 #include "Objects/Enemy.h"
-
-#include "ModFunctions.h"
 
 #if RETRO_USE_MOD_LOADER
 DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
@@ -226,6 +224,7 @@ void InitModAPI() {
 	// Mod ------------------------------------------------------------
 	OBJ_SAVE_SETUP;
 	OBJ_PLAYER_SETUP;
+	printf("Player_GiveScore: %p\n", Player_GiveScore);
 	OBJ_SPECIALRING_SETUP;
 	OBJ_UFO_PLAYER_SETUP;
 	OBJ_SPECIALCLEAR_SETUP;
