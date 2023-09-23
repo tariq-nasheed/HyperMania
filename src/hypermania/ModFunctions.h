@@ -1,7 +1,7 @@
 #ifndef MODFUNCTIONS_H
 #define MODFUNCTIONS_H
 
-#include "ModVariables.h"
+#include "HyperManiaVariables.h"
 
 #include "Objects/Player.h"
 #include "Objects/Boilerplate/SaveGame.h"

@@ -1,6 +1,8 @@
 #ifndef HYPERMANIALINK_H
 #define HYPERMANIALINK_H
 
+#include "HyperManiaVariables.h"
+
 struct {
 	bool32        (InitClient*)(const char* _modID, uint16* clearFrames);
 	HM_global_t*  (GetGlobals*)();
