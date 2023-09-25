@@ -169,6 +169,7 @@ void InitModAPI() {
 	HM_globals->config.GSWburst = Mod.GetSettingsBool("", "Config:GSWburst", true);
 	HM_globals->config.GSWitemBoxes = Mod.GetSettingsBool("", "Config:GSWitemBoxes", true);
 	HM_globals->config.JEAjank = Mod.GetSettingsBool("", "Config:JEAjank", false);
+	HM_globals->config.superTailsOnly = Mod.GetSettingsBool("", "Config:superTailsOnly", false);
 	Mod.SetSettingsInteger("Config:hyperStyle", HM_globals->config.hyperStyle);
 	Mod.SetSettingsBool("Config:hyperFlashDropDash", HM_globals->config.hyperFlashDropDash);
 	Mod.SetSettingsBool("Config:hyperFlashForwarding", HM_globals->config.hyperFlashForwarding);
@@ -178,6 +179,7 @@ void InitModAPI() {
 	Mod.SetSettingsBool("Config:GSWburst", HM_globals->config.GSWburst);
 	Mod.SetSettingsBool("Config:GSWitemBoxes", HM_globals->config.GSWitemBoxes);
 	Mod.SetSettingsBool("Config:JEAjank", HM_globals->config.JEAjank);
+	Mod.SetSettingsBool("Config:superTailsOnly", HM_globals->config.superTailsOnly);
 	Mod.SaveSettings();
 
 	// Boilerplate ---------------------------------------------------------

@@ -2,7 +2,7 @@
 
 modname="HyperMania"
 logicname="hypermania"
-filelist="Data mod.ini SETTINGS.md MANUAL.md src/release-files/modSettings.ini"
+filelist="Data mod.ini SETTINGS.md MANUAL.md src/release-files/modSettings.ini src/release-files/HyperManiaSaveData.bin"
 releasedir="HyperMania"
 
 BuildMods() {
@@ -33,12 +33,12 @@ cd src
 # UP-TO-DATE MOD LOADER VERSIONS ###############################################
 # linux
 BuildMods
-cp -R build/$logicname.so SHCLogo-RSDKv5Decomp/build/SHCLogo.so $releasedir
+cp -R build/$logicname.so SHCLogo-RSDKv5Decomp/build/SHCLogo.so $releasedir release-files/Data/GameConfig.bin
 tar czf $modname-linux.tar.gz $releasedir
 rm $releasedir/*.so
 # windows
 BuildMods -DCMAKE_SYSTEM_NAME=Windows
-cp -R build/$logicname.dll SHCLogo-RSDKv5Decomp/build/SHCLogo.dll $releasedir
+cp -R build/$logicname.dll SHCLogo-RSDKv5Decomp/build/SHCLogo.dll $releasedir release-files/Data/GameConfig.bin
 zip -r $modname-windows.zip $releasedir
 rm $releasedir/*.dll
 

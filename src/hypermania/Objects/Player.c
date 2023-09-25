@@ -39,8 +39,12 @@ bool32 (*Player_CheckCollisionPlatform)(EntityPlayer *player, void *entity, Hitb
 // -----------------------------------------------------------------------------
 static bool32 (*formerCanSuperCB)(bool32);
 static bool32 disableSuperPostTransfer(bool32 isHUD) {
+	RSDK_THIS(Player);
+
 	if (formerCanSuperCB && formerCanSuperCB(isHUD) == false) return false;
-	if (!ERZStart && HM_globals->currentSave->transferedEmeralds && HM_globals->currentSave->superEmeralds != 0b01111111) {
+	if (!ERZStart
+	&& (HM_globals->currentSave->transferedEmeralds || (HM_globals->config.superTailsOnly && self->characterID == ID_TAILS))
+	&& HM_globals->currentSave->superEmeralds != 0b01111111) {
 		return false;
 	}
 	return true;

@@ -1,3 +1,8 @@
+# Game.xml vs GameConfig.bin
+Some users have reported issues with `Game.xml` not working correctly (i.e. crashing when loading into Hidden Palace Zone),
+if you are effected by this issue, please copy the `GameConfig.bin` file into Data/Game/ and delete `Game.xml`
+to make sure the engine doesn't attempt to load it.
+
 # Hyper Abilities
 - Sonic combines his *Hyper Flash* ability from S3&K with his *Drop Dash* maneuver to form the
 **Hyper Drop Flash**.  Press jump mid-air to take off in the direction held, destroying every badnik
