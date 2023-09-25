@@ -386,8 +386,8 @@ void SpecialClear_Draw_OVERLOAD() {
 				self->playerNameAnimator.frameID = 11;
 			} else {
 				self->playerNameAnimator.frameID = 12;
-				if (HM_globals->config.superTailsOnly && GET_CHARACTER_ID(1) == ID_TAILS) self->playerNameAnimator.frameID = 11;
 			}
+			if (HM_globals->config.superTailsOnly && GET_CHARACTER_ID(1) == ID_TAILS) self->playerNameAnimator.frameID = 11;
 			RSDK.DrawSprite(&self->playerNameAnimator, &drawPos, true);
 
 			self->playerNameAnimator.frameID = 13;

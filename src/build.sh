@@ -11,7 +11,7 @@ if [ ! -d build ]; then
 	mkdir build
 fi
 cd build
-cmake ..
+cmake .. --fresh
 make -j8
 mv SHCLogo.so ../../..
 cd ../..

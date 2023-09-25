@@ -8,6 +8,9 @@
 
 - `JEAJank` -- Boolean that enables old, janky Jackhammer Earthquake Attack physics as seen in alpha builds (fun for speedrunners!) (Default: false)
 
+- `superTailsOnly` -- Makes Tails follow S3&K logic for his transformations (Default: false)
+>- cannot turn Super with Chaos Emeralds
+>- Hyper Tails renamed to Super Tails
 - `hyperStyle` - Enum that controls how hyper forms look (Default: 0)
 >- 0 - non-Sonic characters use super palette that pulsates white
 >- 1 - non-Sonic characters reuse super palette cycling and don't have hyper sparkles
