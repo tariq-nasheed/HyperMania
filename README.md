@@ -1,8 +1,12 @@
 <h1 style="text-align: center;">HyperMania</h1>
 
-![Alt text](screenshots/1.png?raw=true "screenshot")
+![Alt text](images/icon.png?raw=true "icon")
 
-![Alt text](screenshots/2.png?raw=true "screenshot")
+![Alt text](images/1.png?raw=true "screenshot")
+
+![Alt text](images/2.png?raw=true "screenshot")
+
+![Alt text](images/3.png?raw=true "screenshot")
 
 Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game, features high degree of accuracy to S3&K with code based directly on [Sonic 3 AIR](https://github.com/Eukaryot/sonic3air).
 
