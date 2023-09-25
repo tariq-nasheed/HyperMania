@@ -9,8 +9,8 @@ void HUD_LateUpdate_OVERLOAD() {
 	RSDK_THIS(HUD);
 
 #if GAME_VERSION != VER_100
-	if (HM_globals->currentSave->transferedEmeralds
-	&& (HM_globals->currentSave->transferedEmeralds || (HM_globals->config.superTailsOnly && GET_CHARACTER_ID(1) == ID_TAILS))) {
+	if ((HM_globals->currentSave->transferedEmeralds || (HM_globals->config.superTailsOnly && GET_CHARACTER_ID(1) == ID_TAILS))
+	&& HM_globals->currentSave->superEmeralds != 0b01111111) {
 		self->actionPromptPos = -TO_FIXED(32);
 	}
 #endif
