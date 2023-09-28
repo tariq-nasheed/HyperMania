@@ -262,7 +262,7 @@ void SuperFlicky_HandleAttack(int32 slot) {
 		return;
 	}
 
-	const attackinfo_t* info = IsATKEntity(self->instanceTarget[slot], ATKFLAG_ISBOSS, false);
+	const attackinfo_t* info = IsATKEntity(self->instanceTarget[slot], ATKFLAG_NONE, false);
 	if (self->instanceTarget[slot]->active == ACTIVE_DISABLED || !info || !info->checkVulnerable(self->instanceTarget[slot])) {
 		self->instanceTarget[slot] = NULL;
 		self->instanceCooldown[slot] = 120; // TODO is this even supposed to happen? make sure to check AIR code later
