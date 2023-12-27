@@ -27,6 +27,11 @@ if(LEGACY)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DRETRO_MOD_LOADER_VER=1")
 endif()
 
+if(SHCLOGO)
+	add_subdirectory("src/SHCLogo")
+	set_target_properties(SHCLogo PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+endif()
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O2")
 set(MOD_NAME hypermania CACHE STRING "Used as root directory for mod source + logic file name")
