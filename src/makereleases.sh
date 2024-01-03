@@ -46,6 +46,7 @@ if [ -n "$withSHC" ]; then
 	rm src/$releasedir/mod.ini
 	cp src/release-files/SHCmod.ini src/$releasedir
 	mv src/$releasedir/SHCmod.ini src/$releasedir/mod.ini
+	cp -R src/release-files/Logos src/$releasedir/Data/Stages
 fi
 cd src
 
