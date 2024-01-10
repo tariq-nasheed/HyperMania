@@ -504,8 +504,9 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 	if (!Player_IsHyper(self)) return false;
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 
-	if (ext->can_dash && Player->raySwoopTimer) {
+	if (ext->can_dash && self->rotation) {
 		ext->can_dash = false;
+		if (self->abilitySpeed > -0x20000) self->abilitySpeed = -0x20000;
 
 		EntityJetGlideEffect* effect = CREATE_ENTITY(JetGlideEffect, NULL, self->position.x, self->position.y);
 		effect->drawGroup = self->drawGroup + 1;
@@ -540,13 +541,12 @@ bool32 Player_State_RayGlide_HOOK(bool32 skippedState) {
 		RSDK.SetChannelAttributes(RSDK.PlaySfx(Player->sfxRelease, false, 0xFF), 1.1, 0.0, 1.0);
 		RSDK.SetChannelAttributes(RSDK.PlaySfx(ItemBox->sfxHyperRing, false, 0xFF), 0.4, 0.0, 1.0);
 	}
-	if (!Player->raySwoopTimer) {
+	if (!self->rotation) {
 		ext->can_dash = true;
 	}
 
-	if (((self->direction == FLIP_X && self->right)
-	 || (self->direction == FLIP_NONE && self->left))
-	 && self->rotation == true && ext->glide_timer < 60) {
+	if (((self->direction == FLIP_X && self->right) || (self->direction == FLIP_NONE && self->left))
+	 && self->rotation && ext->glide_timer < 60) {
 		if (!self->abilitySpeed) {
 			self->velocity.y -= (self->gravityStrength * RSDK.Cos512(self->abilityValue)) >> 9;
 		}
@@ -666,7 +666,7 @@ void Player_BlendHyperPalette(int32 paletteSlot, int32 bankID, const hyperpal_t*
 	RSDK_THIS(Player);
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 	color* palette = info->colors[paletteSlot];
-	if (HM_globals->config.hyperStyle == 2 && info->rows == 1) palette = PlayerPaletteDefs[0].colors[paletteSlot]; // TODO make sure to recode this to account for underwater palettes later
+	if (HM_globals->config.hyperStyle == 2 && info->rows == 1) palette = PlayerPaletteDefs[0].colors[paletteSlot];
 
 	if (ext->blend.state == HYPERBLEND_FADEIN) {
 		for (int32 i = 0; i < 6; ++i) {
