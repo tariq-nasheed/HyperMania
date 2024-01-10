@@ -1,7 +1,6 @@
 #include "../GameAPI/C/GameAPI/Game.h"
 
 #include "ModFunctions.h"
-#include "crash.h"
 
 // game classes litte/no notable modifications
 #include "Objects/Boilerplate/SaveGame.h"
@@ -151,7 +150,6 @@ void InitModAPI() {
 		"\x1b[0m"
 	);
 	printf(" loaded\n");
-	CRASH_HANDLING_SETUP;
 
 	AddAPIFunctions();
 	HM_globals = calloc(1, sizeof(HM_global_t));
