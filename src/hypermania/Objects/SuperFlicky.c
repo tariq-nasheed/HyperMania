@@ -166,32 +166,38 @@ void SuperFlicky_Draw(void) {
 		self->scale.y = self->player->scale.y;
 	}
 
-	// loading up palettes into banks
-	color colorStore[9];
-
+	color colorStore[SUPERFLICKY_COLOR_COUNT * 3];
 	if (self->blend.state || self->blend.amount) {
-		for (int32 i = 0; i != 3; ++i) {
-			if (HCZSetup) colorStore[3 + i] = RSDK.GetPaletteEntry(1, i + 2);
-			if (CPZSetup) colorStore[6 + i] = RSDK.GetPaletteEntry(2, i + 2);
-			colorStore[i] = RSDK.GetPaletteEntry(0, i + 2);
+		// storing unmodified palettes for later
+		for (int32 i = 0; i != SUPERFLICKY_COLOR_COUNT; ++i) {
+			if (HCZSetup) colorStore[SUPERFLICKY_COLOR_COUNT + i] = RSDK.GetPaletteEntry(1, 2 + i);
+			if (CPZSetup) colorStore[SUPERFLICKY_COLOR_COUNT * 2 + i] = RSDK.GetPaletteEntry(2, 2 + i);
+			colorStore[i] = RSDK.GetPaletteEntry(0, 2 + i);
 		}
 
+		// fading palettes
+		//   underwater palettes
 		if (HCZSetup) {
-			for (int32 i = 0; i != 3; ++i) {
-				RSDK.SetPaletteEntry(6, i + 2, Player->superPalette_Sonic_HCZ[i * 2 + 6]);
-				if (self->blend.state & 2) RSDK.SetPaletteEntry(7, i + 2, Player->superPalette_Sonic_HCZ[i * 2 + 12]);
+			for (int32 i = 0; i != SUPERFLICKY_COLOR_COUNT; ++i) {
+				const int32 superIndex = MIN(i * 2, 5);
+				RSDK.SetPaletteEntry(6, 2 + i, Player->superPalette_Sonic_HCZ[6 + superIndex]);
+				if (self->blend.state & 2) RSDK.SetPaletteEntry(7, 2 + i, Player->superPalette_Sonic_HCZ[12 + superIndex]);
 			}
 			SuperFlicky_BlendSuperPalette(1);
 		} else if (CPZSetup) {
-			for (int32 i = 0; i != 3; ++i) {
-				RSDK.SetPaletteEntry(6, i + 2, Player->superPalette_Sonic_CPZ[i * 2 + 6]);
-				if (self->blend.state & 2) RSDK.SetPaletteEntry(7, i + 2, Player->superPalette_Sonic_CPZ[i * 2 + 12]);
+			for (int32 i = 0; i != SUPERFLICKY_COLOR_COUNT; ++i) {
+				const int32 superIndex = MIN(i * 2, 5);
+				RSDK.SetPaletteEntry(6, 2 + i, Player->superPalette_Sonic_CPZ[6 + superIndex]);
+				if (self->blend.state & 2) RSDK.SetPaletteEntry(7, 2 + i, Player->superPalette_Sonic_CPZ[12 + superIndex]);
 			}
 			SuperFlicky_BlendSuperPalette(2);
 		}
-		for (int32 i = 0; i != 3; ++i) {
-			RSDK.SetPaletteEntry(6, i + 2, Player->superPalette_Sonic[i * 2 + 6]);
-			if (self->blend.state & 2) RSDK.SetPaletteEntry(7, i + 2, Player->superPalette_Sonic[i * 2 + 12]);
+
+		//   normal palette
+		for (int32 i = 0; i != SUPERFLICKY_COLOR_COUNT; ++i) {
+			const int32 superIndex = MIN(i * 2, 5);
+			RSDK.SetPaletteEntry(6, 2 + i, Player->superPalette_Sonic[6 + superIndex]);
+			if (self->blend.state & 2) RSDK.SetPaletteEntry(7, 2 + i, Player->superPalette_Sonic[12 + superIndex]);
 		}
 		SuperFlicky_BlendSuperPalette(0);
 	}
@@ -202,12 +208,12 @@ void SuperFlicky_Draw(void) {
 		RSDK.DrawSprite(&self->instanceAnimator[i], &self->instancePos[i], false);
 	}
 
-	// reverting to original palette
+	// reverting original palettes
 	if (self->blend.state || self->blend.amount) {
-		for (int32 i = 0; i != 3; ++i) {
-			if (HCZSetup) RSDK.SetPaletteEntry(1, i + 2, colorStore[i + 3]);
-			if (CPZSetup) RSDK.SetPaletteEntry(2, i + 2, colorStore[i + 6]);
-			RSDK.SetPaletteEntry(0, i + 2, colorStore[i]);
+		for (int32 i = 0; i != SUPERFLICKY_COLOR_COUNT; ++i) {
+			if (HCZSetup) RSDK.SetPaletteEntry(1, 2 + i, colorStore[SUPERFLICKY_COLOR_COUNT + i]);
+			if (CPZSetup) RSDK.SetPaletteEntry(2, 2 + i, colorStore[SUPERFLICKY_COLOR_COUNT * 2 + i]);
+			RSDK.SetPaletteEntry(0, 2 + i, colorStore[i]);
 		}
 	}
 	
@@ -296,8 +302,8 @@ void SuperFlicky_TryFindValidTarget(int32 slot) {
 void SuperFlicky_BlendSuperPalette(int32 bankID) {
 	RSDK_THIS(SuperFlicky);
 	if (self->blend.state & 2) {
-		RSDK.SetLimitedFade(bankID, 6, 7, self->blend.amount, 2, 4);
+		RSDK.SetLimitedFade(bankID, 6, 7, self->blend.amount, 2, 2 + SUPERFLICKY_COUNT - 1);
 	} else {
-		RSDK.SetLimitedFade(bankID, bankID, 6, self->blend.amount, 2, 4);
+		RSDK.SetLimitedFade(bankID, bankID, 6, self->blend.amount, 2, 2 + SUPERFLICKY_COUNT - 1);
 	}
 }

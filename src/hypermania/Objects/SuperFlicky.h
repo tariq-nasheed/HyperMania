@@ -5,6 +5,7 @@
 
 // Constants
 #define SUPERFLICKY_COUNT (4)
+#define SUPERFLICKY_COLOR_COUNT (6)
 
 // Object Class
 typedef struct {
