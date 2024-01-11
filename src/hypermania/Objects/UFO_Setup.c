@@ -12,7 +12,7 @@ static bool32 HPZ_results;
 
 bool32 UFO_Setup_State_FinishFadeout_HOOK(bool32 skippedState) {
 	RSDK_THIS(UFO_Setup);
-	// TODO check if player has all chaos emeralds or last special stage was for a super emerald
+
 	if (self->timer >= 1024 && !UFO_Setup->resetToTitle && HPZ_SuperSpecialStage) {
 		HPZ_results = true;
 		RSDK.SetScene("HyperMania", "Hidden Palace");
