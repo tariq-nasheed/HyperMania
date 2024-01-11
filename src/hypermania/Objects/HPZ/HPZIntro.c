@@ -86,7 +86,7 @@ void HPZIntro_StageLoad(void) {
 void HPZIntro_State_TeleportPlayer() {
 	RSDK_THIS(HPZIntro);
 
-	// putting this is the create event wasnt woring so lol
+	// putting this is the create event wasnt working so lol
 	if (self->timer == 2) {
 		foreach_active(Player, player) {
 			player->visible = false;

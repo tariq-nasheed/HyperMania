@@ -404,7 +404,7 @@ bool32 Player_JumpAbility_Mighty_HOOK(bool32 skippedState) {
 	if (!ext->can_dash) return false;
 
 	if (!self->invertGravity
-	&& self->jumpPress && self->jumpAbilityState == 0
+	&& self->jumpPress && self->jumpAbilityState == 0 && self->animator.animationID == ANI_HAMMERDROP
 #if MANIA_USE_PLUS
 	&& (self->stateInput != Player_Input_P2_AI || (self->up && globals->gameMode != MODE_ENCORE))) {
 #else
