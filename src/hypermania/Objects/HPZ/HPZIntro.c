@@ -78,7 +78,7 @@ void HPZIntro_Create(void *data) {
 }
 
 void HPZIntro_StageLoad(void) {
-	HPZIntro->sfxTwinkle = RSDK.GetSfx("Global/Twinkle.wav");
+	HPZIntro->sfxTwinkle       = RSDK.GetSfx("Global/Twinkle.wav");
 	HPZIntro->sfxEmeraldFlying = RSDK.GetSfx("LRZ/LittlePlanet.wav");
 	HPZIntro->aniFramesEmerald = RSDK.LoadSpriteAnimation("Cutscene/Emeralds.bin", SCOPE_STAGE);
 }

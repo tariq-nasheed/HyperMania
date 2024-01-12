@@ -8,6 +8,7 @@ typedef struct {
 	RSDK_OBJECT
 	uint16 aniFrames;
 	uint16 sfxImpact;
+	uint16 sfxLedgeBreak;
 } ObjectHPZBeam;
 
 // Entity Class

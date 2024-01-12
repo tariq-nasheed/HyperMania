@@ -18,10 +18,44 @@ void HPZBeam_Update(void) {
 			for (int32 i = 0; i != 7; ++i) {
 				Entity* emerald = SortedSuperEmeralds[i];
 				if (emerald && emerald->position.x == self->position.x && emerald->position.y > self->position.y - TO_FIXED(16)) {
+					RSDK.PlaySfx(HPZBeam->sfxLedgeBreak, false, 0xFF);
 					HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(emerald));
 					ext->type = i;
+					emerald->alpha = 0xFF;
 					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
-					HM_globals->currentSave->transferedEmeralds |= 1 << i;
+					HM_globals->currentSave->transferedEmeralds |= 1 << i; 
+
+					// da breeze
+					EntityDebris* debris;
+
+					debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, emerald->position.x, emerald->position.y);
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 8, &debris->animator, true, 0);
+					debris->drawGroup       = Zone->objectDrawGroup[1];
+					debris->velocity.x      = -0x20000;
+					debris->velocity.y      = -0x40000;
+					debris->gravityStrength = 0x4800;
+
+					debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, emerald->position.x, emerald->position.y);
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 8, &debris->animator, true, 1);
+					debris->drawGroup       = Zone->objectDrawGroup[1];
+					debris->velocity.x      = 0x20000;
+					debris->velocity.y      = -0x40000;
+					debris->gravityStrength = 0x4800;
+
+					debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, emerald->position.x, emerald->position.y);
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 8, &debris->animator, true, 2);
+					debris->drawGroup       = Zone->objectDrawGroup[1];
+					debris->velocity.x      = -0x10000;
+					debris->velocity.y      = -0x20000;
+					debris->gravityStrength = 0x4800;
+
+					debris = CREATE_ENTITY(Debris, Debris_State_FallAndFlicker, emerald->position.x, emerald->position.y);
+					RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 8, &debris->animator, true, 3);
+					debris->drawGroup       = Zone->objectDrawGroup[1];
+					debris->velocity.x      = 0x10000;
+					debris->velocity.y      = -0x20000;
+					debris->gravityStrength = 0x4800;
+
 					break;
 				}
 			}
@@ -71,7 +105,8 @@ void HPZBeam_Create(void *data) {
 }
 
 void HPZBeam_StageLoad(void) {
-	HPZBeam->sfxImpact = RSDK.GetSfx("Stage/BeamImpact.wav");
+	HPZBeam->sfxImpact     = RSDK.GetSfx("Stage/BeamImpact.wav");
+	HPZBeam->sfxLedgeBreak = RSDK.GetSfx("Stage/LedgeBreak.wav");
 	HPZBeam->aniFrames = RSDK.LoadSpriteAnimation("HPZ/WarpBeam.bin", SCOPE_STAGE);
 }
 

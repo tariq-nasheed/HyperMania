@@ -4,7 +4,6 @@
 #include "Boilerplate/Animals.c"
 #include "Boilerplate/Camera.c"
 #include "Boilerplate/CollapsingPlatform.c"
-#include "Boilerplate/Debris.c"
 #include "Boilerplate/Explosion.c"
 #include "Boilerplate/FXFade.c"
 #include "Boilerplate/Ring.c"
@@ -24,7 +23,6 @@
 
 // im sorry jesus
 typedef struct {
-	Entity* owner;
 	int32 type; // -1 means untransformed
 	Animator animator;
 } HPZEmeraldExt;
@@ -46,6 +44,7 @@ uint32 sonic3_emerald_lookup[7] = { 0, 1, 3, 2, 4, 6, 5 };
 #include "UISaveSlot.c"
 #include "LevelSelect.c"
 #include "PlaneSeeSaw.c"
+#include "Boilerplate/Debris.c"
 
 #include "SuperFlicky.c"
 #include "HyperStars.c"

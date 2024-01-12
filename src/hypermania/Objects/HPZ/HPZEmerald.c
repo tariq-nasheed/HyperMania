@@ -22,6 +22,7 @@ void HPZEmerald_Update_Hook(void) {
 	if (!HPZSetup || self->type == HPZEMERALD_MASTER) return;
 	HPZEmeraldExt* ext = (HPZEmeraldExt*)GetExtMem(RSDK.GetEntitySlot(self));
 	if (!ext || ext->type == -1 || HM_globals->currentSave->superEmeralds & 1 << sonic3_emerald_lookup[super_emerald_lookup[ext->type]]) return;
+	if (self->alpha > 0) self->alpha -= 4;
 
 	foreach_active(Player, player) {
 		if (!player->sidekick && player->onGround == 1) {
@@ -55,8 +56,19 @@ void HPZEmerald_Draw_Hook(void) {
 
 	if (self->type != HPZEMERALD_MASTER) {
 		RSDK.SetActivePalette(6, 0, ScreenInfo->size.y);
-		RSDK.DrawSprite(&ext->animator, NULL, false);
-		if (ext->animator.animationID > 0) ext->animator.frameID = Zone->timer & 1;
+		if (ext->animator.animationID > 0) {
+			RSDK.DrawSprite(&ext->animator, NULL, false);
+			ext->animator.frameID = Zone->timer & 1;
+		} else {
+			RSDK.DrawSprite(&ext->animator, NULL, false);
+			if (self->alpha > 0 && Zone->timer & 1) {
+				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, sonic3_emerald_lookup[super_emerald_lookup[ext->type]] + 1, &ext->animator, true, 0);
+				self->inkEffect = INK_ALPHA;
+				RSDK.DrawSprite(&ext->animator, NULL, false);
+				self->inkEffect = INK_NONE;
+				RSDK.SetSpriteAnimation(HPZEmeraldStaticExt.aniFrames, 0, &ext->animator, true, 0);
+			}
+		}
 		RSDK.SetActivePalette(0, 0, ScreenInfo->size.y);
 	} else {
 		// ext->type gets reused as timer for master emerald
@@ -92,7 +104,6 @@ void HPZEmerald_Create_Hook(void* data) {
 			if (SortedSuperEmeralds[i] == (Entity*)self) {
 				HPZEmeraldExt* ext = (HPZEmeraldExt*)AllocExtMem(RSDK.GetEntitySlot(self), sizeof(HPZEmeraldExt));
 				if (!ext) return;
-				ext->owner = (Entity*)self;
 
 				const int32 index = sonic3_emerald_lookup[super_emerald_lookup[i]];
 				if (HM_globals->currentSave->transferedEmeralds & 1 << index) {

@@ -7,7 +7,6 @@
 #include "Objects/Boilerplate/Animals.h"
 #include "Objects/Boilerplate/Camera.h"
 #include "Objects/Boilerplate/CollapsingPlatform.h"
-#include "Objects/Boilerplate/Debris.h"
 #include "Objects/Boilerplate/Explosion.h"
 #include "Objects/Boilerplate/FXFade.h"
 #include "Objects/Boilerplate/ItemBox.h"
@@ -37,6 +36,7 @@
 #include "Objects/LevelSelect.h"
 #include "Objects/HPZ/HPZEmerald.h"
 #include "Objects/PlaneSeeSaw.h"
+#include "Objects/Boilerplate/Debris.h"
 
 // new classes
 #include "Objects/SuperFlicky.h"
@@ -229,6 +229,7 @@ void InitModAPI() {
 	OBJ_LEVELSELECT_SETUP;
 	OBJ_HUD_SETUP;
 	OBJ_PLANESEESAW_SETUP;
+	OBJ_DEBRIS_SETUP;
 	MOD_REGISTER_OBJ_OVERLOAD(ImageTrail, NULL, ImageTrail_LateUpdate_OVERLOAD, NULL, ImageTrail_Draw_OVERLOAD, ImageTrail_Create_OVERLOAD, NULL, NULL, NULL, NULL);
 	MOD_REGISTER_OBJ_OVERLOAD(HPZEmerald, HPZEmerald_Update_Hook, NULL, NULL, HPZEmerald_Draw_Hook, HPZEmerald_Create_Hook, HPZEmerald_StageLoad_Hook, NULL, NULL, NULL);
 
