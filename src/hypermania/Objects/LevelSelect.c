@@ -17,6 +17,7 @@ void LevelSelect_Cheat_AllEmeralds() {
 	if (saveRAM->chaosEmeralds != 0b01111111) {
 		saveRAM->chaosEmeralds = 0b01111111;
 	} else {
+		HM_globals->currentSave->transferedEmeralds = 0b01111111;
 		HM_globals->currentSave->superEmeralds = 0b01111111;
 	}
 }
