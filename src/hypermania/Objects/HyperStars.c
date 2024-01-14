@@ -61,7 +61,7 @@ void HyperStars_Draw(void) {
 
 	for (int32 i = 0; i != HYPERSTARS_COUNT; ++i) {
 		if (self->instanceTimer[i] < 0) continue;
-		self->alpha = 0x100 - self->instanceTimer[i] * 12;
+		self->alpha = 0x100 - self->instanceTimer[i] * 6;
 		RSDK.DrawSprite(&self->instanceAnimator[i], &self->instancePos[i], false);
 	}
 }
