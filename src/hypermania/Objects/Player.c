@@ -162,23 +162,24 @@ void Player_Update_OVERLOAD() {
 	RSDK_THIS(Player);
 
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
-	ext->prev_ID = self->characterID;
-	ext->prev_xvel = self->velocity.x;
-	void* prev_state = self->state;
+	if (ext) {
+		ext->prev_ID = self->characterID;
+		ext->prev_xvel = self->velocity.x;
+		ext->prev_state = self->state;
+	}
 
 #if MANIA_USE_PLUS
 	formerCanSuperCB = Player->canSuperCB;
 	Player->canSuperCB = disableSuperPostTransfer;
+#endif
 	Mod.Super(Player->classID, SUPER_UPDATE, NULL);
+#if MANIA_USE_PLUS
 	if (Player->canSuperCB == disableSuperPostTransfer) {
 		Player->canSuperCB = formerCanSuperCB;
 	}
 #endif
 
-	if (prev_state != self->state) {
-		ext->prev_state = prev_state;
-	}
-
+	if (!ext) return;
 	if (self->superState == SUPERSTATE_NONE) {
 		ext->is_hyper = false;
 		return;
@@ -319,7 +320,7 @@ void Player_Update_OVERLOAD() {
 		if (((void*)self->state == (void*)Player_State_KnuxGlideLeft && self->left)
 		|| ((void*)self->state == (void*)Player_State_KnuxGlideRight && self->right)) {
 			// gliding momentum retention
-			if (HM_globals->config.GSWburst && prev_state != (void*)Player_State_KnuxGlideLeft && prev_state != (void*)Player_State_KnuxGlideRight) {
+			if (HM_globals->config.GSWburst && ext->prev_state != (void*)Player_State_KnuxGlideLeft && ext->prev_state != (void*)Player_State_KnuxGlideRight) {
 				EntityCamera* camera = self->camera;
 				if (camera && !Zone->autoScrollSpeed) {
 					self->scrollDelay = 8;
@@ -380,9 +381,9 @@ bool32 Player_State_Ground_HOOK(bool32 skippedState) {
 	PlayerExt* ext = (PlayerExt*)GetExtMem(RSDK.GetEntitySlot(self));
 #if MANIA_USE_PLUS
 	if (self->characterID == ID_MIGHTY) ext->can_dash = true;
-	if (self->characterID == ID_SONIC) ext->can_dash = false;
 	ext->glide_timer = 0;
 #endif
+	if (self->characterID == ID_SONIC) ext->can_dash = false;
 	return false;
 }
 
