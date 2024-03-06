@@ -167,20 +167,19 @@ void HPZIntro_State_ActivateSuperEmeralds() {
 
 	const int32 target_beams = self->timer / 31 + 1;
 	if (self->beams != target_beams) {
-		self->beams = target_beams;
+		++self->beams;
 		if (self->beams < 8) {
 			EntityCamera* camera = RSDK_GET_ENTITY(SLOT_CAMERA1, Camera);
 			const int32 diff = camera->position.x - SortedSuperEmeralds[self->beams - 1]->position.x;
 			if (abs(diff) >= TO_FIXED(16)) {
-				--self->timer;
 				--self->beams;
+				--self->timer;
 				if (diff < 0) {
 					camera->position.x += TO_FIXED(16);
 				} else {
 					camera->position.x -= TO_FIXED(16);
 				}
 			} else {
-				EntityPlayer* player = (EntityPlayer*)RSDK_GET_ENTITY_GEN(0);
 				int32 spawn_y = Zone->playerBoundsT[0] - 0x8000;
 				EntityHPZBeam* beam = CREATE_ENTITY(HPZBeam, NULL, SortedSuperEmeralds[self->beams - 1]->position.x, spawn_y);
 				beam->target_y = SortedSuperEmeralds[self->beams - 1]->position.y;
@@ -188,7 +187,7 @@ void HPZIntro_State_ActivateSuperEmeralds() {
 		}
 	}
 
-	if (self->beams != 8) {
+	if (self->beams < 8) {
 		if (target_beams < 5) {
 			self->drawFlags |= HPZI_PLAYER_LEFT;
 		} else {
