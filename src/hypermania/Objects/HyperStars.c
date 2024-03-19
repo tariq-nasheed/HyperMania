@@ -66,6 +66,7 @@ void HyperStars_Draw(void) {
 	}
 }
 
+
 void HyperStars_Create(void* data) {
 	RSDK_THIS(HyperStars);
 	self->visible   = true;
@@ -92,8 +93,6 @@ void HyperStars_StageLoad(void) {
 	HyperStars->aniFrames = RSDK.LoadSpriteAnimation("Global/HyperSparkle.bin", SCOPE_STAGE);
 }
 
-#if RETRO_INCLUDE_EDITOR
 void HyperStars_EditorDraw(void) {}
 void HyperStars_EditorLoad(void) {}
-#endif
 void HyperStars_Serialize(void) {}

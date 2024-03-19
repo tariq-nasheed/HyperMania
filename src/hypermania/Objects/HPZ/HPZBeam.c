@@ -110,9 +110,7 @@ void HPZBeam_StageLoad(void) {
 	HPZBeam->aniFrames = RSDK.LoadSpriteAnimation("HPZ/WarpBeam.bin", SCOPE_STAGE);
 }
 
-#if RETRO_INCLUDE_EDITOR
 void HPZBeam_EditorDraw(void) {}
 void HPZBeam_EditorLoad(void) {}
-#endif
 
 void HPZBeam_Serialize(void) {}

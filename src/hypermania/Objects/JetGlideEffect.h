@@ -31,10 +31,8 @@ void JetGlideEffect_StaticUpdate();
 void JetGlideEffect_Draw();
 void JetGlideEffect_Create(void* data);
 void JetGlideEffect_StageLoad();
-#if RETRO_INCLUDE_EDITOR
 void JetGlideEffect_EditorDraw();
 void JetGlideEffect_EditorLoad();
-#endif
 void JetGlideEffect_Serialize();
 
 #endif //! OBJ_JETGLIDEEFFECT_H

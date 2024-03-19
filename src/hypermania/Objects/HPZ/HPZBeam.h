@@ -32,10 +32,8 @@ void HPZBeam_StaticUpdate(void);
 void HPZBeam_Draw(void);
 void HPZBeam_Create(void *data);
 void HPZBeam_StageLoad(void);
-#if RETRO_INCLUDE_EDITOR
 void HPZBeam_EditorDraw(void);
 void HPZBeam_EditorLoad(void);
-#endif
 void HPZBeam_Serialize(void);
 
 #endif //! OBJ_HPZBEAM_H

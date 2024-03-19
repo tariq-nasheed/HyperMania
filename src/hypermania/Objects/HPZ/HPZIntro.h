@@ -46,10 +46,8 @@ void HPZIntro_StaticUpdate();
 void HPZIntro_Draw();
 void HPZIntro_Create(void *data);
 void HPZIntro_StageLoad();
-#if RETRO_INCLUDE_EDITOR
 void HPZIntro_EditorDraw();
 void HPZIntro_EditorLoad();
-#endif
 void HPZIntro_Serialize();
 
 // States

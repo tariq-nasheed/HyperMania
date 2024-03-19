@@ -33,10 +33,8 @@ void HyperStars_StaticUpdate(void);
 void HyperStars_Draw(void);
 void HyperStars_Create(void* data);
 void HyperStars_StageLoad(void);
-#if RETRO_INCLUDE_EDITOR
 void HyperStars_EditorDraw(void);
 void HyperStars_EditorLoad(void);
-#endif
 void HyperStars_Serialize(void);
 
 #endif //! OBJ_HYPERSTARS_H

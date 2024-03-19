@@ -250,10 +250,8 @@ void SuperFlicky_StageLoad(void) {
 	SuperFlicky->sfxFlee = RSDK.GetSfx("Global/FlickyFlee.wav");
 }
 
-#if RETRO_INCLUDE_EDITOR
-void SuperFlicky_EditorDraw(void) { SuperFlicky_Draw(); }
+void SuperFlicky_EditorDraw(void) { }
 void SuperFlicky_EditorLoad(void) {}
-#endif
 void SuperFlicky_Serialize(void) {}
 
 void SuperFlicky_HandleAttack(int32 slot) {

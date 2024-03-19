@@ -31,9 +31,7 @@ void HPZSetup_StageLoad(void) {
 #endif
 }
 
-#if RETRO_INCLUDE_EDITOR
 void HPZSetup_EditorDraw(void) {}
 void HPZSetup_EditorLoad(void) {}
-#endif
 
 void HPZSetup_Serialize(void) {}

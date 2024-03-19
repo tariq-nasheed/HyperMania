@@ -38,10 +38,8 @@ void SuperFlicky_StaticUpdate(void);
 void SuperFlicky_Draw(void);
 void SuperFlicky_Create(void* data);
 void SuperFlicky_StageLoad(void);
-#if RETRO_INCLUDE_EDITOR
 void SuperFlicky_EditorDraw(void);
 void SuperFlicky_EditorLoad(void);
-#endif
 void SuperFlicky_Serialize(void);
 
 // Extra Entity Functions

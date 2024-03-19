@@ -206,9 +206,7 @@ void HPZIntro_State_ActivateSuperEmeralds() {
 	}
 }
 
-#if RETRO_INCLUDE_EDITOR
 void HPZIntro_EditorDraw(void) {}
 void HPZIntro_EditorLoad(void) {}
-#endif
 
 void HPZIntro_Serialize(void) {}

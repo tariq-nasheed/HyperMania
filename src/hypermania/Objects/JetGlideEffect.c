@@ -83,10 +83,8 @@ void JetGlideEffect_StageLoad() {
 	JetGlideEffect->aniFrames = RSDK.LoadSpriteAnimation("Global/RaySparkle.bin", SCOPE_STAGE);
 }
 
-#if RETRO_INCLUDE_EDITOR
 void JetGlideEffect_EditorDraw() {}
 
 void JetGlideEffect_EditorLoad() {}
-#endif
 
 void JetGlideEffect_Serialize() {}
