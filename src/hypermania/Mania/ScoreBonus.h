@@ -12,4 +12,6 @@ typedef struct {
 	Animator animator;
 } EntityScoreBonus;
 
+extern ObjectScoreBonus* ScoreBonus;
+
 #endif //! MANIA_SCOREBONUS_H

@@ -1,6 +1,6 @@
 #include "HPZBeam.h"
 #include "ModFunctions.h"
-//#include "Boilerplate/Zone.h"
+//#include "Mania/Zone.h"
 
 ObjectHPZBeam* HPZBeam;
 

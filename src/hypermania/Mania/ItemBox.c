@@ -2,4 +2,4 @@
 
 ObjectItemBox *ItemBox;
 void (*ItemBox_State_Broken)(void);
-void (*ItemBox_Break)(EntityItemBox*, EntityPlayer*);
+void (*ItemBox_Break)(EntityBase*, EntityBase*);

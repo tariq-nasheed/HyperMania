@@ -46,9 +46,8 @@ add_library(hypermania SHARED
 
 target_include_directories(hypermania PRIVATE
 	src/${MOD_NAME}/
+	src/${MOD_NAME}/Objects
 	src/${MOD_NAME}/Mania
-	src/${MOD_NAME}/Objects/
-	src/${MOD_NAME}/Objects/Boilerplate
 	src/GameAPI/C/
 )
 

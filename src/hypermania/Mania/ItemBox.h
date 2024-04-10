@@ -65,4 +65,11 @@ typedef struct {
 #endif
 } EntityItemBox;
 
+// Object Struct
+extern ObjectItemBox* ItemBox;
+
+// Imported Functions
+extern void (*ItemBox_State_Broken)();
+extern void (*ItemBox_Break)(EntityBase* itemBox, EntityBase* player);
+
 #endif //! MANIA_ITEMBOX_H
