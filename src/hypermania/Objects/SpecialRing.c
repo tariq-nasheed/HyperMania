@@ -1,6 +1,6 @@
 #include "SpecialRing.h"
 #include "HPZ/HPZSetup.h"
-#include "Zone.h"
+#include "Mania/Global/Zone.h"
 
 
 // -----------------------------------------------------------------------------

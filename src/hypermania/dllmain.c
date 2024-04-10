@@ -3,17 +3,17 @@
 #include "ModFunctions.h"
 
 // game classes litte/no notable modifications
-#include "Mania/SaveGame.h"
-#include "Mania/Animals.h"
-#include "Mania/Camera.h"
-#include "Mania/CollapsingPlatform.h"
-#include "Mania/Explosion.h"
-#include "Mania/FXFade.h"
-#include "Mania/ItemBox.h"
-#include "Mania/Ring.h"
-#include "Mania/ScoreBonus.h"
-#include "Mania/Zone.h"
-#include "Mania/Music.h"
+#include "Mania/Global/SaveGame.h"
+#include "Mania/Global/Animals.h"
+#include "Mania/Global/Camera.h"
+#include "Mania/Common/CollapsingPlatform.h"
+#include "Mania/Global/Explosion.h"
+#include "Mania/Cutscene/FXFade.h"
+#include "Mania/Global/ItemBox.h"
+#include "Mania/Global/Ring.h"
+#include "Mania/Global/ScoreBonus.h"
+#include "Mania/Global/Zone.h"
+#include "Mania/Global/Music.h"
 #include "Mania/Global/PauseMenu.h"
 #include "Mania/Global/InvincibleStars.h"
 
@@ -36,7 +36,7 @@
 #include "Objects/LevelSelect.h"
 #include "Objects/HPZ/HPZEmerald.h"
 #include "Objects/PlaneSeeSaw.h"
-#include "Mania/Debris.h"
+#include "Objects/Debris.h"
 
 // new classes
 #include "Objects/SuperFlicky.h"

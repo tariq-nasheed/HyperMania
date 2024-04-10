@@ -1,6 +1,6 @@
 #include "ImageTrail.h"
 #include "Player.h"
-#include "Zone.h"
+#include "Mania/Global/Zone.h"
 
 ObjectImageTrail* ImageTrail;
 

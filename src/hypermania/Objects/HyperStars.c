@@ -1,6 +1,6 @@
 #include "HyperStars.h"
 #include "Player.h"
-#include "Zone.h"
+#include "Mania/Global/Zone.h"
 
 ObjectHyperStars* HyperStars;
 
