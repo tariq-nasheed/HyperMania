@@ -1,15 +1,12 @@
-#ifndef OBJ_PHANTOMEGG_H
-#define OBJ_PHANTOMEGG_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectPhantomShield {
 	RSDK_OBJECT
 	Hitbox hitbox;
 	uint16 aniFrames;
-} ObjectPhantomShield;
+};
 
-typedef struct {
+struct EntityPhantomShield {
 	RSDK_ENTITY
 	StateMachine(state);
 	bool32 shieldActive;
@@ -17,9 +14,7 @@ typedef struct {
 	int32 playerTimer[PLAYER_COUNT];
 	Entity* parent;
 	Animator animator;
-} EntityPhantomShield;
-
-extern ObjectPhantomShield* PhantomShield;
+};
 
 typedef enum {
 	PHANTOMEGG_EGGMAN,
@@ -33,7 +28,7 @@ typedef enum {
 	PHANTOMEGG_ATTACK_WARP,
 } PhantomEggAttackIDs;
 
-typedef struct {
+struct ObjectPhantomEgg {
 	RSDK_OBJECT
 	TABLE(int32 debrisInfo[29], { 4,        0, 0, -0x20000, -0x28000, 1, 0, -0x20000, -0x28000, 2, 0, 0x20000, -0x20000, 3, 0, 0x28000,
 	                              -0x20000, 4, 0, -0x10000, -0x10000, 5, 0, 0x10000,  -0x10000, 6, 0, -0x8000, -0x10000 });
@@ -66,9 +61,9 @@ typedef struct {
 	uint16 sfxMissile;
 	uint16 aniFrames;
 	bool32 disableSuperForm;
-} ObjectPhantomEgg;
+};
 
-typedef struct {
+struct EntityPhantomEgg {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -92,27 +87,4 @@ typedef struct {
 	Animator eggmanAnimator;
 	Animator rubyAnimator;
 	Hitbox hitbox;
-} EntityPhantomEgg;
-
-extern ObjectPhantomEgg* PhantomEgg;
-
-extern void (*PhantomEgg_State_MoveAround)();
-extern void (*PhantomEgg_State_Attack_Jumped)();
-extern void (*PhantomEgg_State_Attack_JumpLand)();
-extern void (*PhantomEgg_State_Attack_JumpAttack)();
-extern void (*PhantomEgg_State_Attack_CableShock)();
-extern void (*PhantomEgg_Hit)();
-
-void PhantomEgg_EnemyInfoHook();
-
-#define OBJ_PHANTOMEGG_SETUP \
-  MOD_REGISTER_OBJECT_HOOK(PhantomShield); \
-  IMPORT_PUBLIC_FUNC(PhantomEgg_State_MoveAround); \
-  IMPORT_PUBLIC_FUNC(PhantomEgg_State_Attack_Jumped); \
-  IMPORT_PUBLIC_FUNC(PhantomEgg_State_Attack_JumpLand); \
-  IMPORT_PUBLIC_FUNC(PhantomEgg_State_Attack_JumpAttack); \
-  IMPORT_PUBLIC_FUNC(PhantomEgg_State_Attack_CableShock); \
-  IMPORT_PUBLIC_FUNC(PhantomEgg_Hit); \
-  REGISTER_ENEMY(PhantomEgg)
-
-#endif //! OBJ_PHANTOMEGG_H
+};

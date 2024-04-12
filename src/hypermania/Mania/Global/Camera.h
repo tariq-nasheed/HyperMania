@@ -1,7 +1,4 @@
-#ifndef OBJ_CAMERA_H
-#define OBJ_CAMERA_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
     CAMERA_LERP_NORMAL,
@@ -11,13 +8,13 @@ typedef enum {
 } CameraLerpType;
 
 // Object Class
-typedef struct {
+struct ObjectCamera {
     RSDK_OBJECT
     Vector2 centerBounds;
-} ObjectCamera;
+};
 
 // Entity Class
-typedef struct {
+struct EntityCamera {
     RSDK_ENTITY
     StateMachine(state);
     Entity *target;
@@ -41,15 +38,4 @@ typedef struct {
     int32 boundsR;
     int32 boundsT;
     int32 boundsB;
-} EntityCamera;
-
-// Object Struct
-extern ObjectCamera *Camera;
-
-// Imported Functions
-extern void (*Camera_State_FollowXY)();
-extern void (*Camera_State_FollowY)();
-extern void (*Camera_ShakeScreen)(int32 screen, int32 shakeX, int32 shakeY);
-extern void (*Camera_SetupLerp)(int32 type, int32 screen, int32 x, int32 y, int32 speed);
-
-#endif //! OBJ_CAMERA_H
+};

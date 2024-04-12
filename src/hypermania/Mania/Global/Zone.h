@@ -1,5 +1,4 @@
-#ifndef MANIA_ZONE_H
-#define MANIA_ZONE_H
+#pragma once
 
 typedef enum {
 	ZONE_INVALID = -1,
@@ -25,7 +24,7 @@ typedef enum {
 	ZONE_COUNT_SAVEFILE = ZONE_ERZ + 1,
 } ZoneIDs;
 
-typedef struct {
+struct ObjectZone {
 	RSDK_OBJECT
 	int32 actID;
 	StateMachine(stageFinishCallback);
@@ -71,7 +70,7 @@ typedef struct {
 #endif
 	uint16 fgLayerMask[2]; // { lowPriority, highPriority }
 	uint16 moveLayerMask;
-	uint8 fgDrawGroup[2];	 // { lowPriority, highPriority }
+	uint8 fgDrawGroup[2];     // { lowPriority, highPriority }
 	uint8 objectDrawGroup[2]; // { lowPriority, highPriority }
 	uint8 playerDrawGroup[2]; // { lowPriority, highPriority }
 	uint8 hudDrawGroup;
@@ -84,9 +83,9 @@ typedef struct {
 	bool32 teleportActionActive;
 	int32 randSeed;
 #endif
-} ObjectZone;
+};
 
-typedef struct {
+struct EntityZone {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -94,11 +93,4 @@ typedef struct {
 	int32 timer;
 	int32 fadeSpeed;
 	int32 fadeColor;
-} EntityZone;
-
-extern ObjectZone* Zone;
-extern int32 (*Zone_GetZoneID)();
-extern void (*Zone_StartFadeIn)(int32, int32);
-extern void (*Zone_StartFadeOut)(int32, int32);
-
-#endif //! MANIA_ZONE_H
+};

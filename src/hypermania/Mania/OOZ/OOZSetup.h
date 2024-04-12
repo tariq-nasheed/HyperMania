@@ -1,9 +1,6 @@
-#ifndef OBJ_OOZSETUP_H
-#define OBJ_OOZSETUP_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectOOZSetup {
     RSDK_OBJECT
     int32 palTimer;
     uint16 aniTiles;
@@ -33,13 +30,9 @@ typedef struct {
 #endif
     bool32 hasAchievement;
     Entity *cutscenePtr;
-} ObjectOOZSetup;
+};
 
-typedef struct {
+struct EntityOOZSetup {
     RSDK_ENTITY
     uint8 type;
-} EntityOOZSetup;
-
-extern ObjectOOZSetup *OOZSetup;
-
-#endif //! OBJ_OOZSETUP_H
+};

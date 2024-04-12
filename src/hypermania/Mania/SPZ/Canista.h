@@ -1,9 +1,6 @@
-#ifndef OBJ_CANISTA_H
-#define OBJ_CANISTA_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectCanista {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxRange;
@@ -11,9 +8,9 @@ typedef struct {
 	Hitbox hitboxProjectile;
 	uint16 aniFrames;
 	uint16 sfxPon;
-} ObjectCanista;
+};
 
-typedef struct {
+struct EntityCanista {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 triggerMode;
@@ -34,18 +31,4 @@ typedef struct {
 	Animator mainAnimator;
 	Animator tapeAnimator;
 	Animator cannonAnimator;
-} EntityCanista;
-
-extern ObjectCanista* Canista;
-
-extern void (*Canista_State_Moving)();
-extern void (*Canista_State_Idle)();
-
-void Canista_EnemyInfoHook();
-
-#define OBJ_CANISTA_SETUP \
-  IMPORT_PUBLIC_FUNC(Canista_State_Moving); \
-  IMPORT_PUBLIC_FUNC(Canista_State_Idle); \
-  REGISTER_ENEMY(Canista)
-
-#endif //! OBJ_CANISTA_H
+};

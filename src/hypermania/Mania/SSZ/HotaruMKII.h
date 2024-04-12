@@ -1,9 +1,6 @@
-#ifndef OBJ_HOTARUMKII_H
-#define OBJ_HOTARUMKII_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectHotaruMKII {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxLaser;
@@ -12,9 +9,9 @@ typedef struct {
 	uint16 sfxLaser;
 	uint16 sfxFly;
 	uint16 sfxCharge;
-} ObjectHotaruMKII;
+};
 
-typedef struct {
+struct EntityHotaruMKII {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -37,18 +34,4 @@ typedef struct {
 	Animator mainAnimator;
 	Animator flashAnimator;
 	Animator unusedAnimator;
-} EntityHotaruMKII;
-
-extern ObjectHotaruMKII* HotaruMKII;
-
-extern void (*HotaruMKII_State_Charging)();
-extern void (*HotaruMKII_State_LaserAttack)();
-
-void HotaruMKII_EnemyInfoHook();
-
-#define OBJ_HOTARUMKII_SETUP \
-  IMPORT_PUBLIC_FUNC(HotaruMKII_State_Charging); \
-  IMPORT_PUBLIC_FUNC(HotaruMKII_State_LaserAttack); \
-  REGISTER_ENEMY(HotaruMKII)
-
-#endif //! OBJ_HOTARUMKII_H
+};

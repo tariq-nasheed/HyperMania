@@ -1,7 +1,4 @@
-#ifndef OBJ_GIGAMETAL_H
-#define OBJ_GIGAMETAL_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #if MANIA_USE_PLUS
 
@@ -19,7 +16,7 @@ typedef enum {
 	GIGAMETAL_SHARD,
 } GigaMetalAniIDs;
 
-typedef struct {
+struct ObjectGigaMetal {
 	RSDK_OBJECT
 	int32 invincibleTimer;
 	int32 explodeTimer;
@@ -33,9 +30,9 @@ typedef struct {
 	Hitbox hitboxHand;
 	Hitbox hitboxCore;
 	Hitbox hitboxHead;
-} ObjectGigaMetal;
+};
 
-typedef struct {
+struct EntityGigaMetal {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -60,24 +57,6 @@ typedef struct {
 	uint8 frameID;
 	int32 rotationAngles[3];
 	int32 laserSize;
-} EntityGigaMetal;
-
-extern ObjectGigaMetal* GigaMetal;
-
-extern void (*GigaMetal_StateBody_Marching)();
-extern void (*GigaMetal_Hit)();
-
-void GigaMetal_EnemyInfoHook();
-
-#define OBJ_GIGAMETAL_SETUP \
-  IMPORT_PUBLIC_FUNC(GigaMetal_StateBody_Marching); \
-  IMPORT_PUBLIC_FUNC(GigaMetal_Hit); \
-  REGISTER_ENEMY(GigaMetal)
-
-#else
-
-#define OBJ_GIGAMETAL_SETUP
+};
 
 #endif
-
-#endif //! OBJ_GIGAMETAL_H

@@ -1,17 +1,14 @@
-#ifndef OBJ_COLLAPSINGPLATFORM_H
-#define OBJ_COLLAPSINGPLATFORM_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectCollapsingPlatform {
     RSDK_OBJECT
     uint8 shift;
     Animator animator;
     uint16 aniFrames;
     uint16 sfxCrumble;
-} ObjectCollapsingPlatform;
+};
 
-typedef struct {
+struct EntityCollapsingPlatform {
     RSDK_ENTITY
     StateMachine(state);
     Vector2 size;
@@ -26,8 +23,4 @@ typedef struct {
     uint16 storedTiles[256];
     Hitbox hitboxTrigger;
     Vector2 stoodPos;
-} EntityCollapsingPlatform;
-
-extern ObjectCollapsingPlatform *CollapsingPlatform;
-
-#endif //! OBJ_COLLAPSINGPLATFORM_H
+};

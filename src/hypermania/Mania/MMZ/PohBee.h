@@ -1,15 +1,12 @@
-#ifndef OBJ_POHBEE_H
-#define OBJ_POHBEE_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectPohBee {
 	RSDK_OBJECT
 	Hitbox hitbox;
 	uint16 aniFrames;
-} ObjectPohBee;
+};
 
-typedef struct {
+struct EntityPohBee {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -26,13 +23,4 @@ typedef struct {
 	uint8 spikeCount;
 	Vector2 amplitude;
 	ManiaPlaneFilterTypes planeFilter;
-} EntityPohBee;
-
-extern ObjectPohBee* PohBee;
-
-void PohBee_EnemyInfoHook();
-
-#define OBJ_POHBEE_SETUP \
-  REGISTER_ENEMY(PohBee)
-
-#endif //! OBJ_POHBEE_H
+};

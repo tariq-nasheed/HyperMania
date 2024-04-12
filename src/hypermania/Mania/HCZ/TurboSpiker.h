@@ -1,9 +1,6 @@
-#ifndef OBJ_TURBOSPIKER_H
-#define OBJ_TURBOSPIKER_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectTurboSpiker {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxSpike;
@@ -11,9 +8,9 @@ typedef struct {
 	uint16 aniFrames;
 	uint16 sfxLaunch;
 	uint16 sfxSplash;
-} ObjectTurboSpiker;
+};
 
-typedef struct {
+struct EntityTurboSpiker {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint32 type;
@@ -25,18 +22,4 @@ typedef struct {
 	Animator shellAnimator;
 	Animator animator;
 	bool32 playedLaunchSfx;
-} EntityTurboSpiker;
-
-extern ObjectTurboSpiker* TurboSpiker;
-
-extern void (*TurboSpiker_State_Spike)();
-extern void (*TurboSpiker_State_Ember)();
-
-void TurboSpiker_EnemyInfoHook();
-
-#define OBJ_TURBOSPIKER_SETUP \
-  IMPORT_PUBLIC_FUNC(TurboSpiker_State_Spike); \
-  IMPORT_PUBLIC_FUNC(TurboSpiker_State_Ember); \
-  REGISTER_ENEMY(TurboSpiker)
-
-#endif //! OBJ_TURBOSPIKER_H
+};

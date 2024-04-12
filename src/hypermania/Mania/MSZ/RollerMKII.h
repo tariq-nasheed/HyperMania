@@ -1,9 +1,6 @@
-#ifndef OBJ_ROLLERMKII_H
-#define OBJ_ROLLERMKII_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectRollerMKII {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxObject;
@@ -17,9 +14,9 @@ typedef struct {
 	uint16 sfxDropDash;
 	uint16 sfxRelease;
 	uint16 sfxSkidding;
-} ObjectRollerMKII;
+};
 
-typedef struct {
+struct EntityRollerMKII {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -28,18 +25,4 @@ typedef struct {
 	bool32 touchedGround;
 	EntityPlayer* playerPtr;
 	Animator animator;
-} EntityRollerMKII;
-
-extern ObjectRollerMKII* RollerMKII;
-
-extern void (*RollerMKII_State_Idle)();
-extern void (*RollerMKII_State_SpinUp)();
-
-void RollerMKII_EnemyInfoHook();
-
-#define OBJ_ROLLERMKII_SETUP \
-  IMPORT_PUBLIC_FUNC(RollerMKII_State_Idle); \
-  IMPORT_PUBLIC_FUNC(RollerMKII_State_SpinUp); \
-  REGISTER_ENEMY(RollerMKII)
-
-#endif //! OBJ_ROLLERMKII_H
+};

@@ -1,18 +1,15 @@
-#ifndef OBJ_SHUTTERBUG_H
-#define OBJ_SHUTTERBUG_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectShutterbug {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxAchievement;
 	uint32 pictureCount;
 	uint16 aniFrames;
 	uint16 snapSfx;
-} ObjectShutterbug;
+};
 
-typedef struct {
+struct EntityShutterbug {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 snaps;
@@ -29,13 +26,4 @@ typedef struct {
 	Hitbox hitboxRange;
 	Animator animator;
 	Animator overlayAnimator;
-} EntityShutterbug;
-
-extern ObjectShutterbug* Shutterbug;
-
-void Shutterbug_EnemyInfoHook();
-
-#define OBJ_SHUTTERBUG_SETUP \
-  REGISTER_ENEMY(Shutterbug)
-
-#endif //! OBJ_SHUTTERBUG_H
+};

@@ -1,9 +1,6 @@
-#ifndef OBJ_BSS_SETUP_H
-#define OBJ_BSS_SETUP_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectBSS_Setup {
     RSDK_OBJECT
     uint8 randomNumbers[4]; // used to calculate the map (& colours) for Random BSS mode
     int32 sphereCount;
@@ -64,9 +61,9 @@ typedef struct {
     uint16 sfxMedal;
     uint16 sfxMedalCaught;
     uint16 sfxTeleport;
-} ObjectBSS_Setup;
+};
 
-typedef struct {
+struct EntityBSS_Setup {
     RSDK_ENTITY
     StateMachine(state);
     int32 spinTimer;
@@ -96,8 +93,4 @@ typedef struct {
     int32 stopMovement;
     Animator globeSpinAnimator;
     Animator shadowAnimator;
-} EntityBSS_Setup;
-
-extern ObjectBSS_Setup *BSS_Setup;
-
-#endif //! OBJ_BSS_SETUP_H
+};

@@ -1,9 +1,6 @@
-#ifndef OBJ_ROCKDRILL_H
-#define OBJ_ROCKDRILL_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectRockDrill {
 	RSDK_OBJECT
 	Hitbox hitboxBody;
 	Hitbox hitboxPistonL;
@@ -15,9 +12,9 @@ typedef struct {
 	uint16 sfxHit;
 	uint16 sfxExplosion;
 	uint16 sfxDrill;
-} ObjectRockDrill;
+};
 
-typedef struct {
+struct EntityRockDrill {
 	RSDK_ENTITY
 	StateMachine(state);
 	Animator animator;
@@ -34,16 +31,4 @@ typedef struct {
 	int32 pistonMoveDir[2];
 	int32 drillMoveDir[2];
 	uint8 invincibilityTimer;
-} EntityRockDrill;
-
-extern ObjectRockDrill* RockDrill;
-
-extern void (*RockDrill_State_Drilling)();
-
-void RockDrill_EnemyInfoHook();
-
-#define OBJ_ROCKDRILL_SETUP \
-  IMPORT_PUBLIC_FUNC(RockDrill_State_Drilling); \
-  REGISTER_ENEMY(RockDrill)
-
-#endif //! OBJ_ROCKDRILL_H
+};

@@ -1,7 +1,4 @@
-#ifndef OBJ_REXON_H
-#define OBJ_REXON_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define REXON_SEGMENT_COUNT (5)
 
@@ -11,7 +8,7 @@ typedef enum {
 	REXON_SHOT,
 } RexonTypes;
 
-typedef struct {
+struct ObjectRexon {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxShell;
@@ -20,9 +17,9 @@ typedef struct {
 	uint16 aniFrames;
 	uint16 sfxShot;
 	uint16 sfxExplosion;
-} ObjectRexon;
+};
 
-typedef struct {
+struct EntityRexon {
 	RSDK_ENTITY
 	StateMachine(state);
 	bool32 noMove;
@@ -39,22 +36,4 @@ typedef struct {
 	Animator bodyAnimator;
 	Animator neckAnimator;
 	Animator headAnimator;
-} EntityRexon;
-
-extern ObjectRexon* Rexon;
-
-extern void (*Rexon_State_Hidden)();
-extern void (*Rexon_State_Rising)();
-extern void (*Rexon_State_Shooting)();
-extern void (*Rexon_State_Destroyed)();
-
-void Rexon_EnemyInfoHook();
-
-#define OBJ_REXON_SETUP \
-  IMPORT_PUBLIC_FUNC(Rexon_State_Hidden); \
-  IMPORT_PUBLIC_FUNC(Rexon_State_Rising); \
-  IMPORT_PUBLIC_FUNC(Rexon_State_Shooting); \
-  IMPORT_PUBLIC_FUNC(Rexon_State_Destroyed); \
-  REGISTER_ENEMY(Rexon)
-
-#endif //! OBJ_REXON_H
+};

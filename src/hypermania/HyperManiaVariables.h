@@ -1,8 +1,8 @@
 #ifndef HYPERMANIAVARIABLES_H
 #define HYPERMANIAVARIABLES_H
 
-#include "Mania/All.h"
 #include "GameAPI/Game.h"
+#include "Mania/All.h"
 
 // =============================================================================
 
@@ -30,6 +30,7 @@
 }
 #define HOOK_IMPORTED_STATE(name, priority) Mod.RegisterStateHook(name, name##_HOOK, priority)
 
+
 // =============================================================================
 
 // Attackable Classes ----------------------------------------------------------
@@ -51,6 +52,7 @@ typedef struct {
 	void    (*adjustPos)(Entity*); // optional for "weird" classes (i.e. catterkiller jr.)
 	uint8 flags;
 } attackinfo_t;
+
 
 // =============================================================================
 

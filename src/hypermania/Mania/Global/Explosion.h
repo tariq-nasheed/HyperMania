@@ -1,7 +1,4 @@
-#ifndef OBJ_EXPLOSION_H
-#define OBJ_EXPLOSION_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
     EXPLOSION_ITEMBOX,
@@ -10,18 +7,14 @@ typedef enum {
     EXPLOSION_BOSSPUFF,
 } ExplosionTypes;
 
-typedef struct {
+struct ObjectExplosion {
     RSDK_OBJECT
     uint16 aniFrames;
     uint16 sfxDestroy;
-} ObjectExplosion;
+};
 
-typedef struct {
+struct EntityExplosion {
     RSDK_ENTITY
     Animator animator;
     int32 planeFilter;
-} EntityExplosion;
-
-extern ObjectExplosion *Explosion;
-
-#endif //! OBJ_EXPLOSION_H
+};

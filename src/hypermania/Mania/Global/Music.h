@@ -1,7 +1,4 @@
-#ifndef OBJ_MUSIC_H
-#define OBJ_MUSIC_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
     TRACK_NONE         = -1,
@@ -32,7 +29,7 @@ typedef enum {
     TRACK_ERZBOSS      = TRACK_SUPER,
 } MusicTracks;
 
-typedef struct {
+struct ObjectMusic {
     RSDK_OBJECT
     char trackNames[16][32];
     uint32 trackLoops[16];
@@ -51,9 +48,9 @@ typedef struct {
     bool32 playing1UPTrack;
 #endif
     uint16 aniFrames;
-} ObjectMusic;
+};
 
-typedef struct {
+struct EntityMusic {
     RSDK_ENTITY
     StateMachine(state);
     String trackFile;
@@ -68,20 +65,4 @@ typedef struct {
     float volume;
     float fadeSpeed;
     Animator animator;
-} EntityMusic;
-
-extern ObjectMusic *Music;
-
-extern void (*Music_PlayTrack)(uint8 trackID);
-extern void (*Music_SetMusicTrack)(const char* path, uint8 track, uint32 loopPoint);
-extern void (*Music_FadeOut)(float fadeSpeed);
-extern void (*Music_PlayJingle)(uint8 trackID);
-
-#define OBJ_MUSIC_SETUP \
-  IMPORT_PUBLIC_FUNC(Music_PlayTrack); \
-  IMPORT_PUBLIC_FUNC(Music_SetMusicTrack); \
-  IMPORT_PUBLIC_FUNC(Music_FadeOut); \
-  IMPORT_PUBLIC_FUNC(Music_PlayJingle); \
-  MOD_REGISTER_OBJECT_HOOK(Music)
-
-#endif //! OBJ_MUSIC_H
+};

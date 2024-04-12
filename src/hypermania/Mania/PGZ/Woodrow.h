@@ -1,9 +1,6 @@
-#ifndef OBJ_WOODROW_H
-#define OBJ_WOODROW_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectWoodrow {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxFullRange;
@@ -12,9 +9,9 @@ typedef struct {
 	uint16 aniFrames;
 	uint16 sfxExplosion;
 	uint16 sfxPeck;
-} ObjectWoodrow;
+};
 
-typedef struct {
+struct EntityWoodrow {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 type;
@@ -29,20 +26,4 @@ typedef struct {
 	uint8 startDir;
 	void* parent;
 	Animator animator;
-} EntityWoodrow;
-
-extern ObjectWoodrow* Woodrow;
-
-extern void (*Woodrow_State_Idle)();
-extern void (*Woodrow_State_MoveUp)();
-extern void (*Woodrow_State_MoveDown)();
-
-void Woodrow_EnemyInfoHook();
-
-#define OBJ_WOODROW_SETUP \
-  IMPORT_PUBLIC_FUNC(Woodrow_State_Idle); \
-  IMPORT_PUBLIC_FUNC(Woodrow_State_MoveUp); \
-  IMPORT_PUBLIC_FUNC(Woodrow_State_MoveDown); \
-  REGISTER_ENEMY(Woodrow)
-
-#endif //! OBJ_WOODROW_H
+};

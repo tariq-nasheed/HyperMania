@@ -1,18 +1,15 @@
-#ifndef OBJ_RATTLEKILLER_H
-#define OBJ_RATTLEKILLER_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define RATTLEKILLER_SEGMENT_COUNT (10)
 
-typedef struct {
+struct ObjectRattlekiller {
 	RSDK_OBJECT
 	Hitbox hitboxSegment;
 	uint16 sfxRocketJet;
 	uint16 aniFrames;
-} ObjectRattlekiller;
+};
 
-typedef struct {
+struct EntityRattlekiller {
 	RSDK_ENTITY
 	StateMachine(state);     // Unused
 	StateMachine(stateDraw); // Unused
@@ -33,13 +30,4 @@ typedef struct {
 	Animator headAnimator;
 	Animator bodyAnimator;
 	Animator tailAnimator;
-} EntityRattlekiller;
-
-extern ObjectRattlekiller* Rattlekiller;
-
-void Rattlekiller_EnemyInfoHook();
-
-#define OBJ_RATTLEKILLER_SETUP \
-  REGISTER_ENEMY(Rattlekiller)
-
-#endif //! OBJ_RATTLEKILLER_H
+};

@@ -1,11 +1,8 @@
-#ifndef OBJ_TUBINAUT_H
-#define OBJ_TUBINAUT_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define TUBINAUT_ORB_COUNT (3)
 
-typedef struct {
+struct ObjectTubinaut {
 	RSDK_OBJECT
 	Hitbox hitboxFace;
 	Hitbox hitboxOrb;
@@ -13,9 +10,9 @@ typedef struct {
 	uint16 aniFrames;
 	uint16 sfxPowerdown;
 	uint16 sfxRepel;
-} ObjectTubinaut;
+};
 
-typedef struct {
+struct EntityTubinaut {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(orbState);
@@ -34,16 +31,4 @@ typedef struct {
 	int32 timer;
 	uint16 distanceRemain;
 	uint16 distance;
-} EntityTubinaut;
-
-extern ObjectTubinaut* Tubinaut;
-
-extern void (*Tubinaut_State_Move)();
-
-void Tubinaut_EnemyInfoHook();
-
-#define OBJ_TUBINAUT_SETUP \
-  IMPORT_PUBLIC_FUNC(Tubinaut_State_Move); \
-  REGISTER_ENEMY(Tubinaut)
-
-#endif //! OBJ_TUBINAUT_H
+};

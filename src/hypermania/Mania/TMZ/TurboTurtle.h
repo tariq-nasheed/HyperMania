@@ -1,17 +1,14 @@
-#ifndef OBJ_TURBOTURTLE_H
-#define OBJ_TURBOTURTLE_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectTurboTurtle {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	uint16 aniFrames;
 	uint16 sfxWalk;
 	uint16 sfxWalk2;
-} ObjectTurboTurtle;
+};
 
-typedef struct {
+struct EntityTurboTurtle {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -37,13 +34,4 @@ typedef struct {
 	int32 rightFanDuration;
 	int32 rightFanStrength;
 	int32 rightFanLength;
-} EntityTurboTurtle;
-
-extern ObjectTurboTurtle* TurboTurtle;
-
-void TurboTurtle_EnemyInfoHook();
-
-#define OBJ_TURBOTURTLE_SETUP \
-  REGISTER_ENEMY(TurboTurtle)
-
-#endif //! OBJ_TURBOTURTLE_H
+};

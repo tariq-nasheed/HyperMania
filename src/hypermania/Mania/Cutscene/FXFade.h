@@ -1,15 +1,12 @@
-#ifndef OBJ_FXFADE_H
-#define OBJ_FXFADE_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 // Object Class
-typedef struct {
+struct ObjectFXFade {
     RSDK_OBJECT
-} ObjectFXFade;
+};
 
 // Entity Class
-typedef struct {
+struct EntityFXFade {
     RSDK_ENTITY
     StateMachine(state);
     int32 timer;
@@ -24,13 +21,4 @@ typedef struct {
 #if MANIA_USE_PLUS
     bool32 transitionScene;
 #endif
-} EntityFXFade;
-
-// Object Struct
-extern ObjectFXFade* FXFade;
-
-// Imported Functions
-extern void (*FXFade_State_FadeIn)(void);
-extern void (*FXFade_State_FadeOut)(void);
-
-#endif //! OBJ_FXFADE_H
+};

@@ -1,18 +1,15 @@
-#ifndef OBJ_LAUNDROMOBILE_H
-#define OBJ_LAUNDROMOBILE_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectWhirlpool {
 	RSDK_OBJECT
 	uint16 aniFrames;
 	uint16 sfxWhirlpool;
 	bool32 playingWhirlpoolSfx;
 	int32 sfxChannel;
 	int32 timer;
-} ObjectWhirlpool;
+};
 
-typedef struct {
+struct EntityWhirlpool {
 	RSDK_ENTITY
 	int32 angVel;
 	int32 yVel;
@@ -25,9 +22,7 @@ typedef struct {
 	int32 playerAmplitude[PLAYER_COUNT];
 	Hitbox hitbox;
 	Animator animator;
-} EntityWhirlpool;
-
-extern ObjectWhirlpool* Whirlpool;
+};
 
 typedef enum {
 	LAUNDROMOBILE_BOSS,
@@ -39,7 +34,7 @@ typedef enum {
 	LAUNDROMOBILE_DELAYEDSPLASH,
 } LaundroMobileTypes;
 
-typedef struct {
+struct ObjectLaundroMobile {
 	RSDK_OBJECT
 	uint8 health;
 	uint8 invincibilityTimer;
@@ -92,9 +87,9 @@ typedef struct {
 	uint16 sfxRumble;
 	uint16 sfxImpact;
 #endif
-} ObjectLaundroMobile;
+};
 
-typedef struct {
+struct EntityLaundroMobile {
 	RSDK_ENTITY
 	uint8 type;
 	StateMachine(state);
@@ -108,25 +103,4 @@ typedef struct {
 	Animator propellerAnimator;
 	Animator eggmanAnimator;
 	Animator flameAnimator;
-} EntityLaundroMobile;
-
-extern ObjectLaundroMobile* LaundroMobile;
-
-extern void (*LaundroMobile_StateBoss_AwaitPlayer_Phase1)();
-extern void (*LaundroMobile_StateBoss_SetupArena_Phase1)();
-extern void (*LaundroMobile_StateBoss_Destroyed_Phase1)();
-extern void (*LaundroMobile_StateBoss_Destroyed_Phase2)();
-extern void (*LaundroMobile_StateBoss_Explode_Phase2)();
-
-void LaundroMobile_EnemyInfoHook();
-
-#define OBJ_LAUNDROMOBILE_SETUP \
-  MOD_REGISTER_OBJECT_HOOK(Whirlpool); \
-  IMPORT_PUBLIC_FUNC(LaundroMobile_StateBoss_AwaitPlayer_Phase1); \
-  IMPORT_PUBLIC_FUNC(LaundroMobile_StateBoss_SetupArena_Phase1); \
-  IMPORT_PUBLIC_FUNC(LaundroMobile_StateBoss_Destroyed_Phase1); \
-  IMPORT_PUBLIC_FUNC(LaundroMobile_StateBoss_Destroyed_Phase2); \
-  IMPORT_PUBLIC_FUNC(LaundroMobile_StateBoss_Explode_Phase2); \
-  REGISTER_ENEMY(LaundroMobile)
-
-#endif //! OBJ_LAUNDROMOBILE_H
+};

@@ -1,9 +1,6 @@
-#ifndef OBJ_HEAVYSHINOBI_H
-#define OBJ_HEAVYSHINOBI_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectHeavyShinobi {
     RSDK_OBJECT
     int8 health;
     uint8 invincibilityTimer;
@@ -32,9 +29,9 @@ typedef struct {
     uint16 sfxSlash;
     uint16 sfxStick;
     uint16 sfxThrow;
-} ObjectHeavyShinobi;
+};
 
-typedef struct {
+struct EntityHeavyShinobi {
     RSDK_ENTITY
     StateMachine(state);
     StateMachine(stateDraw);
@@ -45,23 +42,4 @@ typedef struct {
     Vector2 playerDistance;
     Animator mainAnimator;
     Animator fxAnimator;
-} EntityHeavyShinobi;
-
-extern ObjectHeavyShinobi* HeavyShinobi;
-
-void HeavyShinobi_EnemyInfoHook(void);
-extern void (*HeavyShinobi_State_Idle)();
-extern void (*HeavyShinobi_State_Slash)();
-extern void (*HeavyShinobi_State_Jump)();
-extern void (*HeavyShinobi_State_Glitched)();
-extern void (*HeavyShinobi_State_Destroyed)();
-
-#define OBJ_HEAVYSHINOBI_SETUP \
-  IMPORT_PUBLIC_FUNC(HeavyShinobi_State_Idle); \
-  IMPORT_PUBLIC_FUNC(HeavyShinobi_State_Slash); \
-  IMPORT_PUBLIC_FUNC(HeavyShinobi_State_Jump); \
-  IMPORT_PUBLIC_FUNC(HeavyShinobi_State_Glitched); \
-  IMPORT_PUBLIC_FUNC(HeavyShinobi_State_Destroyed); \
-  REGISTER_ENEMY(HeavyShinobi)
-
-#endif //! OBJ_HEAVYSHINOBI_H
+};

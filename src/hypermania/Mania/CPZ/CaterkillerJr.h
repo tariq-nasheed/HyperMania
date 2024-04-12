@@ -1,17 +1,14 @@
-#ifndef OBJ_CATERKILLERJR_H
-#define OBJ_CATERKILLERJR_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define CATERKILLERJR_SEGMENT_COUNT (7)
 
-typedef struct {
+struct ObjectCaterkillerJr {
     RSDK_OBJECT
     Hitbox hitbox;
     uint16 aniFrames;
-} ObjectCaterkillerJr;
+};
 
-typedef struct {
+struct EntityCaterkillerJr {
     RSDK_ENTITY
     StateMachine(state);
     int32 timer;
@@ -24,13 +21,4 @@ typedef struct {
     int32 boundsR;
     Animator bodyAnimators[CATERKILLERJR_SEGMENT_COUNT];
     Animator smokePuffAnimators[3];
-} EntityCaterkillerJr;
-
-extern ObjectCaterkillerJr* CaterkillerJr;
-
-void CaterkillerJr_EnemyInfoHook();
-
-#define OBJ_CATERKILLERJR_SETUP \
-  REGISTER_ENEMY(CaterkillerJr)
-
-#endif //! OBJ_CATERKILLERJR_H
+};

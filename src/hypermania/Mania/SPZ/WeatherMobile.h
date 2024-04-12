@@ -1,7 +1,4 @@
-#ifndef OBJ_WEATHERMOBILE_H
-#define OBJ_WEATHERMOBILE_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	WEATHERMOBILE_EGGMAN,
@@ -13,7 +10,7 @@ typedef enum {
 	WEATHERMOBILE_CLOUD,
 } WeatherMobileTypes;
 
-typedef struct {
+struct ObjectWeatherMobile {
 	RSDK_OBJECT
 	TABLE(int32 debrisInfo[29], { 4,        0, 0, -0x20000, -0x28000, 1, 0, -0x20000, -0x28000, 2, 0, 0x20000, -0x20000, 3, 0, 0x28000,
 	                              -0x20000, 4, 0, -0x10000, -0x10000, 5, 0, 0x10000,  -0x10000, 6, 0, -0x8000, -0x10000 });
@@ -36,9 +33,9 @@ typedef struct {
 	bool32 playingRainSfx;
 	uint16 aniFrames;
 	uint16 eggmanFrames;
-} ObjectWeatherMobile;
+};
 
-typedef struct {
+struct EntityWeatherMobile {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -58,24 +55,4 @@ typedef struct {
 	Animator radarDishLAnimator;
 	Animator radarDishRAnimator;
 	Hitbox hitbox;
-} EntityWeatherMobile;
-
-extern ObjectWeatherMobile* WeatherMobile;
-
-extern void (*WeatherMobile_State_EnterEggman)();
-extern void (*WeatherMobile_State_HandleMovement)();
-extern void (*WeatherMobile_State_WindAttack)();
-extern void (*WeatherMobile_State_SunAttack)();
-extern void (*WeatherMobile_Hit)();
-
-void WeatherMobile_EnemyInfoHook();
-
-#define OBJ_WEATHERMOBILE_SETUP \
-  IMPORT_PUBLIC_FUNC(WeatherMobile_State_EnterEggman); \
-  IMPORT_PUBLIC_FUNC(WeatherMobile_State_HandleMovement); \
-  IMPORT_PUBLIC_FUNC(WeatherMobile_State_WindAttack); \
-  IMPORT_PUBLIC_FUNC(WeatherMobile_State_SunAttack); \
-  IMPORT_PUBLIC_FUNC(WeatherMobile_Hit); \
-  REGISTER_ENEMY(WeatherMobile)
-
-#endif //! OBJ_WEATHERMOBILE_H
+};

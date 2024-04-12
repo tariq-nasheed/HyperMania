@@ -1,15 +1,12 @@
-#ifndef OBJ_ARMADILOID_H
-#define OBJ_ARMADILOID_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectArmadiloid {
 	RSDK_OBJECT
 	uint16 aniFrames;
 	uint16 sfxShot;
-} ObjectArmadiloid;
+};
 
-typedef struct {
+struct EntityArmadiloid {
 	RSDK_ENTITY
 	StateMachine(state);
 	int32 type;
@@ -21,15 +18,4 @@ typedef struct {
 	Animator bodyAnimator;
 	Animator headAnimator;
 	Animator boosterAnimator;
-} EntityArmadiloid;
-
-extern ObjectArmadiloid* Armadiloid;
-
-void Armadiloid_EnemyInfoHook();
-extern void (*Armadiloid_State_Rider)();
-
-#define OBJ_ARMADILOID_SETUP \
-  IMPORT_PUBLIC_FUNC(Armadiloid_State_Rider); \
-  REGISTER_ENEMY(Armadiloid)
-
-#endif //! OBJ_ARMADILOID_H
+};

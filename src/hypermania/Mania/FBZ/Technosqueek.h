@@ -1,15 +1,12 @@
-#ifndef OBJ_TECHNOSQUEEK_H
-#define OBJ_TECHNOSQUEEK_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectTechnosqueek {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	uint16 aniFrames;
-} ObjectTechnosqueek;
+};
 
-typedef struct {
+struct EntityTechnosqueek {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 type;
@@ -24,13 +21,4 @@ typedef struct {
 	uint8 startDir;
 	Animator animator;
 	Animator tailAnimator;
-} EntityTechnosqueek;
-
-extern ObjectTechnosqueek* Technosqueek;
-
-void Technosqueek_EnemyInfoHook();
-
-#define OBJ_TECHNOSQUEEK_SETUP \
-  REGISTER_ENEMY(Technosqueek)
-
-#endif //! OBJ_TECHNOSQUEEK_H
+};

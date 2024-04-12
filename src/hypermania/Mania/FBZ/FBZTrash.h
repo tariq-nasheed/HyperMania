@@ -1,7 +1,4 @@
-#ifndef OBJ_FBZTRASH_H
-#define OBJ_FBZTRASH_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	FBZTRASH_TRASH,
@@ -10,12 +7,12 @@ typedef enum {
 	FBZTRASH_ORBINAUT,
 } FBZTrashTypes;
 
-typedef struct {
+struct ObjectFBZTrash {
 	RSDK_OBJECT
 	uint16 aniFrames;
-} ObjectFBZTrash;
+};
 
-typedef struct {
+struct EntityFBZTrash {
 	RSDK_ENTITY
 	StateMachine(state);
 	FBZTrashTypes type;
@@ -28,16 +25,4 @@ typedef struct {
 	void* parent;
 	Hitbox hitbox;
 	Animator animator;
-} EntityFBZTrash;
-
-extern ObjectFBZTrash* FBZTrash;
-
-extern void (*FBZTrash_State_OrbinautMove)();
-
-void FBZTrash_EnemyInfoHook();
-
-#define OBJ_FBZTRASH_SETUP \
-  IMPORT_PUBLIC_FUNC(FBZTrash_State_OrbinautMove); \
-  REGISTER_ENEMY(FBZTrash)
-
-#endif //! OBJ_FBZTRASH_H
+};

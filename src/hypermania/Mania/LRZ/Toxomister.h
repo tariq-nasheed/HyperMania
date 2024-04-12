@@ -1,16 +1,13 @@
-#ifndef OBJ_TOXOMISTER_H
-#define OBJ_TOXOMISTER_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectToxomister {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxCloud;
 	uint16 aniFrames;
-} ObjectToxomister;
+};
 
-typedef struct {
+struct EntityToxomister {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -22,16 +19,4 @@ typedef struct {
 	uint16 shakeCount;
 	uint16 prevShakeFlags;
 	Animator animator;
-} EntityToxomister;
-
-extern ObjectToxomister* Toxomister;
-
-extern void (*Toxomister_State_CreateClouds)();
-
-void Toxomister_EnemyInfoHook();
-
-#define OBJ_TOXOMISTER_SETUP \
-  IMPORT_PUBLIC_FUNC(Toxomister_State_CreateClouds); \
-  REGISTER_ENEMY(Toxomister)
-
-#endif //! OBJ_TOXOMISTER_H
+};

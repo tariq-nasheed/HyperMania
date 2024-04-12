@@ -1,18 +1,15 @@
-#ifndef OBJ_CHOPPER_H
-#define OBJ_CHOPPER_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectChopper {
 	RSDK_OBJECT
 	Hitbox hitboxJump;
 	Hitbox hitboxSwim;
 	Hitbox hitboxRange;
 	Hitbox hitboxWater;
 	uint16 aniFrames;
-} ObjectChopper;
+};
 
-typedef struct {
+struct EntityChopper {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 type;
@@ -21,16 +18,4 @@ typedef struct {
 	Vector2 startPos;
 	uint8 startDir;
 	Animator animator;
-} EntityChopper;
-
-extern ObjectChopper* Chopper;
-
-extern void (*Chopper_State_Jump)();
-
-void Chopper_EnemyInfoHook();
-
-#define OBJ_CHOPPER_SETUP \
-  IMPORT_PUBLIC_FUNC(Chopper_State_Jump); \
-  REGISTER_ENEMY(Chopper)
-
-#endif //! OBJ_CHOPPER_H
+};

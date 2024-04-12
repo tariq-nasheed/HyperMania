@@ -1,16 +1,13 @@
-#ifndef OBJ_BUGGERNAUT_H
-#define OBJ_BUGGERNAUT_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectBuggernaut {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxParentRange;
 	uint16 aniFrames;
-} ObjectBuggernaut;
+};
 
-typedef struct {
+struct EntityBuggernaut {
 	RSDK_ENTITY
 	StateMachine(state);
 	bool32 passThrough;
@@ -20,13 +17,4 @@ typedef struct {
 	Entity* parent;
 	Animator bodyAnimator;
 	Animator wingAnimator;
-} EntityBuggernaut;
-
-extern ObjectBuggernaut* Buggernaut;
-
-void Buggernaut_EnemyInfoHook();
-
-#define OBJ_BUGGERNAUT_SETUP \
-  REGISTER_ENEMY(Buggernaut)
-
-#endif //! OBJ_BUGGERNAUT_H
+};

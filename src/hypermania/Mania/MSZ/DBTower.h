@@ -1,11 +1,8 @@
-#ifndef OBJ_DBTOWER_H
-#define OBJ_DBTOWER_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define DBTOWER_SEGMENT_COUNT (4)
 
-typedef struct {
+struct ObjectDBTower {
 	RSDK_OBJECT
 	Hitbox hitboxSegment;
 	bool32 defeated;
@@ -18,9 +15,9 @@ typedef struct {
 	uint16 sfxRocketJet2;
 	uint16 sfxRockemSockem;
 	uint16 aniFrames;
-} ObjectDBTower;
+};
 
-typedef struct {
+struct EntityDBTower {
 	RSDK_ENTITY
 	StateMachine(state);
 	int32 timer;
@@ -41,18 +38,4 @@ typedef struct {
 	uint8 playerTimers[PLAYER_COUNT];
 	Animator headAnimator;
 	Animator bodyAnimator;
-} EntityDBTower;
-
-extern ObjectDBTower* DBTower;
-
-extern void (*DBTower_State_HandleBoss)();
-extern void (*DBTower_State_Destroyed)();
-
-void DBTower_EnemyInfoHook();
-
-#define OBJ_DBTOWER_SETUP \
-  IMPORT_PUBLIC_FUNC(DBTower_State_HandleBoss); \
-  IMPORT_PUBLIC_FUNC(DBTower_State_Destroyed); \
-  REGISTER_ENEMY(DBTower)
-
-#endif //! OBJ_DBTOWER_H
+};

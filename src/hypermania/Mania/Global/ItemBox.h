@@ -1,5 +1,4 @@
-#ifndef MANIA_ITEMBOX_H
-#define MANIA_ITEMBOX_H
+#pragma once
 
 typedef enum {
 	ITEMBOX_RING,
@@ -26,7 +25,7 @@ typedef enum {
 } ItemBoxTypes;
 
 // Object Class
-typedef struct {
+struct ObjectItemBox {
 	RSDK_OBJECT
 	Hitbox hitboxItemBox;
 	Hitbox hitboxHidden;
@@ -39,10 +38,10 @@ typedef struct {
 	uint16 sfxPowerDown;
 	uint16 sfxRecovery;
 #endif
-} ObjectItemBox;
+};
 
 // Entity Class
-typedef struct {
+struct EntityItemBox {
 	RSDK_ENTITY
 	StateMachine(state);
 	ItemBoxTypes type;
@@ -63,13 +62,4 @@ typedef struct {
 #if MANIA_USE_PLUS
 	Entity *parent;
 #endif
-} EntityItemBox;
-
-// Object Struct
-extern ObjectItemBox* ItemBox;
-
-// Imported Functions
-extern void (*ItemBox_State_Broken)();
-extern void (*ItemBox_Break)(EntityBase* itemBox, EntityBase* player);
-
-#endif //! MANIA_ITEMBOX_H
+};

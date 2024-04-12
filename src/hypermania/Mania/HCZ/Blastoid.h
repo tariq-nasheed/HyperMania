@@ -1,31 +1,16 @@
-#ifndef OBJ_BLASTOID_H
-#define OBJ_BLASTOID_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectBlastoid {
 	RSDK_OBJECT
 	Hitbox hitboxBody;
 	Hitbox hitboxProjectile;
 	uint16 aniFrames;
 	uint16 sfxShot;
-} ObjectBlastoid;
+};
 
-typedef struct {
+struct EntityBlastoid {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 timer;
 	Animator animator;
-} EntityBlastoid;
-
-extern ObjectBlastoid* Blastoid;
-
-extern void (*Blastoid_State_Projectile)();
-
-void Blastoid_EnemyInfoHook();
-
-#define OBJ_BLASTOID_SETUP \
-  IMPORT_PUBLIC_FUNC(Blastoid_State_Projectile); \
-  REGISTER_ENEMY(Blastoid)
-
-#endif //! OBJ_BLASTOID_H
+};

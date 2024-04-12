@@ -1,7 +1,4 @@
-#ifndef OBJ_EGGPISTONSMKII_H
-#define OBJ_EGGPISTONSMKII_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	EGGPISTON_PISTON,
@@ -12,7 +9,7 @@ typedef enum {
 	EGGPISTON_ALARM,
 } EggPistonMKIITypes;
 
-typedef struct {
+struct ObjectEggPistonsMKII {
 	RSDK_OBJECT
 	int32 invincibilityTimer;
 	int32 health;
@@ -30,9 +27,9 @@ typedef struct {
 	uint16 sfxElectrify;
 	uint16 sfxExplosion;
 	uint16 sfxAlarm;
-} ObjectEggPistonsMKII;
+};
 
-typedef struct {
+struct EntityEggPistonsMKII {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -43,22 +40,4 @@ typedef struct {
 	Animator mainAnimator;
 	Animator altAnimator;
 	Hitbox hitbox;
-} EntityEggPistonsMKII;
-
-extern ObjectEggPistonsMKII* EggPistonsMKII;
-
-extern void (*EggPistonsMKII_State_ClassicMode)();
-extern void (*EggPistonsMKII_State_PinchMode)();
-extern void (*EggPistonsMKII_State_Destroyed)();
-extern void (*EggPistonsMKII_Hit)();
-
-void EggPistonsMKII_EnemyInfoHook();
-
-#define OBJ_EGGPISTONSMKII_SETUP \
-  IMPORT_PUBLIC_FUNC(EggPistonsMKII_State_ClassicMode); \
-  IMPORT_PUBLIC_FUNC(EggPistonsMKII_State_PinchMode); \
-  IMPORT_PUBLIC_FUNC(EggPistonsMKII_State_Destroyed); \
-  IMPORT_PUBLIC_FUNC(EggPistonsMKII_Hit); \
-  REGISTER_ENEMY(EggPistonsMKII)
-
-#endif //! OBJ_EGGPISTONSMKII_H
+};

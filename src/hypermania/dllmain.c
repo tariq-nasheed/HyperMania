@@ -1,53 +1,4 @@
-#include "../GameAPI/C/GameAPI/Game.h"
-
-#include "ModFunctions.h"
-
-// game classes litte/no notable modifications
-#include "Mania/Global/SaveGame.h"
-#include "Mania/Global/Animals.h"
-#include "Mania/Global/Camera.h"
-#include "Mania/Common/CollapsingPlatform.h"
-#include "Mania/Global/Explosion.h"
-#include "Mania/Cutscene/FXFade.h"
-#include "Mania/Global/ItemBox.h"
-#include "Mania/Global/Ring.h"
-#include "Mania/Global/ScoreBonus.h"
-#include "Mania/Global/Zone.h"
-#include "Mania/Global/Music.h"
-#include "Mania/Global/PauseMenu.h"
-#include "Mania/Global/InvincibleStars.h"
-
-#include "Mania/CPZ/CPZSetup.h"
-#include "Mania/OOZ/OOZSetup.h"
-#include "Mania/HCZ/HCZSetup.h"
-#include "Mania/MMZ/FarPlane.h"
-#include "Mania/ERZ/ERZStart.h"
-#include "Mania/BSS/BSS_Setup.h"
-
-// game classes with notable modifications
-#include "Objects/Player.h"
-#include "Objects/ImageTrail.h"
-#include "Objects/SpecialRing.h"
-#include "Objects/UFO_Setup.h"
-#include "Objects/UFO_Player.h"
-#include "Objects/SpecialClear.h"
-#include "Objects/HUD.h"
-#include "Objects/UISaveSlot.h"
-#include "Objects/LevelSelect.h"
-#include "Objects/HPZ/HPZEmerald.h"
-#include "Objects/PlaneSeeSaw.h"
-#include "Objects/Debris.h"
-
-// new classes
-#include "Objects/SuperFlicky.h"
-#include "Objects/HyperStars.h"
-#include "Objects/JetGlideEffect.h"
-#include "Objects/HPZ/HPZSetup.h"
-#include "Objects/HPZ/HPZIntro.h"
-#include "Objects/HPZ/HPZBeam.h"
-
-// enemy checking file
-#include "Objects/Enemy.h"
+#include "All.c"
 
 #if RETRO_USE_MOD_LOADER
 DLLExport bool32 LinkModLogic(EngineInfo *info, const char *id);
@@ -138,17 +89,8 @@ void StageCleanup(void* data) {
 
 void InitModAPI() {
 	printf(
-		"\x1b[93mH"
-		"\x1b[91mY"
-		"\x1b[95mP"
-		"\x1b[96mE"
-		"\x1b[32mR"
-		"\x1b[92mM"
-		"\x1b[37mA"
-		"\x1b[93mN"
-		"\x1b[91mI"
-		"\x1b[95mA"
-		"\x1b[0m"
+		"\x1b[93mH\x1b[91mY\x1b[95mP\x1b[96mE\x1b[32mR"
+		"\x1b[92mM\x1b[37mA\x1b[93mN\x1b[91mI\x1b[95mA\x1b[0m"
 	);
 	printf(" loaded\n");
 

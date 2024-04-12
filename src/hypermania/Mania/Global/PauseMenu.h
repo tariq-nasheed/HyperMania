@@ -1,11 +1,8 @@
-#ifndef OBJ_PAUSEMENU_H
-#define OBJ_PAUSEMENU_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define PAUSEMENU_BUTTON_COUNT (3)
 
-typedef struct {
+struct ObjectPauseMenu {
     RSDK_OBJECT
     uint16 sfxBleep;
     uint16 sfxAccept;
@@ -20,9 +17,9 @@ typedef struct {
 #if MANIA_USE_PLUS
     uint16 tintLookupTable[0x10000];
 #endif
-} ObjectPauseMenu;
+};
 
-typedef struct {
+struct EntityPauseMenu {
     RSDK_ENTITY
     StateMachine(state);
     StateMachine(stateDraw);
@@ -45,11 +42,4 @@ typedef struct {
     void (*fadeoutCB)(void);
     int32 unused1;
     int32 unused2; // these may possibly be leftover or editor things
-} EntityPauseMenu;
-
-extern ObjectPauseMenu *PauseMenu;
-
-#define OBJ_PAUSEMENU_SETUP \
-  MOD_REGISTER_OBJECT_HOOK(PauseMenu)
-
-#endif //! OBJ_PAUSEMENU_H
+};

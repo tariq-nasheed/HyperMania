@@ -1,7 +1,4 @@
-#ifndef OBJ_HOTARUHIWATT_H
-#define OBJ_HOTARUHIWATT_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	HHW_BOSS,
@@ -15,7 +12,7 @@ typedef enum {
 	HHW_ELECTRICORB,
 } HHWTypes;
 
-typedef struct {
+struct ObjectHotaruHiWatt {
 	RSDK_OBJECT
 	TABLE(int32 debrisInfo[33],
 	      { 8, 0, 0,        -0x20000, -0x28000, 1, 0,       0x20000,  -0x28000, 2, 0,        -0x28000, -0x20000, 3, 0,       0x28000, -0x20000,
@@ -38,9 +35,9 @@ typedef struct {
 	uint16 sfxCharge;
 	uint16 aniFrames;
 	uint16 hotaruFrames;
-} ObjectHotaruHiWatt;
+};
 
-typedef struct {
+struct EntityHotaruHiWatt {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(nextState);
@@ -63,46 +60,4 @@ typedef struct {
 	Animator bulbFlashAnimator;
 	Animator laserImpactAnimator;
 	Hitbox hitbox;
-} EntityHotaruHiWatt;
-
-extern ObjectHotaruHiWatt* HotaruHiWatt;
-
-extern void (*HotaruHiWatt_StateBoss_Appear)();
-extern void (*HotaruHiWatt_StateBoss_FlyUp)();
-extern void (*HotaruHiWatt_StateBoss_LaserAttackDelay)();
-extern void (*HotaruHiWatt_StateBoss_ChargingLaser)();
-extern void (*HotaruHiWatt_StateBoss_FinishedLaserAttack)();
-extern void (*HotaruHiWatt_StateBoss_LaserAttack_Left)();
-extern void (*HotaruHiWatt_StateBoss_LaserAttack_Right)();
-extern void (*HotaruHiWatt_StateHotaru_Charging)();
-extern void (*HotaruHiWatt_StateHotaru_Attacking)();
-extern void (*HotaruHiWatt_StateHotaru_FinishedAttack)();
-extern void (*HotaruHiWatt_StateHotaru_EndAttackSequence)();
-extern void (*HotaruHiWatt_StateHotaruPair_AttackMovingDown)();
-extern void (*HotaruHiWatt_StateHotaruPair_AttackMovingUp)();
-extern void (*HotaruHiWatt_SetupHHWReappear)();
-extern void (*HotaruHiWatt_SpawnPairHotarus)();
-extern void (*HotaruHiWatt_Hit)();
-
-void HotaruHiWatt_EnemyInfoHook();
-
-#define OBJ_HOTARUHIWATT_SETUP \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_Appear); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_FlyUp); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_LaserAttackDelay); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_LaserAttack_Left); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_LaserAttack_Right); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_ChargingLaser); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateBoss_FinishedLaserAttack); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateHotaru_Charging); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateHotaru_Attacking); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateHotaru_FinishedAttack); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateHotaru_EndAttackSequence); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateHotaruPair_AttackMovingDown); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_StateHotaruPair_AttackMovingUp); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_SetupHHWReappear); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_SpawnPairHotarus); \
-  IMPORT_PUBLIC_FUNC(HotaruHiWatt_Hit); \
-  REGISTER_ENEMY(HotaruHiWatt)
-
-#endif //! OBJ_HOTARUHIWATT_H
+};

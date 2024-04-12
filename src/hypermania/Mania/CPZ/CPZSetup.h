@@ -1,9 +1,6 @@
-#ifndef OBJ_CPZSETUP_H
-#define OBJ_CPZSETUP_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectCPZSetup {
     RSDK_OBJECT
     uint16 aniTiles;
     TileLayer *background;
@@ -16,12 +13,8 @@ typedef struct {
     int32 chemLiquidPalIndex3;
     uint16 aniTileFrame;
     Entity *outro;
-} ObjectCPZSetup;
+};
 
-typedef struct {
+struct EntityCPZSetup {
     RSDK_ENTITY
-} EntityCPZSetup;
-
-extern ObjectCPZSetup *CPZSetup;
-
-#endif //! OBJ_CPZSETUP_H
+};

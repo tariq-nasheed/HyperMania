@@ -1,7 +1,4 @@
-#ifndef OBJ_CRIMSONEYE_H
-#define OBJ_CRIMSONEYE_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	CRIMSONEYE_CONTAINER,
@@ -18,7 +15,7 @@ typedef enum {
 	CE_ARROW_OFF  = 0xFF,
 } CrimsonEyeArrowTypes;
 
-typedef struct {
+struct ObjectCrimsonEye {
 	RSDK_OBJECT
 	TABLE(int32 debrisInfo[97],
 	      { 24,       0,  0, -0x28000, -0x28000, 1,  0, -0x14000, -0x28000, 2,  0, 0x14000,  -0x26000, 3,  0, 0x28000,  -0x26000, 4,  0, -0x26000,
@@ -63,9 +60,9 @@ typedef struct {
 	uint16 sfxImpact;
 	TileLayer* liftBackground;
 	TileLayer* bg2Layer;
-} ObjectCrimsonEye;
+};
 
-typedef struct {
+struct EntityCrimsonEye {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateEye);
@@ -76,22 +73,4 @@ typedef struct {
 	int32 ballRadiusTimer;
 	Vector2 originPos;
 	Animator animator;
-} EntityCrimsonEye;
-
-extern ObjectCrimsonEye* CrimsonEye;
-
-extern void (*CrimsonEye_StateCore_ContainerActive)();
-extern void (*CrimsonEye_StateCore_Hovering)();
-extern void (*CrimsonEye_StateCore_ImpactLift)();
-extern void (*CrimsonEye_Hit)();
-
-void CrimsonEye_EnemyInfoHook();
-
-#define OBJ_CRIMSONEYE_SETUP \
-  IMPORT_PUBLIC_FUNC(CrimsonEye_StateCore_ContainerActive); \
-  IMPORT_PUBLIC_FUNC(CrimsonEye_StateCore_Hovering); \
-  IMPORT_PUBLIC_FUNC(CrimsonEye_StateCore_ImpactLift); \
-  IMPORT_PUBLIC_FUNC(CrimsonEye_Hit); \
-  REGISTER_ENEMY(CrimsonEye)
-
-#endif //! OBJ_CRIMSONEYE_H
+};

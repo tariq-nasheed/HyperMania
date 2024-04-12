@@ -1,7 +1,4 @@
-#ifndef OBJ_HOTARU_H
-#define OBJ_HOTARU_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	HOTARU_ATTACK_IDLE,
@@ -9,7 +6,7 @@ typedef enum {
 	HOTARU_ATTACK_ATTACKING,
 } HotaruAttackStates;
 
-typedef struct {
+struct ObjectHotaru {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxTrigger;
@@ -17,9 +14,9 @@ typedef struct {
 	int32 unused2;
 	Hitbox hitboxElectricity;
 	uint16 aniFrames;
-} ObjectHotaru;
+};
 
-typedef struct {
+struct EntityHotaru {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 quality;
@@ -44,13 +41,4 @@ typedef struct {
 	Animator mainAnimator;
 	Animator bulbAnimator;
 	Animator electricityAnimator;
-} EntityHotaru;
-
-extern ObjectHotaru* Hotaru;
-
-void Hotaru_EnemyInfoHook();
-
-#define OBJ_HOTARU_SETUP \
-  REGISTER_ENEMY(Hotaru)
-
-#endif //! OBJ_HOTARU_H
+};

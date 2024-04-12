@@ -1,7 +1,4 @@
-#ifndef OBJ_GACHAPANDORA_H
-#define OBJ_GACHAPANDORA_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define GACHAPANDORA_CAPSULE_COUNT (4)
 
@@ -17,7 +14,7 @@ typedef enum {
 	GACHAPANDORA_SPARK,
 } GachapandoraTypes;
 
-typedef struct {
+struct ObjectGachapandora {
 	RSDK_OBJECT
 	TABLE(int32 capsuleOffsets[56],
 	      { 37, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 49, 50, 50, 50, 51, 51, 51, 51, 52, 52, 52, 52, 53, 53, 53, 53,
@@ -63,9 +60,9 @@ typedef struct {
 	uint16 sfxPon;
 	uint16 sfxFireball;
 	uint16 sfxGiggle;
-} ObjectGachapandora;
+};
 
-typedef struct {
+struct EntityGachapandora {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -85,24 +82,4 @@ typedef struct {
 	Animator handleAnimator;
 	Animator capsuleAnimator;
 	Hitbox hitbox;
-} EntityGachapandora;
-
-extern ObjectGachapandora* Gachapandora;
-
-extern void (*Gachapandora_StatePrize_DrillerMove)();
-extern void (*Gachapandora_StatePrize_FireDropperMove)();
-extern void (*Gachapandora_StatePrize_AmyWalk)();
-extern void (*Gachapandora_StatePrize_AmyIdle)();
-extern void (*Gachapandora_StatePrize_Destroyed)();
-
-void Gachapandora_EnemyInfoHook();
-
-#define OBJ_GACHAPANDORA_SETUP \
-  IMPORT_PUBLIC_FUNC(Gachapandora_StatePrize_DrillerMove); \
-  IMPORT_PUBLIC_FUNC(Gachapandora_StatePrize_FireDropperMove); \
-  IMPORT_PUBLIC_FUNC(Gachapandora_StatePrize_AmyWalk); \
-  IMPORT_PUBLIC_FUNC(Gachapandora_StatePrize_AmyIdle); \
-  IMPORT_PUBLIC_FUNC(Gachapandora_StatePrize_Destroyed); \
-  REGISTER_ENEMY(Gachapandora)
-
-#endif //! OBJ_GACHAPANDORA_H
+};

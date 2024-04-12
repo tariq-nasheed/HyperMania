@@ -1,17 +1,14 @@
-#ifndef OBJ_PHANTOMMYSTIC_H
-#define OBJ_PHANTOMMYSTIC_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectPhantomMystic {
 	RSDK_OBJECT
 	uint16 aniFrames;
 	uint16 sfxCupSwap;
 	uint16 sfxBigLaser;
 	uint16 sfxImpact;
-} ObjectPhantomMystic;
+};
 
-typedef struct {
+struct EntityPhantomMystic {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -39,20 +36,4 @@ typedef struct {
 	Animator cupSpikeAnimator; // Not actually ever drawn...
 	Animator cupBlastAnimator;
 	Hitbox hitbox;
-} EntityPhantomMystic;
-
-extern ObjectPhantomMystic* PhantomMystic;
-
-extern void (*PhantomMystic_State_CupBlast)();
-extern void (*PhantomMystic_State_MoveCupsToMystic)();
-extern void (*PhantomMystic_Hit)();
-
-void PhantomMystic_EnemyInfoHook();
-
-#define OBJ_PHANTOMMYSTIC_SETUP \
-  IMPORT_PUBLIC_FUNC(PhantomMystic_State_CupBlast); \
-  IMPORT_PUBLIC_FUNC(PhantomMystic_State_MoveCupsToMystic); \
-  IMPORT_PUBLIC_FUNC(PhantomMystic_Hit); \
-  REGISTER_ENEMY(PhantomMystic)
-
-#endif //! OBJ_PHANTOMMYSTIC_H
+};

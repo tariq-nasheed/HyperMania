@@ -1,19 +1,16 @@
-#ifndef OBJ_FIREWORM_H
-#define OBJ_FIREWORM_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define FIREWORM_SEGMENT_COUNT (1 + 4)
 
-typedef struct {
+struct ObjectFireworm {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxRange;
 	Animator holeAnimator;
 	uint16 aniFrames;
-} ObjectFireworm;
+};
 
-typedef struct {
+struct EntityFireworm {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -30,16 +27,4 @@ typedef struct {
 	int32 boundsR;
 	Animator bodyAnimators[FIREWORM_SEGMENT_COUNT];
 	Animator flameAnimators[FIREWORM_SEGMENT_COUNT];
-} EntityFireworm;
-
-extern ObjectFireworm* Fireworm;
-
-extern void (*Fireworm_State_FlyAround)();
-
-void Fireworm_EnemyInfoHook();
-
-#define OBJ_FIREWORM_SETUP \
-  IMPORT_PUBLIC_FUNC(Fireworm_State_FlyAround); \
-  REGISTER_ENEMY(Fireworm)
-
-#endif //! OBJ_FIREWORM_H
+};

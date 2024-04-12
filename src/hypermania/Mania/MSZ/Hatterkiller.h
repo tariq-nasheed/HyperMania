@@ -1,20 +1,17 @@
-#ifndef OBJ_HATTERKILLER_H
-#define OBJ_HATTERKILLER_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define HATTERKILLER_SEGMENT_COUNT (10)
 
-typedef struct {
+struct ObjectHatterkiller {
 	RSDK_OBJECT
 	Hitbox hitboxSegment;
 	uint16 sfxRocketJet;
 	uint16 sfxTransform2;
 	uint16 sfxPowerup;
 	uint16 aniFrames;
-} ObjectHatterkiller;
+};
 
-typedef struct {
+struct EntityHatterkiller {
 	RSDK_ENTITY
 	int32 timer;
 	Vector2 bodyPositions[HATTERKILLER_SEGMENT_COUNT];
@@ -24,13 +21,4 @@ typedef struct {
 	Animator headAnimator;
 	Animator bodyAnimator;
 	Animator tailAnimator;
-} EntityHatterkiller;
-
-extern ObjectHatterkiller* Hatterkiller;
-
-void Hatterkiller_EnemyInfoHook();
-
-#define OBJ_HATTERKILLER_SETUP \
-  REGISTER_ENEMY(Hatterkiller)
-
-#endif //! OBJ_HATTERKILLER_H
+};

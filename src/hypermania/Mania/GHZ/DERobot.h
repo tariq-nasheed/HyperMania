@@ -1,9 +1,6 @@
-#ifndef OBJ_DEROBOT_H
-#define OBJ_DEROBOT_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectDERobot {
 	RSDK_OBJECT
 	uint16 aniFrames;
 	Hitbox hitboxHand;
@@ -21,9 +18,9 @@ typedef struct {
 	uint16 sfxDrop;
 	uint16 sfxButton2;
 	uint16 sfxHullClose;
-} ObjectDERobot;
+};
 
-typedef struct {
+struct EntityDERobot {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -56,22 +53,4 @@ typedef struct {
 	Animator armAnimator;
 	int32 aniID;
 	int32 frameID;
-} EntityDERobot;
-
-extern ObjectDERobot* DERobot;
-
-extern void (*DERobot_State_FallLand)();
-extern void (*DERobot_State_Walk)();
-extern void (*DERobot_State_ArmAttack)();
-extern void (*DERobot_Hit)();
-
-void DERobot_EnemyInfoHook();
-
-#define OBJ_DEROBOT_SETUP \
-  IMPORT_PUBLIC_FUNC(DERobot_State_FallLand); \
-  IMPORT_PUBLIC_FUNC(DERobot_State_Walk); \
-  IMPORT_PUBLIC_FUNC(DERobot_State_ArmAttack); \
-  IMPORT_PUBLIC_FUNC(DERobot_Hit); \
-  REGISTER_ENEMY(DERobot)
-
-#endif //! OBJ_DEROBOT_H
+};

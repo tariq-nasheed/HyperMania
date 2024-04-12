@@ -1,9 +1,6 @@
-#ifndef OBJ_METERDROID_H
-#define OBJ_METERDROID_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectMeterDroid {
 	RSDK_OBJECT
 	TABLE(int32 debrisSpeeds[21],
 	      { 5, 0, 0, -0x20000, -0x28000, 1, 0, 0x20000, -0x20000, 2, 0, -0x28000, -0x10000, 3, 0, 0x28000, -0x10000, 4, 0, 0x10000, 0x10000 });
@@ -23,9 +20,9 @@ typedef struct {
 	uint16 sfxValve;
 	uint16 sfxWrench;
 	uint16 aniFrames;
-} ObjectMeterDroid;
+};
 
-typedef struct {
+struct EntityMeterDroid {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -45,26 +42,4 @@ typedef struct {
 	Animator propellorAnimator;
 	Animator armAnimator;
 	Animator wrenchAnimator;
-} EntityMeterDroid;
-
-extern ObjectMeterDroid* MeterDroid;
-
-extern void (*MeterDroid_State_TurningValve)();
-extern void (*MeterDroid_State_StopTurningValve)();
-extern void (*MeterDroid_State_WatchPlatformsPopUp)();
-extern void (*MeterDroid_State_Destroyed)();
-extern void (*MeterDroid_State_FinishAct)();
-extern void (*MeterDroid_Hit)();
-
-void MeterDroid_EnemyInfoHook();
-
-#define OBJ_METERDROID_SETUP \
-  IMPORT_PUBLIC_FUNC(MeterDroid_State_TurningValve); \
-  IMPORT_PUBLIC_FUNC(MeterDroid_State_StopTurningValve); \
-  IMPORT_PUBLIC_FUNC(MeterDroid_State_WatchPlatformsPopUp); \
-  IMPORT_PUBLIC_FUNC(MeterDroid_State_Destroyed); \
-  IMPORT_PUBLIC_FUNC(MeterDroid_State_FinishAct); \
-  IMPORT_PUBLIC_FUNC(MeterDroid_Hit); \
-  REGISTER_ENEMY(MeterDroid)
-
-#endif //! OBJ_METERDROID_H
+};

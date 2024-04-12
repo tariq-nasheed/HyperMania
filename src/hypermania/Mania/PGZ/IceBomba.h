@@ -1,9 +1,6 @@
-#ifndef OBJ_ICEBOMBA_H
-#define OBJ_ICEBOMBA_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectIceBomba {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxBomb;
@@ -11,9 +8,9 @@ typedef struct {
 	uint16 aniFrames;
 	uint16 sfxExplosion;
 	uint16 sfxFreeze;
-} ObjectIceBomba;
+};
 
-typedef struct {
+struct EntityIceBomba {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 dir;
@@ -25,20 +22,4 @@ typedef struct {
 	Animator bodyAnimator;
 	Animator wingAnimator;
 	Animator bombAnimator;
-} EntityIceBomba;
-
-extern ObjectIceBomba* IceBomba;
-
-extern void (*IceBomba_State_Flying)();
-extern void (*IceBomba_State_Turning)();
-extern void (*IceBomba_State_FlyAway)();
-
-void IceBomba_EnemyInfoHook();
-
-#define OBJ_ICEBOMBA_SETUP \
-  IMPORT_PUBLIC_FUNC(IceBomba_State_Flying); \
-  IMPORT_PUBLIC_FUNC(IceBomba_State_Turning); \
-  IMPORT_PUBLIC_FUNC(IceBomba_State_FlyAway); \
-  REGISTER_ENEMY(IceBomba)
-
-#endif //! OBJ_ICEBOMBA_H
+};

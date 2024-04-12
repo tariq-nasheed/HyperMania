@@ -1,30 +1,10 @@
-#ifndef MODFUNCTIONS_H
-#define MODFUNCTIONS_H
+#pragma once
 
 #include "HyperManiaVariables.h"
-
-#include "Objects/Player.h"
-#include "Mania/Global/SaveGame.h"
-#include "Mania/Global/Animals.h"
-#include "Mania/Global/Camera.h"
-#include "Mania/Common/CollapsingPlatform.h"
-#include "Objects/Debris.h"
-#include "Mania/Global/Explosion.h"
-#include "Mania/Cutscene/FXFade.h"
-#include "Mania/Global/ItemBox.h"
-#include "Mania/Global/Ring.h"
-#include "Mania/Global/ScoreBonus.h"
-#include "Mania/Global/Zone.h"
-#include "Mania/Global/Music.h"
-#include "Mania/Global/PauseMenu.h"
-#include "Mania/Global/InvincibleStars.h"
-
-#include "Mania/CPZ/CPZSetup.h"
-#include "Mania/OOZ/OOZSetup.h"
-#include "Mania/HCZ/HCZSetup.h"
-#include "Mania/MMZ/FarPlane.h"
-#include "Mania/ERZ/ERZStart.h"
-#include "Mania/BSS/BSS_Setup.h"
+#include "Mania/All.h"
+#include "mod/All.h"
+#include "link/All.h"
+#include "new/All.h"
 
 
 extern bool32 HPZ_SuperSpecialStage; // bad hack variable for testing purposes, will be removed later, please understand
@@ -104,5 +84,3 @@ void HMAPI_ScreenFlash(EntityPlayer* player, float intensity);
 void HMAPI_BadnikScreenClear(EntityPlayer* player);
 void HMAPI_ItemBoxScreenClear(EntityPlayer* player, bool32 force);
 void AddAPIFunctions();
-
-#endif //MODFUNCTIONS_H

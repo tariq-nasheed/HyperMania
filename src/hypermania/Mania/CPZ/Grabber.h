@@ -1,9 +1,6 @@
-#ifndef OBJ_GRABBER_H
-#define OBJ_GRABBER_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectGrabber {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxGrab;
@@ -11,9 +8,9 @@ typedef struct {
 	uint16 aniFrames;
 	uint16 sfxGrab;
 	uint16 sfxDestroy;
-} ObjectGrabber;
+};
 
-typedef struct {
+struct EntityGrabber {
 	RSDK_ENTITY
 	StateMachine(state);
 	Animator bodyAnimator;
@@ -28,13 +25,4 @@ typedef struct {
 	uint8 startDir;
 	int32 turnTimer;
 	int32 timer;
-} EntityGrabber;
-
-extern ObjectGrabber* Grabber;
-
-void Grabber_EnemyInfoHook();
-
-#define OBJ_GRABBER_SETUP \
-  REGISTER_ENEMY(Grabber)
-
-#endif //! OBJ_GRABBER_H
+};

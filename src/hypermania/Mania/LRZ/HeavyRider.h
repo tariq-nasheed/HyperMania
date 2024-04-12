@@ -1,7 +1,4 @@
-#ifndef OBJ_HEAVYRIDER_H
-#define OBJ_HEAVYRIDER_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	HEAVYRIDER_RIDER,
@@ -40,7 +37,7 @@ typedef enum {
 	HEAVYRIDER_WHEEL_RETRACTING,
 } HeavyRiderWheelStates;
 
-typedef struct {
+struct ObjectHeavyRider {
 	RSDK_OBJECT
 	uint8 curAttack;
 	uint8 spikeBallState;
@@ -75,9 +72,9 @@ typedef struct {
 	uint16 sfxJump;
 	uint16 sfxCheer;
 	uint16 sfxBumper;
-} ObjectHeavyRider;
+};
 
-typedef struct {
+struct EntityHeavyRider {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -91,20 +88,4 @@ typedef struct {
 	Animator spikeBallAnimator;
 	Animator fireballAnimator;
 	Animator wheelieAnimator;
-} EntityHeavyRider;
-
-extern ObjectHeavyRider* HeavyRider;
-
-extern void (*HeavyRider_State_Moving)();
-extern void (*HeavyRider_State_Turning)();
-extern void (*HeavyRider_Hit)();
-
-void HeavyRider_EnemyInfoHook();
-
-#define OBJ_HEAVYRIDER_SETUP \
-  IMPORT_PUBLIC_FUNC(HeavyRider_State_Moving); \
-  IMPORT_PUBLIC_FUNC(HeavyRider_State_Turning); \
-  IMPORT_PUBLIC_FUNC(HeavyRider_Hit); \
-  REGISTER_ENEMY(HeavyRider)
-
-#endif //! OBJ_HEAVYRIDER_H
+};

@@ -1,16 +1,13 @@
-#ifndef OBJ_VULTRON_H
-#define OBJ_VULTRON_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectVultron {
 	RSDK_OBJECT
 	Hitbox hitboxRange;
 	uint16 aniFrames;
 	uint16 sfxVultron;
-} ObjectVultron;
+};
 
-typedef struct {
+struct EntityVultron {
 	RSDK_ENTITY
 	StateMachine(state);
 	uint8 type;
@@ -22,13 +19,4 @@ typedef struct {
 	Hitbox hitboxBadnik;
 	Animator bodyAnimator;
 	Animator flameAnimator;
-} EntityVultron;
-
-extern ObjectVultron* Vultron;
-
-void Vultron_EnemyInfoHook();
-
-#define OBJ_VULTRON_SETUP \
-  REGISTER_ENEMY(Vultron)
-
-#endif //! OBJ_VULTRON_H
+};

@@ -1,9 +1,6 @@
-#ifndef OBJ_HCZSETUP_H
-#define OBJ_HCZSETUP_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectHCZSetup {
     RSDK_OBJECT
     TABLE(int32 pendulumAniTileDurations[14], { 4, 3, 2, 2, 2, 3, 3, 4, 3, 2, 2, 2, 3, 3 });
     int32 unused1;
@@ -21,12 +18,8 @@ typedef struct {
     uint16 sfxWaterfall;
     uint16 sfxWaterfallLoop;
 #endif
-} ObjectHCZSetup;
+};
 
-typedef struct {
+struct EntityHCZSetup {
     RSDK_ENTITY
-} EntityHCZSetup;
-
-extern ObjectHCZSetup *HCZSetup;
-
-#endif //! OBJ_HCZSETUP_H
+};

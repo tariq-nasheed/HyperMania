@@ -1,7 +1,4 @@
-#ifndef OBJ_BIGSQUEEZE_H
-#define OBJ_BIGSQUEEZE_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	BIGSQUEEZE_MANAGER,
@@ -10,7 +7,7 @@ typedef enum {
 	BIGSQUEEZE_CRUSHER_R,
 } BigSqueezeTypes;
 
-typedef struct {
+struct ObjectBigSqueeze {
 	RSDK_OBJECT
 	TABLE(int32 prongDebrisInfo[10], { 3, 12, -0x20000, -0x10000, 13, 0, -0x10000, 14, 0x20000, -0x10000 });
 	TABLE(int32 domeDebrisInfo[13], { 4, 8, -0x20000, -0x10000, 9, -0x10000, -0x10000, 10, 0x10000, -0x10000, 11, 0x20000, -0x10000 });
@@ -25,9 +22,9 @@ typedef struct {
 	uint16 sfxMagnet;
 	uint16 sfxOrbinaut;
 	uint16 aniFrames;
-} ObjectBigSqueeze;
+};
 
-typedef struct {
+struct EntityBigSqueeze {
 	RSDK_ENTITY
 	StateMachine(state);
 	StateMachine(stateDraw);
@@ -43,20 +40,4 @@ typedef struct {
 	Animator wheelAnimator;
 	Animator electricAnimator;
 	Hitbox hitbox;
-} EntityBigSqueeze;
-
-extern ObjectBigSqueeze* BigSqueeze;
-
-extern void (*BigSqueeze_StateBoss_Idle)();
-extern void (*BigSqueeze_StateBoss_Electrified)();
-extern void (*BigSqueeze_Hit)();
-
-void BigSqueeze_EnemyInfoHook();
-
-#define OBJ_BIGSQUEEZE_SETUP \
-  IMPORT_PUBLIC_FUNC(BigSqueeze_StateBoss_Idle); \
-  IMPORT_PUBLIC_FUNC(BigSqueeze_StateBoss_Electrified); \
-  IMPORT_PUBLIC_FUNC(BigSqueeze_Hit); \
-  REGISTER_ENEMY(BigSqueeze)
-
-#endif //! OBJ_BIGSQUEEZE_H
+};

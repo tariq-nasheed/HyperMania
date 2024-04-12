@@ -1,18 +1,15 @@
-#ifndef OBJ_JELLYGNITE_H
-#define OBJ_JELLYGNITE_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectJellygnite {
 	RSDK_OBJECT
 	Hitbox hitbox;
 	Hitbox hitboxUnused;
 	uint16 aniFrames;
 	uint16 sfxGrab;
 	uint16 sfxElectrify;
-} ObjectJellygnite;
+};
 
-typedef struct {
+struct EntityJellygnite {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -29,16 +26,4 @@ typedef struct {
 	Animator bodyAnimator;
 	Animator frontTentacleAnimator;
 	Animator backTentacleAnimator;
-} EntityJellygnite;
-
-extern ObjectJellygnite* Jellygnite;
-
-extern void (*Jellygnite_State_Init)();
-
-void Jellygnite_EnemyInfoHook();
-
-#define OBJ_JELLYGNITE_SETUP \
-  IMPORT_PUBLIC_FUNC(Jellygnite_State_Init); \
-  REGISTER_ENEMY(Jellygnite)
-
-#endif //! OBJ_JELLYGNITE_H
+};

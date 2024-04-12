@@ -1,0 +1,4 @@
+Mania -- class definitions copied from mania decomp
+link  -- import macros + compatibility functions for mania classes
+mod   -- import macros + new functions and data for preexisting mania classes
+new   -- new classes

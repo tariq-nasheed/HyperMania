@@ -1,11 +1,8 @@
-#ifndef OBJ_UBERCATERKILLER_H
-#define OBJ_UBERCATERKILLER_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 #define UBERCATERKILLER_SEGMENT_COUNT (10)
 
-typedef struct {
+struct ObjectUberCaterkiller {
 	RSDK_OBJECT
 	Hitbox hitboxSegment;
 	bool32 defeated;
@@ -17,9 +14,9 @@ typedef struct {
 	uint16 sfxBumper3;
 	uint16 sfxCaterJump;
 	uint16 aniFrames;
-} ObjectUberCaterkiller;
+};
 
-typedef struct {
+struct EntityUberCaterkiller {
 	RSDK_ENTITY
 	StateMachine(state);
 	int32 timer;
@@ -39,22 +36,4 @@ typedef struct {
 	uint8 playerTimers[PLAYER_COUNT];
 	Animator headAnimator;
 	Animator bodyAnimator;
-} EntityUberCaterkiller;
-
-extern ObjectUberCaterkiller* UberCaterkiller;
-
-extern void (*UberCaterkiller_State_HorizontalJump)();
-extern void (*UberCaterkiller_State_FirstJump)();
-extern void (*UberCaterkiller_State_RepeatedJumps)();
-extern void (*UberCaterkiller_Hit)();
-
-void UberCaterkiller_EnemyInfoHook();
-
-#define OBJ_UBERCATERKILLER_SETUP \
-  IMPORT_PUBLIC_FUNC(UberCaterkiller_State_HorizontalJump); \
-  IMPORT_PUBLIC_FUNC(UberCaterkiller_State_FirstJump); \
-  IMPORT_PUBLIC_FUNC(UberCaterkiller_State_RepeatedJumps); \
-  IMPORT_PUBLIC_FUNC(UberCaterkiller_Hit); \
-  REGISTER_ENEMY(UberCaterkiller)
-
-#endif //! OBJ_UBERCATERKILLER_H
+};

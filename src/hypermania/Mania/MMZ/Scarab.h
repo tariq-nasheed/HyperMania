@@ -1,16 +1,13 @@
-#ifndef OBJ_SCARAB_H
-#define OBJ_SCARAB_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectScarab {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxGrab;
 	uint16 aniFrames;
-} ObjectScarab;
+};
 
-typedef struct {
+struct EntityScarab {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -29,16 +26,4 @@ typedef struct {
 	uint8 pullCount;
 	int8 moveDir;
 	uint8 grabbedPlayers;
-} EntityScarab;
-
-extern ObjectScarab* Scarab;
-
-extern void (*Scarab_HandlePlayerRelease)();
-
-void Scarab_EnemyInfoHook();
-
-#define OBJ_SCARAB_SETUP \
-  IMPORT_PUBLIC_FUNC(Scarab_HandlePlayerRelease); \
-  REGISTER_ENEMY(Scarab)
-
-#endif //! OBJ_SCARAB_H
+};

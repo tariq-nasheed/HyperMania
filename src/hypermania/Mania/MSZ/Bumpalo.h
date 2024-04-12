@@ -1,9 +1,6 @@
-#ifndef OBJ_BUMPALO_H
-#define OBJ_BUMPALO_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectBumpalo {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	Hitbox hitboxBumper;
@@ -15,9 +12,9 @@ typedef struct {
 	uint16 sfxHuff;
 	uint16 sfxClack;
 	uint16 sfxImpact;
-} ObjectBumpalo;
+};
 
-typedef struct {
+struct EntityBumpalo {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 startPos;
@@ -28,13 +25,4 @@ typedef struct {
 	Animator badnikAnimator;
 	Animator huffAnimator;
 	Animator dustAnimator;
-} EntityBumpalo;
-
-extern ObjectBumpalo* Bumpalo;
-
-void Bumpalo_EnemyInfoHook();
-
-#define OBJ_BUMPALO_SETUP \
-  REGISTER_ENEMY(Bumpalo)
-
-#endif //! OBJ_BUMPALO_H
+};

@@ -1,7 +1,4 @@
-#ifndef OBJ_METALSONIC_H
-#define OBJ_METALSONIC_H
-
-#include "GameAPI/Game.h"
+#pragma once
 
 typedef enum {
 	MS_ANI_IDLE,
@@ -26,7 +23,7 @@ typedef enum {
 	MS_ATTACK_BALL,
 } MetalSonicAttackIDs;
 
-typedef struct {
+struct ObjectMetalSonic {
 	RSDK_OBJECT
 	int32 unused;
 	int32 invincibilityTimerPanel;
@@ -52,9 +49,9 @@ typedef struct {
 	Hitbox hitboxHover;
 	Hitbox hitboxDash;
 	uint16 aniFrames;
-} ObjectMetalSonic;
+};
 
-typedef struct {
+struct EntityMetalSonic {
 	RSDK_ENTITY
 	StateMachine(state);
 	Vector2 targetPos;
@@ -77,25 +74,4 @@ typedef struct {
 	Hitbox* innerBox;
 	Animator metalSonicAnimator;
 	Animator boosterAnimator;
-} EntityMetalSonic;
-
-extern ObjectMetalSonic* MetalSonic;
-
-// hopefully this works because i dont feel like compiling a pre-mania Game.so to test it lol
-#if !MANIA_USE_PLUS
-  extern void (*MetalSonic_State_Hover_Phase2)();
-  extern void (*MetalSonic_State_FinishAttack_Phase2)();
-  extern void (*MetalSonic_Hit)();
-
-  void MetalSonic_EnemyInfoHook();
-
-  #define OBJ_METALSONIC_SETUP \
-    IMPORT_PUBLIC_FUNC(MetalSonic_State_Hover_Phase2); \
-    IMPORT_PUBLIC_FUNC(MetalSonic_State_FinishAttack_Phase2); \
-    IMPORT_PUBLIC_FUNC(MetalSonic_Hit); \
-    REGISTER_ENEMY(MetalSonic)
-#else
-  #define OBJ_METALSONIC_SETUP
-#endif
-
-#endif //! OBJ_METALSONIC_H
+};

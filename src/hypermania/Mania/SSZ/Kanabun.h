@@ -1,15 +1,12 @@
-#ifndef OBJ_KANABUN_H
-#define OBJ_KANABUN_H
+#pragma once
 
-#include "GameAPI/Game.h"
-
-typedef struct {
+struct ObjectKanabun {
 	RSDK_OBJECT
 	Hitbox hitboxBadnik;
 	uint16 aniFrames;
-} ObjectKanabun;
+};
 
-typedef struct {
+struct EntityKanabun {
 	RSDK_ENTITY
 	StateMachine(state);
 	int32 unused;
@@ -20,13 +17,4 @@ typedef struct {
 	uint8 bobDist;
 	uint8 angleVel;
 	Animator animator;
-} EntityKanabun;
-
-extern ObjectKanabun* Kanabun;
-
-void Kanabun_EnemyInfoHook();
-
-#define OBJ_KANABUN_SETUP \
-  REGISTER_ENEMY(Kanabun)
-
-#endif //! OBJ_KANABUN_H
+};

@@ -1,17 +1,12 @@
-#ifndef MANIA_SCOREBONUS_H
-#define MANIA_SCOREBONUS_H
+#pragma once
 
-typedef struct {
+struct ObjectScoreBonus {
 	RSDK_OBJECT
 	uint16 aniFrames;
-} ObjectScoreBonus;
+};
 
-typedef struct {
+struct EntityScoreBonus {
 	RSDK_ENTITY
 	int32 timer;
 	Animator animator;
-} EntityScoreBonus;
-
-extern ObjectScoreBonus* ScoreBonus;
-
-#endif //! MANIA_SCOREBONUS_H
+};

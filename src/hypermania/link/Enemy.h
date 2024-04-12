@@ -1,0 +1,174 @@
+#include "link/ERZ/PhantomMystic.h"
+#include "link/ERZ/PhantomShinobi.h"
+#include "link/ERZ/PhantomEgg.h"
+#include "link/TMZ/CrimsonEye.h"
+#include "link/MMZ/Gachapandora.h"
+#include "link/MMZ/EggPistonsMKII.h"
+#include "link/LRZ/RockDrill.h"
+#include "link/LRZ/HeavyKing.h"
+#include "link/LRZ/HeavyRider.h"
+#include "link/LRZ/DrillerdroidO.h"
+#include "link/LRZ/Drillerdroid.h"
+#include "link/OOZ/MegaOctus.h"
+#include "link/OOZ/MeterDroid.h"
+#include "link/MSZ/HeavyMystic.h"
+#include "link/MSZ/DBTower.h"
+#include "link/MSZ/UberCaterkiller.h"
+#include "link/HCZ/LaundroMobile.h"
+#include "link/SSZ/GigaMetal.h"
+#include "link/SSZ/MetalSonic.h"
+#include "link/SSZ/HotaruHiWatt.h"
+#include "link/PGZ/HeavyShinobi.h"
+#include "link/PGZ/Shiversaw.h"
+#include "link/FBZ/BigSqueeze.h"
+#include "link/SPZ/WeatherMobile.h"
+#include "link/CPZ/AmoebaDroid.h"
+#include "link/GHZ/DERobot.h"
+#include "link/GHZ/DDWrecker.h"
+
+#include "link/TMZ/FlasherMKII.h"
+#include "link/TMZ/TurboTurtle.h"
+#include "link/TMZ/SentryBug.h"
+#include "link/TMZ/BallHog.h"
+#include "link/MMZ/PohBee.h"
+#include "link/MMZ/Scarab.h"
+#include "link/MMZ/MechaBu.h"
+#include "link/LRZ/Fireworm.h"
+#include "link/LRZ/Rexon.h"
+#include "link/LRZ/Toxomister.h"
+#include "link/OOZ/Octus.h"
+#include "link/OOZ/Sol.h"
+#include "link/OOZ/Aquis.h"
+#include "link/MSZ/Rattlekiller.h"
+#include "link/MSZ/RollerMKII.h"
+#include "link/MSZ/Vultron.h"
+#include "link/MSZ/Bumpalo.h"
+#include "link/MSZ/Armadiloid.h"
+#include "link/MSZ/Cactula.h"
+#include "link/MSZ/Hatterkiller.h"
+#include "link/HCZ/TurboSpiker.h"
+#include "link/HCZ/Buggernaut.h"
+#include "link/HCZ/MegaChopper.h"
+#include "link/HCZ/Jawz.h"
+#include "link/HCZ/Jellygnite.h"
+#include "link/HCZ/Blastoid.h"
+#include "link/HCZ/Pointdexter.h"
+#include "link/SSZ/Kabasira.h"
+#include "link/SSZ/Dango.h"
+#include "link/SSZ/Kanabun.h"
+#include "link/SSZ/HotaruMKII.h"
+#include "link/SSZ/Hotaru.h"
+#include "link/PGZ/Woodrow.h"
+#include "link/PGZ/Dragonfly.h"
+#include "link/PGZ/IceBomba.h"
+#include "link/PGZ/JuggleSaw.h"
+#include "link/FBZ/FBZTrash.h"
+#include "link/FBZ/Technosqueek.h"
+#include "link/FBZ/Clucker.h"
+#include "link/FBZ/Blaster.h"
+#include "link/SPZ/Shutterbug.h"
+#include "link/SPZ/Canista.h"
+#include "link/SPZ/Tubinaut.h"
+#include "link/SPZ/MicDrop.h"
+#include "link/CPZ/Grabber.h"
+#include "link/CPZ/Spiny.h"
+#include "link/CPZ/CaterkillerJr.h"
+#include "link/CPZ/Bubbler.h"
+#include "link/GHZ/Splats.h"
+#include "link/GHZ/Newtron.h"
+#include "link/GHZ/Chopper.h"
+#include "link/GHZ/Crabmeat.h"
+#include "link/GHZ/Batbrain.h"
+#include "link/GHZ/Motobug.h"
+#include "link/GHZ/BuzzBomber.h"
+
+
+#define REGISTER_ENEMY(name) MOD_REGISTER_OBJ_OVERLOAD(name, NULL, NULL, NULL, NULL, NULL, name##_EnemyInfoHook, NULL, NULL, NULL)
+
+#define HOOK_ENEMY_OBJECTS \
+  IMPORT_PUBLIC_FUNC(APICallback_TrackEnemyDefeat); \
+  IMPORT_PUBLIC_FUNC(TimeAttackData_TrackEnemyDefeat); \
+  \
+  OBJ_PHANTOMMYSTIC_SETUP; \
+  OBJ_PHANTOMSHINOBI_SETUP; \
+  OBJ_PHANTOMEGG_SETUP; \
+  OBJ_CRIMSONEYE_SETUP; \
+  OBJ_GACHAPANDORA_SETUP; \
+  OBJ_EGGPISTONSMKII_SETUP; \
+  OBJ_ROCKDRILL_SETUP; \
+  OBJ_HEAVYKING_SETUP; \
+  OBJ_HEAVYRIDER_SETUP; \
+  OBJ_DRILLERDROIDO_SETUP; \
+  OBJ_DRILLERDROID_SETUP; \
+  OBJ_MEGAOCTUS_SETUP; \
+  OBJ_METERDROID_SETUP; \
+  OBJ_HEAVYMYSTIC_SETUP; \
+  OBJ_DBTOWER_SETUP; \
+  OBJ_UBERCATERKILLER_SETUP; \
+  OBJ_LAUNDROMOBILE_SETUP; \
+  OBJ_METALSONIC_SETUP; \
+  OBJ_GIGAMETAL_SETUP; \
+  OBJ_HOTARUHIWATT_SETUP; \
+  OBJ_HEAVYSHINOBI_SETUP; \
+  OBJ_SHIVERSAW_SETUP; \
+  OBJ_BIGSQUEEZE_SETUP; \
+  OBJ_WEATHERMOBILE_SETUP; \
+  OBJ_AMOEBADROID_SETUP; \
+  OBJ_DEROBOT_SETUP; \
+  OBJ_DDWRECKER_SETUP; \
+  \
+  OBJ_FLASHERMKII_SETUP; \
+  OBJ_TURBOTURTLE_SETUP; \
+  OBJ_SENTRYBUG_SETUP; \
+  OBJ_BALLHOG_SETUP; \
+  OBJ_POHBEE_SETUP; \
+  OBJ_SCARAB_SETUP; \
+  OBJ_MECHABU_SETUP; \
+  OBJ_FIREWORM_SETUP; \
+  OBJ_REXON_SETUP; \
+  OBJ_TOXOMISTER_SETUP; \
+  OBJ_OCTUS_SETUP; \
+  OBJ_SOL_SETUP; \
+  OBJ_AQUIS_SETUP; \
+  OBJ_RATTLEKILLER_SETUP; \
+  OBJ_ROLLERMKII_SETUP; \
+  OBJ_VULTRON_SETUP; \
+  OBJ_BUMPALO_SETUP; \
+  OBJ_ARMADILOID_SETUP; \
+  OBJ_CACTULA_SETUP; \
+  OBJ_HATTERKILLER_SETUP; \
+  OBJ_TURBOSPIKER_SETUP; \
+  OBJ_BUGGERNAUT_SETUP; \
+  OBJ_MEGACHOPPER_SETUP; \
+  OBJ_JAWZ_SETUP; \
+  OBJ_JELLYGNITE_SETUP; \
+  OBJ_BLASTOID_SETUP; \
+  OBJ_POINTDEXTER_SETUP; \
+  OBJ_KABASIRA_SETUP; \
+  OBJ_DANGO_SETUP; \
+  OBJ_KANABUN_SETUP; \
+  OBJ_HOTARUMKII_SETUP; \
+  OBJ_HOTARU_SETUP; \
+  OBJ_WOODROW_SETUP; \
+  OBJ_DRAGONFLY_SETUP; \
+  OBJ_ICEBOMBA_SETUP; \
+  OBJ_JUGGLESAW_SETUP; \
+  OBJ_FBZTRASH_SETUP; \
+  OBJ_TECHNOSQUEEK_SETUP; \
+  OBJ_CLUCKER_SETUP; \
+  OBJ_BLASTER_SETUP; \
+  OBJ_CANISTA_SETUP; \
+  OBJ_TUBINAUT_SETUP; \
+  OBJ_SHUTTERBUG_SETUP; \
+  OBJ_MICDROP_SETUP; \
+  OBJ_SPINY_SETUP; \
+  OBJ_GRABBER_SETUP; \
+  OBJ_CATERKILLERJR_SETUP; \
+  OBJ_BUBBLER_SETUP; \
+  OBJ_SPLATS_SETUP; \
+  OBJ_NEWTRON_SETUP; \
+  OBJ_CHOPPER_SETUP; \
+  OBJ_CRABMEAT_SETUP; \
+  OBJ_BATBRAIN_SETUP; \
+  OBJ_MOTOBUG_SETUP; \
+  OBJ_BUZZBOMBER_SETUP
