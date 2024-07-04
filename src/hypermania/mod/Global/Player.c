@@ -348,10 +348,10 @@ void Player_Update_OVERLOAD() {
 	}
 
 	// music handling ------------------------------------------------------
-	if (!ERZStart && HM_globals->config.enableHyperMusic && Music->trackLoops[TRACK_SUPER] != 423801 &&
+	if (!ERZStart && HM_globals->config.enableHyperMusic && Music->trackLoops[TRACK_SUPER] != HM_globals->config.hyperMusicLoopPoint &&
 	(Music->activeTrack == TRACK_SUPER || !HM_globals->config.twoHeavensMode)) {
 #if MANIA_USE_PLUS
-		Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, 423801);
+		Music_SetMusicTrack("Hyper.ogg", TRACK_SUPER, HM_globals->config.hyperMusicLoopPoint);
 		if (Music->activeTrack == TRACK_SUPER) Music_PlayJingle(TRACK_SUPER);
 #else
 		//Music_TransitionTrack(TRACK_HYPER, 1.0);
