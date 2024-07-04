@@ -5,8 +5,8 @@ if [ "$1" = "shc" ]; then
 fi
 modname="HyperMania"
 logicname="hypermania"
-filelist="Data mod.ini SETTINGS.md MANUAL.md src/release-files/modSettings.ini src/release-files/HyperManiaSaveData.bin src/release-files/Data/Game/GameConfig.bin"
-releasedir="HyperMania"
+filelist="Data mod.ini MANUAL.md src/release-files/modSettings.ini src/release-files/HyperManiaSaveData.bin src/release-files/Data/Game/Game.xml"
+releasedir="HyperMania-Release"
 
 if [ -n "$withSHC" ]; then
 	echo "[SHC LOGO ENABLED]"
@@ -63,7 +63,8 @@ zip -r $modname-windows.zip $releasedir
 rm $releasedir/*.dll
 
 # LEGACY MOD LOADER VERSIONS ###################################################
-cp -R release-files/Data $releasedir
+# was used for copying GameConfig.bin for legacy releases but it's the default now
+#cp -R release-files/Data $releasedir
 # linux
 BuildMods -DLEGACY=true
 CopyLogicFiles so

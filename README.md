@@ -42,9 +42,6 @@ or you can use `./build.sh` in `src/` to automate this process if you don't mind
 - `RELEASE` - Set to strip debug info from binary
 - `LEGACY` - Set to use version 1 of the mod loader
 
-# Settings
-See [SETTINGS](SETTINGS.md)
-
 # Planned features
 + Extra GFX/SFX
 + New special stages
@@ -53,6 +50,6 @@ See [SETTINGS](SETTINGS.md)
 # Credits
 + jubbalub + Hydropper - Super Emerald sprites, emerald cave map
 + Tee Lopes - Sonic Forces Theme Unofficial Remix (Hyper theme)
-+ Axanery - GameConfig.bin used in legacy builds
 + KiaraGale - Underwater Hyper palettes, inactive Super Emerald sprite, HPZ teleporter tiles
 + Braven - yellow + red super emerald palettes
++ Axanery - `GameConfig.bin`
