@@ -15,6 +15,7 @@ typedef struct {
 	float screenFlashFactor; // set to control intensity of screen flashes, with 1.0 being full intensity and 0.0 disabling flashes
 	bool32 twoHeavensMode; // set to true to enable "Two Heavens mode" letting you choose between turning super OR hyper with the latter form consuming rings at a faster rate
 	bool32 enableHyperMusic; // set to true to enable hyper music (duhhh!!!!!)
+	int32 hyperMusicLoopPoint; // set when changing the Hyper track (defaults to 423801)
 } ModConfig_t;
 
 extern ModConfig_t ModConfig;

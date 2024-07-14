@@ -83,6 +83,7 @@ typedef struct {
 	bool32 twoHeavensMode; // set to true to enable "Two Heavens mode" letting you choose between turning super OR hyper with the latter form consuming rings at a faster rate
 	bool32 enableHyperMusic; // set to true to enable hyper music (duhhh!!!!!)
 	bool32 superTailsOnly; // set to enable vanilla S3&K super tails logic (hyper tails = super tails, can't turn super tails with chaos emeralds)
+	int32 hyperMusicLoopPoint; // set when changing the Hyper track (defaults to 423801)
 } HM_Config;
 
 typedef struct {
