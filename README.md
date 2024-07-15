@@ -10,18 +10,19 @@
 
 Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game, features high degree of accuracy to S3&K with code based directly on [Sonic 3 AIR](https://github.com/Eukaryot/sonic3air).
 
-***Extremely WIP***, casual play is possible but with bugs and rough presentation.
+***WIP***, contains some bugs here and there as well as some missing features. (Mainly a lack of new special stages with encore modes' being used as a substitute)
 
-Press transform + up in debug mode while super or collect all Super Emeralds to transform into your Hyper form.
-# Status
-- Hyper abilities - All 5 characters have hyper abilities, Mighty's and Ray's are kinda buggy and need some extra work.
-- Hidden Palace Zone - Can be accessed when touching a Super Ring with all Chaos Emeralds collected, features transfer animation and ability to collect Super Emeralds.
-Encore special stages are being used as placeholders until new maps are created.
+# Installation
+The mod was developed for v5U and at the moment officially supports Windows, Linux and Android. Releases use the x64 instruction set for desktop platforms and AArch64 for Android, with desktop builds also coming in "legacy" variants for people still running 1.0.0 of the decomp.
 
-# How to build
+Extract HyperMania into the `mods` folder of your decomp installation (create the folder if it doesn't exist), then enable it in the 'Mods' section of the developer menu.
+(Follow [this guide](https://steamcommunity.com/sharedfiles/filedetails/?id=1123456515) if you don't know how to access it)
+
+**For Android users:** you also need to take `libhypermania.so` out of the mods' folder and put it into `lib/arm64-v8a/` of your RSDKv5U apk. Make sure you have some way of opening or packing/unpacking apk files. (if you don't do this RSDKv5U can't find the logic file and you won't be able to play the mod)
+# How to Build
 
 ## Unix-like
-Initialize GameAPI with `git submodule update --init` then run these commands
+Initialize GameAPI with `git submodule update --init` then run these commands:
 
 ```
 mkdir build
@@ -30,13 +31,16 @@ cmake .. .
 make
 mv hypermania.so ../../
 ```
-or you can use `./build.sh` in `src/` to automate this process if you don't mind running CMake every time you compile
+You can use `./build.sh` in `src/` to automate this process if you don't mind running CMake every time you compile.
 
 ## Windows (Visual Studio)
-- Make sure to have the "Desktop Development with C++" workload installed so you have access to CMake
-- When Visual Studio prompts you to enable CMake Integration, pick "Enable and set source directory" and select `CMakeLists.txt`
-- Build the project
-- move `hypermania.dll` from `out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is)
+- Make sure to have the "Desktop Development with C++" workload installed so you have access to CMake.
+- When Visual Studio prompts you to enable CMake Integration, pick "Enable and set source directory" and select `CMakeLists.txt`.
+- Build the project.
+- move `hypermania.dll` from `out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is).
+
+## Android
+See [RSDKv5-Decompilation/dependencies/android/README.md](https://github.com/RSDKModding/RSDKv5-Decompilation/blob/master/dependencies/android/README.md).
 
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary
