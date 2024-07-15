@@ -6,7 +6,7 @@ fi
 modname="HyperMania"
 logicname="hypermania"
 filelist="Data mod.ini MANUAL.md src/release-files/modSettings.ini src/release-files/HyperManiaSaveData.bin src/release-files/Data/Game/Game.xml"
-releasedir="HyperMania-Release"
+releasedir="HyperMania"
 
 if [ -n "$withSHC" ]; then
 	echo "[SHC LOGO ENABLED]"
