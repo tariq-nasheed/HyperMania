@@ -18,7 +18,7 @@ The mod was developed for v5U and at the moment officially supports Windows, Lin
 Extract HyperMania into the `mods` folder of your decomp installation (create the folder if it doesn't exist), then enable it in the 'Mods' section of the developer menu.
 (Follow [this guide](https://steamcommunity.com/sharedfiles/filedetails/?id=1123456515) if you don't know how to access it)
 
-**For Android users:** you also need to take `libhypermania.so` out of the mods' folder and put it into `lib/arm64-v8a/` of your RSDKv5U apk. Make sure you have some way of opening or packing/unpacking apk files. (if you don't do this RSDKv5U can't find the logic file and you won't be able to play the mod)
+**For Android users:** You also need to take `libhypermania.so` out of the mods' folder and put it into `lib/arm64-v8a/` of your RSDKv5U APK. Make sure you have some way of opening, packing, and signing APK files so it can actually be installed on your system (I recommend [APK Editor Studio](https://qwertycube.com/apk-editor-studio/)), if you don't do this RSDKv5U can't find the logic file and you won't be able to play the mod.
 # How to Build
 
 ## Unix-like
