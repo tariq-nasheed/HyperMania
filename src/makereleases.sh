@@ -50,7 +50,6 @@ if [ -n "$withSHC" ]; then
 fi
 cd src
 
-# UP-TO-DATE MOD LOADER VERSIONS ###############################################
 # linux
 BuildMods
 CopyLogicFiles so
@@ -61,21 +60,6 @@ BuildMods -DCMAKE_SYSTEM_NAME=Windows
 CopyLogicFiles dll
 zip -r $modname-windows.zip $releasedir
 rm $releasedir/*.dll
-
-# LEGACY MOD LOADER VERSIONS ###################################################
-# was used for copying GameConfig.bin for legacy releases but it's the default now
-#cp -R release-files/Data $releasedir
-# linux
-BuildMods -DLEGACY=true
-CopyLogicFiles so
-tar czf $modname-linux-legacy.tar.gz $releasedir
-rm $releasedir/*.so
-# windows
-BuildMods -DCMAKE_SYSTEM_NAME=Windows -DLEGACY=true
-CopyLogicFiles dll
-zip -r $modname-windows-legacy.zip $releasedir
-rm $releasedir/*.dll
-
 
 # CLEANUP ######################################################################
 echo "\033[1;33mrelease builds done! removing temporary directory \"$releasedir\"...\033[0m"
