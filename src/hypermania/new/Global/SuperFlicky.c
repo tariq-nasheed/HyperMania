@@ -89,7 +89,7 @@ void SuperFlicky_Update(void) {
 			}
 		}
 
-		if (self->player->characterID == ID_TAILS && Player_IsHyper(self->player) && !(Zone->timer & 7)) {
+		if (self->player && self->player->characterID == ID_TAILS && Player_IsHyper(self->player) && !(Zone->timer & 7)) {
 			EntityDebris* sparkle = CREATE_ENTITY(Debris, NULL, self->instancePos[i].x + RSDK.Rand(-TO_FIXED(8), TO_FIXED(8)), self->instancePos[i].y + RSDK.Rand(-TO_FIXED(8), TO_FIXED(8)));
 			sparkle->velocity.y = -0x8000;
 			sparkle->state      = Debris_State_Move;
@@ -105,14 +105,15 @@ void SuperFlicky_Update(void) {
 		if (all_offscreen) all_offscreen = (!RSDK.CheckOnScreen(self, &range));
 	}
 
-	if ((self->player->characterID != ID_TAILS || !Player_IsHyper(self->player)) && all_offscreen) {
+	if (!self->player || ((self->player->characterID != ID_TAILS || !Player_IsHyper(self->player)) && all_offscreen)) {
 		destroyEntity(self);
+		return;
 	}
 
-	self->drawGroup = self->player->drawGroup;
+	if (self->player) self->drawGroup = self->player->drawGroup;
 
 	// handling blend variables
-	bool32 is_hyper = self->player->characterID == ID_TAILS && Player_IsHyper(self->player);
+	bool32 is_hyper = self->player && self->player->characterID == ID_TAILS && Player_IsHyper(self->player);
 	if (is_hyper && self->blend.state == 1) {
 		self->blend.state = 0;
 		self->blend.amount = 0;
