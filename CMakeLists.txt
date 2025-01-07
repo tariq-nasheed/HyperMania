@@ -46,10 +46,7 @@ target_include_directories(hypermania PRIVATE
 	src/${MOD_NAME}
 )
 
-if(ANDROID)
-	set_target_properties(hypermania PROPERTIES PREFIX "lib")
-else()
-	set_target_properties(hypermania PROPERTIES PREFIX "")
+set_target_properties(hypermania PROPERTIES PREFIX "")
 endif()
 set_target_properties(hypermania PROPERTIES OUTPUT_NAME ${MOD_NAME})
 if(CMAKE_CROSSCOMPILING AND CMAKE_SYSTEM_NAME STREQUAL "Windows")

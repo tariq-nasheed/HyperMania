@@ -13,12 +13,11 @@ Sonic Mania decomp mod that adds Super Emeralds and Hyper forms into the game, f
 ***WIP***, contains some bugs here and there as well as some missing features. (Mainly a lack of new special stages with encore modes' being used as a substitute)
 
 # Installation
-The mod was developed for v5U and at the moment officially supports Windows, Linux and Android. Releases use the x64 instruction set for desktop platforms and AArch64 for Android, with desktop builds also coming in "legacy" variants for people still running 1.0.0 of the decomp.
+The mod was developed for v5U and at the moment officially supports Windows and Linux. Releases use the x64 instruction set for desktop platforms.
 
 Extract HyperMania into the `mods` folder of your decomp installation (create the folder if it doesn't exist), then enable it in the 'Mods' section of the developer menu.
 (Follow [this guide](https://steamcommunity.com/sharedfiles/filedetails/?id=1123456515) if you don't know how to access it)
 
-**For Android users:** You also need to take `libhypermania.so` out of the mods' folder and put it into `lib/arm64-v8a/` of your RSDKv5U APK. Make sure you have some way of opening, packing, and signing APK files so it can actually be installed on your system (I recommend [APK Editor Studio](https://qwertycube.com/apk-editor-studio/)), if you don't do this RSDKv5U can't find the logic file and you won't be able to play the mod.
 # How to Build
 
 ## Unix-like
@@ -40,7 +39,7 @@ You can use `./build.sh` in `src/` to automate this process if you don't mind ru
 - move `hypermania.dll` from `out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is).
 
 ## Android
-See [RSDKv5-Decompilation/dependencies/android/README.md](https://github.com/RSDKModding/RSDKv5-Decompilation/blob/master/dependencies/android/README.md).
+im tired of getting the same questions from people who cant fucking read so android support has been DROPPED and every android user can suck my dick and die
 
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary
