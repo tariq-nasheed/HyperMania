@@ -38,9 +38,6 @@ You can use `./build.sh` in `src/` to automate this process if you don't mind ru
 - Build the project.
 - move `hypermania.dll` from `out\build\(ARCHITECTURE)-Debug` to the mods' root directory (where `mod.ini` is).
 
-## Android
-im tired of getting the same questions from people who cant fucking read so android support has been DROPPED and every android user can suck my dick and die
-
 ## CMake options
 - `RELEASE` - Set to strip debug info from binary
 - `LEGACY` - Set to use version 1 of the mod loader
